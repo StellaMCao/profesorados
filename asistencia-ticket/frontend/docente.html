@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Docente - Asistencia</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="docente-styles.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body class="docente-body">
+    <!-- LOGIN SCREEN -->
+    <div id="docenteLoginScreen" class="screen active">
+        <div class="card">
+            <div class="header">
+                <h1>👨‍🏫 Panel Docente</h1>
+                <p>Gestioná sesiones y visualizá respuestas en tiempo real</p>
+            </div>
+
+            <div id="g_id_onload" data-client_id="TU_GOOGLE_CLIENT_ID_AQUI" data-callback="handleDocenteLogin"
+                data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"
+                data-text="signin_with" data-shape="rectangular" data-logo_alignment="left">
+            </div>
+
+            <p class="hint">Solo docentes autorizados</p>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="docenteDashboard" class="screen dashboard">
+        <nav class="navbar">
+            <div class="nav-content">
+                <h1>📋 Mis Sesiones</h1>
+                <div class="user-info-nav">
+                    <img id="docenteAvatar" src="" alt="Avatar" class="avatar-small">
+                    <span id="docenteName"></span>
+                    <button onclick="docenteLogout()" class="btn-logout-nav">Salir</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <div class="actions-bar">
+                <button onclick="showCreateSessionModal()" class="btn-create">
+                    ➕ Nueva Sesión
+                </button>
+            </div>
+
+            <div id="sessionsContainer" class="sessions-grid"></div>
+
+            <div id="noSessions" class="empty-state" style="display: none;">
+                <div class="empty-icon">📭</div>
+                <h3>No tenés sesiones creadas</h3>
+                <p>Creá tu primera sesión para empezar a registrar asistencia</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREAR/EDITAR SESIÓN -->
+    <div id="sessionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nueva Sesión</h2>
+                <button onclick="closeSessionModal()" class="btn-close">✕</button>
+            </div>
+
+            <form id="sessionForm" onsubmit="saveSession(event)">
+                <div class="form-group">
+                    <label>Materia *</label>
+                    <select id="inputMateria" required>
+                        <option value="">Seleccioná una materia</option>
+                        <option value="Sujetos">Sujetos</option>
+                        <option value="Educacional">Educacional</option>
+                        <option value="Evaluación">Evaluación</option>
+                        <option value="Neurociencia">Neurociencia</option>
+                        <option value="Problemáticas">Problemáticas</option>
+                        <option value="Comunitaria">Comunitaria</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha *</label>
+                        <input type="date" id="inputFecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Curso/Comisión *</label>
+                        <input type="text" id="inputCurso" placeholder="Ej: 1A" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Horario Inicio *</label>
+                        <input type="time" id="inputHorarioInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Horario Fin *</label>
+                        <input type="time" id="inputHorarioFin" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Código de Clase</label>
+                    <div class="code-generator">
+                        <input type="text" id="inputCodigo" placeholder="Generado automáticamente" maxlength="8">
+                        <button type="button" onclick="generateNewCode()" class="btn-generate">🎲 Generar</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Preguntas del Ticket de Salida</label>
+                    <div id="questionsBuilder"></div>
+                    <button type="button" onclick="addQuestion()" class="btn-add-question">➕ Agregar Pregunta</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="inputAceptarTardios">
+                        <span>Aceptar tardíos</span>
+                    </label>
+                    <div id="tardiosConfig" style="display: none; margin-top: 0.5rem;">
+                        <label>Ventana adicional (minutos)</label>
+                        <input type="number" id="inputVentanaTardios" min="1" max="60" value="10">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="inputPermitirReenvio">
+                        <span>Permitir reenvío de respuestas</span>
+                    </label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" onclick="closeSessionModal()" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar Sesión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: DUPLICAR SESIÓN -->
+    <div id="duplicateModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Duplicar Sesión</h2>
+                <button onclick="closeDuplicateModal()" class="btn-close">✕</button>
+            </div>
+
+            <div class="duplicate-info">
+                <p><strong>Materia:</strong> <span id="dupMateria"></span></p>
+                <p><strong>Curso:</strong> <span id="dupCurso"></span></p>
+                <p><strong>Preguntas:</strong> <span id="dupPreguntas"></span></p>
+            </div>
+
+            <form id="duplicateForm" onsubmit="confirmDuplicate(event)">
+                <div class="form-group">
+                    <label>Nueva Fecha *</label>
+                    <input type="date" id="dupFecha" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Horario Inicio *</label>
+                        <input type="time" id="dupHorarioInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Horario Fin *</label>
+                        <input type="time" id="dupHorarioFin" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nuevo Código</label>
+                    <div class="code-generator">
+                        <input type="text" id="dupCodigo" placeholder="Generado automáticamente">
+                        <button type="button" onclick="generateDupCode()" class="btn-generate">🎲</button>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" onclick="closeDuplicateModal()" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Crear Copia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: VER ENVÍOS -->
+    <div id="submissionsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Envíos en Tiempo Real</h2>
+                <button onclick="closeSubmissionsModal()" class="btn-close">✕</button>
+            </div>
+
+            <div class="submissions-info">
+                <div class="info-card">
+                    <div class="info-label">Materia</div>
+                    <div id="subMateria" class="info-value"></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Curso</div>
+                    <div id="subCurso" class="info-value"></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Total Envíos</div>
+                    <div id="subTotal" class="info-value">0</div>
+                </div>
+            </div>
+
+            <div id="submissionsTable"></div>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Procesando...</p>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="docente.js"></script>
+</body>
+
+</html>
