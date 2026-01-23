@@ -35,7 +35,7 @@ async function checkDocenteAuth() {
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'getSessions',
-                token: docenteUser.email
+                token: docenteToken
             })
         });
 
@@ -77,7 +77,7 @@ async function loadSessions() {
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'getSessions',
-                token: docenteUser.email
+                token: docenteToken
             })
         });
 
@@ -197,7 +197,7 @@ function renderSessions() {
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({
                     action: 'toggleSession',
-                    token: docenteUser.email,
+                    token: docenteToken,
                     session_id: sessionId,
                     accion: accion
                 })
@@ -322,7 +322,7 @@ function renderSessions() {
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({
                     action: 'createSession',
-                    token: docenteUser.email,
+                    token: docenteToken,
                     materia: document.getElementById('inputMateria').value,
                     fecha: document.getElementById('inputFecha').value,
                     curso: document.getElementById('inputCurso').value,
@@ -400,7 +400,7 @@ function renderSessions() {
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({
                     action: 'duplicateSession',
-                    token: docenteUser.email,
+                    token: docenteToken,
                     session_id_original: currentSessionForDuplicate.session_id,
                     nueva_fecha: document.getElementById('dupFecha').value,
                     nuevo_horario_inicio: document.getElementById('dupHorarioInicio').value,
@@ -441,7 +441,7 @@ function renderSessions() {
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({
                     action: 'getSubmissions',
-                    token: docenteUser.email,
+                    token: docenteToken,
                     session_id: sessionId
                 })
             });
@@ -515,7 +515,7 @@ function renderSessions() {
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({
                     action: 'deleteSession',
-                    token: docenteUser.email,
+                    token: docenteToken,
                     session_id: sessionId
                 })
             });
