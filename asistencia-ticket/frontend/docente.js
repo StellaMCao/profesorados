@@ -119,6 +119,11 @@ function formatTime(timeStr) {
     return timeStr;
 }
 
+// Helper para normalizar booleanos (Sheets a veces devuelve TRUE, true, "true", etc)
+function isTrue(value) {
+    return value === true || value === 'true' || value === 'TRUE' || value === 1 || value === '1';
+}
+
 function renderSessions() {
     const container = document.getElementById('sessionsContainer');
     const noSessions = document.getElementById('noSessions');
@@ -130,26 +135,11 @@ function renderSessions() {
     }
 
     noSessions.style.display = 'none';
-    // Helper para normalizar booleanos (Sheets a veces devuelve TRUE, true, "true", etc)
-    function isTrue(value) {
-        return value === true || value === 'true' || value === 'TRUE' || value === 1 || value === '1';
-    }
 
-    function renderSessions() {
-        const container = document.getElementById('sessionsContainer');
-        const noSessions = document.getElementById('noSessions');
+    container.innerHTML = currentSessions.map(session => {
+        const isActive = isTrue(session.activa);
 
-        if (currentSessions.length === 0) {
-            container.innerHTML = '';
-            noSessions.style.display = 'block';
-            return;
-        }
-
-        noSessions.style.display = 'none';
-        container.innerHTML = currentSessions.map(session => {
-            const isActive = isTrue(session.activa);
-
-            return `
+        return `
     <div class="session-card ${isActive ? 'active' : ''}">
       <div class="session-header">
         <div class="session-materia">${session.materia}</div>
@@ -181,81 +171,81 @@ function renderSessions() {
       </div>
     </div>
   `}).join('');
-    }
+}
 
-    async function toggleSessionStatus(sessionId, isActive) {
-        console.log('Toggle session:', sessionId, isActive);
-        const accion = isActive ? 'cerrar' : 'activar';
+async function toggleSessionStatus(sessionId, isActive) {
+    console.log('Toggle session:', sessionId, isActive);
+    const accion = isActive ? 'cerrar' : 'activar';
 
-        if (!confirm(`¿Confirmar ${accion} sesión?`)) return;
+    if (!confirm(`¿Confirmar ${accion} sesión?`)) return;
 
-        showLoading(true);
+    showLoading(true);
 
-        try {
-            const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'toggleSession',
-                    token: docenteToken,
-                    session_id: sessionId,
-                    accion: accion
-                })
-            });
+    try {
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'toggleSession',
+                token: docenteToken,
+                session_id: sessionId,
+                accion: accion
+            })
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (data.success) {
-                loadSessions();
-            } else {
-                alert('Error: ' + data.error);
-            }
-        } catch (error) {
-            alert('Error de conexión');
-        } finally {
-            showLoading(false);
+        if (data.success) {
+            loadSessions();
+        } else {
+            alert('Error: ' + data.error);
         }
+    } catch (error) {
+        alert('Error de conexión');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// ============================================
+// CREAR/EDITAR SESIÓN
+// ============================================
+
+function showCreateSessionModal() {
+    document.getElementById('modalTitle').textContent = 'Nueva Sesión';
+    document.getElementById('sessionForm').reset();
+    document.getElementById('questionsBuilder').innerHTML = '';
+    questionCount = 0;
+    addQuestion(); // Agregar primera pregunta por defecto
+    generateNewCode();
+    document.getElementById('sessionModal').classList.add('show');
+}
+
+function closeSessionModal() {
+    document.getElementById('sessionModal').classList.remove('show');
+}
+
+function generateNewCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('inputCodigo').value = code;
+}
+
+function addQuestion() {
+    if (questionCount >= 3) {
+        alert('Máximo 3 preguntas por sesión');
+        return;
     }
 
-    // ============================================
-    // CREAR/EDITAR SESIÓN
-    // ============================================
+    const container = document.getElementById('questionsBuilder');
+    const questionId = questionCount++;
 
-    function showCreateSessionModal() {
-        document.getElementById('modalTitle').textContent = 'Nueva Sesión';
-        document.getElementById('sessionForm').reset();
-        document.getElementById('questionsBuilder').innerHTML = '';
-        questionCount = 0;
-        addQuestion(); // Agregar primera pregunta por defecto
-        generateNewCode();
-        document.getElementById('sessionModal').classList.add('show');
-    }
-
-    function closeSessionModal() {
-        document.getElementById('sessionModal').classList.remove('show');
-    }
-
-    function generateNewCode() {
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        let code = '';
-        for (let i = 0; i < 6; i++) {
-            code += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        document.getElementById('inputCodigo').value = code;
-    }
-
-    function addQuestion() {
-        if (questionCount >= 3) {
-            alert('Máximo 3 preguntas por sesión');
-            return;
-        }
-
-        const container = document.getElementById('questionsBuilder');
-        const questionId = questionCount++;
-
-        const questionDiv = document.createElement('div');
-        questionDiv.className = 'question-builder';
-        questionDiv.innerHTML = `
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-builder';
+    questionDiv.innerHTML = `
     <div class="question-header">
       <span>Pregunta ${questionId + 1}</span>
       <button type="button" onclick="removeQuestion(this)" class="btn-remove">✕</button>
@@ -269,208 +259,208 @@ function renderSessions() {
     <div class="options-container" style="display: none;"></div>
   `;
 
-        container.appendChild(questionDiv);
-    }
+    container.appendChild(questionDiv);
+}
 
-    function removeQuestion(btn) {
-        btn.closest('.question-builder').remove();
-        questionCount--;
-    }
+function removeQuestion(btn) {
+    btn.closest('.question-builder').remove();
+    questionCount--;
+}
 
-    function updateQuestionType(select) {
-        const container = select.closest('.question-builder').querySelector('.options-container');
+function updateQuestionType(select) {
+    const container = select.closest('.question-builder').querySelector('.options-container');
 
-        if (select.value === 'multiple') {
-            container.style.display = 'block';
-            container.innerHTML = `
+    if (select.value === 'multiple') {
+        container.style.display = 'block';
+        container.innerHTML = `
       <input type="text" placeholder="Opción A" required>
       <input type="text" placeholder="Opción B" required>
       <input type="text" placeholder="Opción C" required>
       <input type="text" placeholder="Opción D (opcional)">
     `;
-        } else {
-            container.style.display = 'none';
-            container.innerHTML = '';
-        }
+    } else {
+        container.style.display = 'none';
+        container.innerHTML = '';
     }
+}
 
-    async function saveSession(event) {
-        event.preventDefault();
+async function saveSession(event) {
+    event.preventDefault();
 
-        const preguntas = [];
-        document.querySelectorAll('.question-builder').forEach(qb => {
-            const tipo = qb.querySelector('.question-type').value;
-            const texto = qb.querySelector('.question-text').value;
+    const preguntas = [];
+    document.querySelectorAll('.question-builder').forEach(qb => {
+        const tipo = qb.querySelector('.question-type').value;
+        const texto = qb.querySelector('.question-text').value;
 
-            const pregunta = { tipo, texto };
+        const pregunta = { tipo, texto };
 
-            if (tipo === 'multiple') {
-                const opciones = Array.from(qb.querySelectorAll('.options-container input'))
-                    .map(input => input.value)
-                    .filter(val => val.trim() !== '');
-                pregunta.opciones = opciones;
-            }
-
-            preguntas.push(pregunta);
-        });
-
-        showLoading(true);
-
-        try {
-            const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'createSession',
-                    token: docenteToken,
-                    materia: document.getElementById('inputMateria').value,
-                    fecha: document.getElementById('inputFecha').value,
-                    curso: document.getElementById('inputCurso').value,
-                    horario_inicio: document.getElementById('inputHorarioInicio').value,
-                    horario_fin: document.getElementById('inputHorarioFin').value,
-                    codigo: document.getElementById('inputCodigo').value,
-                    preguntas: preguntas,
-                    aceptar_tardios: document.getElementById('inputAceptarTardios').checked,
-                    ventana_tardios: document.getElementById('inputVentanaTardios').value,
-                    permitir_reenvio: document.getElementById('inputPermitirReenvio').checked
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                closeSessionModal();
-                loadSessions();
-                alert(`Sesión creada. Código: ${data.codigo}`);
-            } else {
-                alert('Error: ' + data.error);
-            }
-        } catch (error) {
-            alert('Error de conexión');
-        } finally {
-            showLoading(false);
+        if (tipo === 'multiple') {
+            const opciones = Array.from(qb.querySelectorAll('.options-container input'))
+                .map(input => input.value)
+                .filter(val => val.trim() !== '');
+            pregunta.opciones = opciones;
         }
-    }
 
-    // Toggle tardíos config
-    document.getElementById('inputAceptarTardios')?.addEventListener('change', (e) => {
-        document.getElementById('tardiosConfig').style.display = e.target.checked ? 'block' : 'none';
+        preguntas.push(pregunta);
     });
 
-    // ============================================
-    // DUPLICAR SESIÓN
-    // ============================================
+    showLoading(true);
 
-    function duplicateSession(sessionId) {
-        const session = currentSessions.find(s => s.session_id === sessionId);
-        if (!session) return;
+    try {
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'createSession',
+                token: docenteToken,
+                materia: document.getElementById('inputMateria').value,
+                fecha: document.getElementById('inputFecha').value,
+                curso: document.getElementById('inputCurso').value,
+                horario_inicio: document.getElementById('inputHorarioInicio').value,
+                horario_fin: document.getElementById('inputHorarioFin').value,
+                codigo: document.getElementById('inputCodigo').value,
+                preguntas: preguntas,
+                aceptar_tardios: document.getElementById('inputAceptarTardios').checked,
+                ventana_tardios: document.getElementById('inputVentanaTardios').value,
+                permitir_reenvio: document.getElementById('inputPermitirReenvio').checked
+            })
+        });
 
-        currentSessionForDuplicate = session;
+        const data = await response.json();
 
-        document.getElementById('dupMateria').textContent = session.materia;
-        document.getElementById('dupCurso').textContent = session.curso;
-        document.getElementById('dupPreguntas').textContent = 'Copiadas de la sesión original';
-
-        generateDupCode();
-        document.getElementById('duplicateModal').classList.add('show');
-    }
-
-    function closeDuplicateModal() {
-        document.getElementById('duplicateModal').classList.remove('show');
-        currentSessionForDuplicate = null;
-    }
-
-    function generateDupCode() {
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        let code = '';
-        for (let i = 0; i < 6; i++) {
-            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        if (data.success) {
+            closeSessionModal();
+            loadSessions();
+            alert(`Sesión creada. Código: ${data.codigo}`);
+        } else {
+            alert('Error: ' + data.error);
         }
-        document.getElementById('dupCodigo').value = code;
+    } catch (error) {
+        alert('Error de conexión');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Toggle tardíos config
+document.getElementById('inputAceptarTardios')?.addEventListener('change', (e) => {
+    document.getElementById('tardiosConfig').style.display = e.target.checked ? 'block' : 'none';
+});
+
+// ============================================
+// DUPLICAR SESIÓN
+// ============================================
+
+function duplicateSession(sessionId) {
+    const session = currentSessions.find(s => s.session_id === sessionId);
+    if (!session) return;
+
+    currentSessionForDuplicate = session;
+
+    document.getElementById('dupMateria').textContent = session.materia;
+    document.getElementById('dupCurso').textContent = session.curso;
+    document.getElementById('dupPreguntas').textContent = 'Copiadas de la sesión original';
+
+    generateDupCode();
+    document.getElementById('duplicateModal').classList.add('show');
+}
+
+function closeDuplicateModal() {
+    document.getElementById('duplicateModal').classList.remove('show');
+    currentSessionForDuplicate = null;
+}
+
+function generateDupCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('dupCodigo').value = code;
+}
+
+async function confirmDuplicate(event) {
+    event.preventDefault();
+
+    showLoading(true);
+
+    try {
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'duplicateSession',
+                token: docenteToken,
+                session_id_original: currentSessionForDuplicate.session_id,
+                nueva_fecha: document.getElementById('dupFecha').value,
+                nuevo_horario_inicio: document.getElementById('dupHorarioInicio').value,
+                nuevo_horario_fin: document.getElementById('dupHorarioFin').value,
+                nuevo_codigo: document.getElementById('dupCodigo').value
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            closeDuplicateModal();
+            loadSessions();
+            alert(`Sesión duplicada. Código: ${data.codigo}`);
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error de conexión');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// ============================================
+// VER ENVÍOS
+// ============================================
+
+async function viewSubmissions(sessionId, materia, curso) {
+    document.getElementById('subMateria').textContent = materia;
+    document.getElementById('subCurso').textContent = curso;
+
+    showLoading(true);
+
+    try {
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'getSubmissions',
+                token: docenteToken,
+                session_id: sessionId
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            document.getElementById('subTotal').textContent = data.submissions.length;
+            renderSubmissionsTable(data.submissions);
+            document.getElementById('submissionsModal').classList.add('show');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error de conexión');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function renderSubmissionsTable(submissions) {
+    const container = document.getElementById('submissionsTable');
+
+    if (submissions.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Aún no hay envíos</p></div>';
+        return;
     }
 
-    async function confirmDuplicate(event) {
-        event.preventDefault();
-
-        showLoading(true);
-
-        try {
-            const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'duplicateSession',
-                    token: docenteToken,
-                    session_id_original: currentSessionForDuplicate.session_id,
-                    nueva_fecha: document.getElementById('dupFecha').value,
-                    nuevo_horario_inicio: document.getElementById('dupHorarioInicio').value,
-                    nuevo_horario_fin: document.getElementById('dupHorarioFin').value,
-                    nuevo_codigo: document.getElementById('dupCodigo').value
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                closeDuplicateModal();
-                loadSessions();
-                alert(`Sesión duplicada. Código: ${data.codigo}`);
-            } else {
-                alert('Error: ' + data.error);
-            }
-        } catch (error) {
-            alert('Error de conexión');
-        } finally {
-            showLoading(false);
-        }
-    }
-
-    // ============================================
-    // VER ENVÍOS
-    // ============================================
-
-    async function viewSubmissions(sessionId, materia, curso) {
-        document.getElementById('subMateria').textContent = materia;
-        document.getElementById('subCurso').textContent = curso;
-
-        showLoading(true);
-
-        try {
-            const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'getSubmissions',
-                    token: docenteToken,
-                    session_id: sessionId
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                document.getElementById('subTotal').textContent = data.submissions.length;
-                renderSubmissionsTable(data.submissions);
-                document.getElementById('submissionsModal').classList.add('show');
-            } else {
-                alert('Error: ' + data.error);
-            }
-        } catch (error) {
-            alert('Error de conexión');
-        } finally {
-            showLoading(false);
-        }
-    }
-
-    function renderSubmissionsTable(submissions) {
-        const container = document.getElementById('submissionsTable');
-
-        if (submissions.length === 0) {
-            container.innerHTML = '<div class="empty-state"><p>Aún no hay envíos</p></div>';
-            return;
-        }
-
-        container.innerHTML = `
+    container.innerHTML = `
     <table class="submissions-table">
       <thead>
         <tr>
@@ -492,45 +482,45 @@ function renderSessions() {
       </tbody>
     </table>
   `;
+}
+
+function closeSubmissionsModal() {
+    document.getElementById('submissionsModal').classList.remove('show');
+}
+
+// ============================================
+// ELIMINAR SESIÓN
+// ============================================
+
+async function deleteSessionConfirm(sessionId) {
+    if (!confirm('¿Estás segura de que querés eliminar esta sesión? Esta acción no se puede deshacer.')) {
+        return;
     }
 
-    function closeSubmissionsModal() {
-        document.getElementById('submissionsModal').classList.remove('show');
-    }
+    showLoading(true);
 
-    // ============================================
-    // ELIMINAR SESIÓN
-    // ============================================
+    try {
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'deleteSession',
+                token: docenteToken,
+                session_id: sessionId
+            })
+        });
 
-    async function deleteSessionConfirm(sessionId) {
-        if (!confirm('¿Estás segura de que querés eliminar esta sesión? Esta acción no se puede deshacer.')) {
-            return;
+        const data = await response.json();
+
+        if (data.success) {
+            loadSessions();
+            alert('Sesión eliminada correctamente');
+        } else {
+            alert('Error: ' + data.error);
         }
-
-        showLoading(true);
-
-        try {
-            const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({
-                    action: 'deleteSession',
-                    token: docenteToken,
-                    session_id: sessionId
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                loadSessions();
-                alert('Sesión eliminada correctamente');
-            } else {
-                alert('Error: ' + data.error);
-            }
-        } catch (error) {
-            alert('Error de conexión');
-        } finally {
-            showLoading(false);
-        }
+    } catch (error) {
+        alert('Error de conexión');
+    } finally {
+        showLoading(false);
     }
+}
