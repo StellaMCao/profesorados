@@ -94,6 +94,22 @@ async function loadSessions() {
     }
 }
 
+function formatDate(dateStr) {
+    // Convierte "2026-01-23" a "23/01/2026"
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+}
+
+function formatTime(timeStr) {
+    // Si es ISO timestamp, extraer solo hora:minuto
+    // Si ya es "HH:MM", devolver tal cual
+    if (timeStr.includes('T')) {
+        const date = new Date(timeStr);
+        return date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+    return timeStr;
+}
+
 function renderSessions() {
     const container = document.getElementById('sessionsContainer');
     const noSessions = document.getElementById('noSessions');
@@ -115,8 +131,8 @@ function renderSessions() {
       </div>
       <div class="session-info-grid">
         <div><strong>Curso:</strong> ${session.curso}</div>
-        <div><strong>Fecha:</strong> ${session.fecha}</div>
-        <div><strong>Horario:</strong> ${session.horario_inicio} - ${session.horario_fin}</div>
+        <div><strong>Fecha:</strong> ${formatDate(session.fecha)}</div>
+        <div><strong>Horario:</strong> ${formatTime(session.horario_inicio)} - ${formatTime(session.horario_fin)}</div>
         <div><strong>Código:</strong> <code>${session.codigo}</code></div>
       </div>
       <div class="session-actions">
@@ -130,6 +146,9 @@ function renderSessions() {
         </button>
         <button onclick="duplicateSession('${session.session_id}')" class="btn-duplicate">
           📋 Duplicar
+        </button>
+        <button onclick="deleteSessionConfirm('${session.session_id}')" class="btn-delete">
+          🗑️ Eliminar
         </button>
       </div>
     </div>
@@ -448,4 +467,41 @@ function renderSubmissionsTable(submissions) {
 
 function closeSubmissionsModal() {
     document.getElementById('submissionsModal').classList.remove('show');
+}
+
+// ============================================
+// ELIMINAR SESIÓN
+// ============================================
+
+async function deleteSessionConfirm(sessionId) {
+    if (!confirm('¿Estás segura de que querés eliminar esta sesión? Esta acción no se puede deshacer.')) {
+        return;
+    }
+
+    showLoading(true);
+
+    try {
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'deleteSession',
+                token: docenteUser.email,
+                session_id: sessionId
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            loadSessions();
+            alert('Sesión eliminada correctamente');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error de conexión');
+    } finally {
+        showLoading(false);
+    }
 }

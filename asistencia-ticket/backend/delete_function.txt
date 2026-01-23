@@ -1,0 +1,19 @@
+function deleteSession(params) {
+  const { session_id } = params;
+  
+  const sheet = getOrCreateSheet('_sessions');
+  const data = sheet.getDataRange().getValues();
+  
+  // Buscar y eliminar la fila de la sesión
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === session_id) {
+      sheet.deleteRow(i + 1);
+      return jsonResponse({
+        success: true,
+        message: 'Sesión eliminada correctamente'
+      });
+    }
+  }
+  
+  return jsonResponse({ success: false, error: 'Sesión no encontrada' });
+}

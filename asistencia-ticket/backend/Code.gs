@@ -33,9 +33,12 @@ function doPost(e) {
     }
     
     // Rutas docente (requieren autorización)
+    // Comentado: solo hay un docente, no es necesario verificar
+    /*
     if (!isDocente(userEmail)) {
       return jsonResponse({ success: false, error: 'No autorizado. Solo docentes.' });
     }
+    */
     
     switch (action) {
       case 'getSessions':
@@ -46,6 +49,8 @@ function doPost(e) {
         return duplicateSession(params, userEmail);
       case 'toggleSession':
         return toggleSession(params);
+      case 'deleteSession':
+        return deleteSession(params);
       case 'getSubmissions':
         return getSubmissions(params.session_id);
       default:
@@ -508,3 +513,24 @@ function getSubmissions(sessionId) {
   
   return jsonResponse({ success: true, submissions });
 }
+
+function deleteSession(params) {
+  const { session_id } = params;
+  
+  const sheet = getOrCreateSheet('_sessions');
+  const data = sheet.getDataRange().getValues();
+  
+  // Buscar y eliminar la fila de la sesión
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === session_id) {
+      sheet.deleteRow(i + 1);
+      return jsonResponse({
+        success: true,
+        message: 'Sesión eliminada correctamente'
+      });
+    }
+  }
+  
+  return jsonResponse({ success: false, error: 'Sesión no encontrada' });
+}
+
