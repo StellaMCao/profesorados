@@ -6,7 +6,21 @@ let docenteUser = null;
 let docenteToken = null;
 let currentSessions = [];
 let currentSessionForDuplicate = null;
+let currentEditingSessionId = null;
 let questionCount = 0;
+
+// Forzar mayúsculas en campos de código
+document.addEventListener('DOMContentLoaded', () => {
+    const codeInputs = ['inputCodigo', 'dupCodigo'];
+    codeInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', (e) => {
+                e.target.value = e.target.value.toUpperCase();
+            });
+        }
+    });
+});
 
 // ============================================
 // AUTENTICACIÓN DOCENTE
@@ -14,16 +28,19 @@ let questionCount = 0;
 
 function handleDocenteLogin(response) {
     docenteToken = response.credential;
-    const payload = parseJwt(response.credential);
+    try {
+        const payload = parseJwt(response.credential);
 
-    docenteUser = {
-        email: payload.email,
-        name: payload.name,
-        picture: payload.picture
-    };
+        docenteUser = {
+            email: payload.email,
+            name: payload.name,
+            picture: payload.picture
+        };
 
-    // Verificar si es docente autorizado
-    checkDocenteAuth();
+        checkDocenteAuth();
+    } catch (e) {
+        alert('Error al procesar el token: ' + e.message);
+    }
 }
 
 async function checkDocenteAuth() {
@@ -47,10 +64,11 @@ async function checkDocenteAuth() {
             document.getElementById('docenteAvatar').src = docenteUser.picture;
             loadSessions();
         } else {
-            alert('No estás autorizado como docente. Contactá al administrador.');
+            console.error('Server error:', data.error);
+            alert('Error al verificar acceso: ' + (data.error || 'Desconocido'));
         }
     } catch (error) {
-        alert('Error de conexión');
+        alert('Error de conexión con el servidor: ' + error.message);
         console.error(error);
     } finally {
         showLoading(false);
@@ -84,14 +102,90 @@ async function loadSessions() {
         const data = await response.json();
 
         if (data.success) {
-            currentSessions = data.sessions;
+            currentSessions = data.sessions || [];
             renderSessions();
+        } else {
+            alert('Error al cargar sesiones: ' + data.error);
         }
     } catch (error) {
         console.error('Error loading sessions:', error);
+        alert('Error de conexión al cargar sesiones');
     } finally {
         showLoading(false);
     }
+}
+
+// Global para exportar
+let lastSubmissions = [];
+let lastMateria = '';
+let lastCurso = '';
+
+function showCreateSessionModal() {
+    currentEditingSessionId = null;
+    document.getElementById('modalTitle').textContent = 'Nueva Sesión';
+    document.getElementById('sessionForm').reset();
+    document.getElementById('questionsBuilder').innerHTML = '';
+    questionCount = 0;
+    document.getElementById('sessionModal').classList.add('show');
+}
+
+function closeSessionModal() {
+    document.getElementById('sessionModal').classList.remove('show');
+}
+
+async function editSession(sessionId) {
+    const session = currentSessions.find(s => s.session_id === sessionId);
+    if (!session) return;
+
+    currentEditingSessionId = sessionId;
+    document.getElementById('modalTitle').textContent = 'Editar Sesión';
+
+    // Poblar campos básicos
+    document.getElementById('inputMateria').value = session.materia;
+    document.getElementById('inputFecha').value = formatDateForInput(session.fecha);
+    document.getElementById('inputCurso').value = session.curso;
+    document.getElementById('inputHorarioInicio').value = formatTimeForInput(session.horario_inicio);
+    document.getElementById('inputHorarioFin').value = formatTimeForInput(session.horario_fin);
+    document.getElementById('inputCodigo').value = session.codigo;
+
+    // Configuración avanzada
+    const isTardios = isTrue(session.aceptar_tardios);
+    document.getElementById('inputAceptarTardios').checked = isTardios;
+    document.getElementById('tardiosConfig').style.display = isTardios ? 'block' : 'none';
+    document.getElementById('inputVentanaTardios').value = session.ventana_tardios || 10;
+    document.getElementById('inputPermitirReenvio').checked = isTrue(session.permitir_reenvio);
+
+    // Reconstruir preguntas
+    document.getElementById('questionsBuilder').innerHTML = '';
+    questionCount = 0;
+
+    const preguntas = session.preguntas || [];
+    try {
+        const parsedPreguntas = typeof preguntas === 'string' ? JSON.parse(preguntas) : preguntas;
+        parsedPreguntas.forEach(p => addQuestion(p));
+    } catch (e) {
+        console.error("Error parsing questions for edit:", e);
+    }
+
+    document.getElementById('sessionModal').classList.add('show');
+}
+
+function formatDateForInput(dateVal) {
+    if (!dateVal) return '';
+    if (dateVal instanceof Date) return dateVal.toISOString().split('T')[0];
+    if (typeof dateVal === 'string') {
+        if (dateStr.includes('T')) return dateStr.split('T')[0];
+        return dateVal; // asumimos YYYY-MM-DD
+    }
+    return '';
+}
+
+function formatTimeForInput(timeVal) {
+    if (!timeVal) return '';
+    if (timeVal instanceof Date) {
+        return timeVal.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+    return timeVal; // asumimos HH:MM
 }
 
 function formatDate(dateStr) {
@@ -138,13 +232,14 @@ function renderSessions() {
 
     container.innerHTML = currentSessions.map(session => {
         const isActive = isTrue(session.activa);
+        const isExpired = checkIsExpired(session);
 
         return `
-    <div class="session-card ${isActive ? 'active' : ''}">
+    <div class="session-card ${isActive ? 'active' : ''} ${isExpired ? 'expired' : ''}">
       <div class="session-header">
         <div class="session-materia">${session.materia}</div>
-        <div class="session-status ${isActive ? 'status-active' : 'status-inactive'}">
-          ${isActive ? '🟢 Activa' : '⚪ Inactiva'}
+        <div class="session-status ${isExpired ? 'status-expired' : (isActive ? 'status-active' : 'status-inactive')}">
+          ${isExpired ? '⌛ Expirada' : (isActive ? '🟢 Activa' : '⚪ Inactiva')}
         </div>
       </div>
       <div class="session-info-grid">
@@ -158,19 +253,37 @@ function renderSessions() {
                 class="btn-toggle ${isActive ? 'btn-deactivate' : 'btn-activate'}">
           ${isActive ? '⏸️ Cerrar' : '▶️ Activar'}
         </button>
+        <button onclick="editSession('${session.session_id}')" class="btn-edit">
+          ✏️ Editar
+        </button>
         <button onclick="viewSubmissions('${session.session_id}', '${session.materia}', '${session.curso}')" 
                 class="btn-view">
-          👁️ Ver Envíos
+          👁️ Ver
         </button>
         <button onclick="duplicateSession('${session.session_id}')" class="btn-duplicate">
-          📋 Duplicar
+          📋 Copiar
         </button>
         <button onclick="deleteSessionConfirm('${session.session_id}')" class="btn-delete">
-          🗑️ Eliminar
+          🗑️
         </button>
       </div>
     </div>
   `}).join('');
+}
+
+function checkIsExpired(session) {
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const sessionDate = formatDateForInput(session.fecha);
+
+    if (sessionDate < today) return true;
+    if (sessionDate > today) return false;
+
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const endMinutes = parseTime(session.horario_fin);
+    const lateWindow = parseInt(session.ventana_tardios) || 0;
+
+    return currentMinutes > (endMinutes + lateWindow);
 }
 
 async function toggleSessionStatus(sessionId, isActive) {
@@ -287,6 +400,7 @@ function updateQuestionType(select) {
 async function saveSession(event) {
     event.preventDefault();
 
+    const action = currentEditingSessionId ? 'updateSession' : 'createSession';
     const preguntas = [];
     document.querySelectorAll('.question-builder').forEach(qb => {
         const tipo = qb.querySelector('.question-type').value;
@@ -307,23 +421,26 @@ async function saveSession(event) {
     showLoading(true);
 
     try {
+        const payload = {
+            action: action,
+            token: docenteToken,
+            session_id: currentEditingSessionId,
+            materia: document.getElementById('inputMateria').value,
+            fecha: document.getElementById('inputFecha').value,
+            curso: document.getElementById('inputCurso').value,
+            horario_inicio: document.getElementById('inputHorarioInicio').value,
+            horario_fin: document.getElementById('inputHorarioFin').value,
+            codigo: document.getElementById('inputCodigo').value,
+            preguntas: preguntas,
+            aceptar_tardios: document.getElementById('inputAceptarTardios').checked,
+            ventana_tardios: parseInt(document.getElementById('inputVentanaTardios').value) || 0,
+            permitir_reenvio: document.getElementById('inputPermitirReenvio').checked
+        };
+
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({
-                action: 'createSession',
-                token: docenteToken,
-                materia: document.getElementById('inputMateria').value,
-                fecha: document.getElementById('inputFecha').value,
-                curso: document.getElementById('inputCurso').value,
-                horario_inicio: document.getElementById('inputHorarioInicio').value,
-                horario_fin: document.getElementById('inputHorarioFin').value,
-                codigo: document.getElementById('inputCodigo').value,
-                preguntas: preguntas,
-                aceptar_tardios: document.getElementById('inputAceptarTardios').checked,
-                ventana_tardios: document.getElementById('inputVentanaTardios').value,
-                permitir_reenvio: document.getElementById('inputPermitirReenvio').checked
-            })
+            body: JSON.stringify(payload)
         });
 
         const data = await response.json();
@@ -331,7 +448,7 @@ async function saveSession(event) {
         if (data.success) {
             closeSessionModal();
             loadSessions();
-            alert(`Sesión creada. Código: ${data.codigo}`);
+            alert(currentEditingSessionId ? 'Sesión actualizada' : `Sesión creada. Código: ${data.codigo}`);
         } else {
             alert('Error: ' + data.error);
         }
@@ -423,7 +540,13 @@ async function viewSubmissions(sessionId, materia, curso) {
     document.getElementById('subMateria').textContent = materia;
     document.getElementById('subCurso').textContent = curso;
 
+    lastMateria = materia;
+    lastCurso = curso;
+
     showLoading(true);
+    // Reset stats
+    document.getElementById('statsContainer').style.display = 'none';
+    document.getElementById('statsCharts').innerHTML = '';
 
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
@@ -439,8 +562,15 @@ async function viewSubmissions(sessionId, materia, curso) {
         const data = await response.json();
 
         if (data.success) {
-            document.getElementById('subTotal').textContent = data.submissions.length;
-            renderSubmissionsTable(data.submissions);
+            lastSubmissions = data.submissions || [];
+            document.getElementById('subTotal').textContent = lastSubmissions.length;
+            renderSubmissionsTable(lastSubmissions);
+
+            const session = currentSessions.find(s => s.session_id === sessionId);
+            if (session && lastSubmissions.length > 0) {
+                renderStats(session, lastSubmissions);
+            }
+
             document.getElementById('submissionsModal').classList.add('show');
         } else {
             alert('Error: ' + data.error);
@@ -450,6 +580,102 @@ async function viewSubmissions(sessionId, materia, curso) {
     } finally {
         showLoading(false);
     }
+}
+
+function renderStats(session, submissions) {
+    const preguntas = session.preguntas || [];
+    const parsedPreguntas = typeof preguntas === 'string' ? JSON.parse(preguntas) : preguntas;
+
+    // Filtrar solo las de opción múltiple
+    const multipleChoice = parsedPreguntas.map((p, i) => ({ ...p, index: i }))
+        .filter(p => p.tipo === 'multiple');
+
+    if (multipleChoice.length === 0) return;
+
+    const statsContainer = document.getElementById('statsContainer');
+    const chartsGrid = document.getElementById('statsCharts');
+    chartsGrid.innerHTML = '';
+
+    multipleChoice.forEach(pregunta => {
+        const columnIdx = 9 + pregunta.index; // Respuestas empiezan en col 10 (idx 9)
+        const counts = {};
+        pregunta.opciones.forEach(opt => counts[opt] = 0);
+
+        submissions.forEach(sub => {
+            const resp = sub.respuestas[pregunta.index];
+            if (resp && counts[resp] !== undefined) {
+                counts[resp]++;
+            }
+        });
+
+        const total = submissions.length;
+        const chartItem = document.createElement('div');
+        chartItem.className = 'chart-item';
+
+        let barsHtml = '';
+        pregunta.opciones.forEach(opt => {
+            const count = counts[opt];
+            const pct = total > 0 ? (count / total * 100) : 0;
+            barsHtml += `
+                <div class="stat-bar-row">
+                    <div class="stat-bar-label" title="${opt}">${opt}</div>
+                    <div class="stat-bar-outer">
+                        <div class="stat-bar-inner" style="width: ${pct}%"></div>
+                    </div>
+                    <div class="stat-bar-value">${count}</div>
+                </div>
+            `;
+        });
+
+        chartItem.innerHTML = `
+            <div class="chart-title">${pregunta.texto}</div>
+            <div class="stat-bar-container">
+                ${barsHtml}
+            </div>
+        `;
+        chartsGrid.appendChild(chartItem);
+    });
+
+    statsContainer.style.display = 'block';
+}
+
+function exportSubmissionsCSV() {
+    if (lastSubmissions.length === 0) {
+        alert('No hay datos para exportar');
+        return;
+    }
+
+    // Encabezados
+    let csv = 'Estudiante,Email,Fecha,Estado,Materia,Curso';
+    // Agregar encabezados de preguntas si existen
+    if (lastSubmissions[0].respuestas) {
+        lastSubmissions[0].respuestas.forEach((_, i) => {
+            csv += `,Pregunta ${i + 1}`;
+        });
+    }
+    csv += '\n';
+
+    // Filas
+    lastSubmissions.forEach(sub => {
+        let row = `"${sub.nombre}","${sub.email}","${sub.timestamp}","${sub.estado}","${lastMateria}","${lastCurso}"`;
+        if (sub.respuestas) {
+            sub.respuestas.forEach(resp => {
+                row += `,"${(resp || '').replace(/"/g, '""')}"`;
+            });
+        }
+        csv += row + '\n';
+    });
+
+    // Descargar
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `reporte_${lastMateria.replace(/ /g, '_')}_${lastCurso}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 function renderSubmissionsTable(submissions) {
@@ -465,18 +691,19 @@ function renderSubmissionsTable(submissions) {
       <thead>
         <tr>
           <th>Estudiante</th>
-          <th>Email</th>
-          <th>Hora</th>
           <th>Estado</th>
+          <th>Hora</th>
         </tr>
       </thead>
       <tbody>
         ${submissions.map(sub => `
           <tr>
-            <td>${sub.nombre || 'Sin nombre'}</td>
-            <td>${sub.email}</td>
-            <td>${sub.timestamp}</td>
+            <td>
+                <div style="font-weight: 600;">${sub.nombre || 'Sin nombre'}</div>
+                <div style="font-size: 0.8rem; color: var(--text-light);">${sub.email}</div>
+            </td>
             <td><span class="badge ${sub.estado === 'tarde' ? 'badge-warning' : 'badge-success'}">${sub.estado}</span></td>
+            <td style="font-size: 0.85rem;">${sub.timestamp}</td>
           </tr>
         `).join('')}
       </tbody>

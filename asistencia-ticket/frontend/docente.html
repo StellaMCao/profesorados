@@ -198,7 +198,15 @@
         <div class="modal-content modal-large">
             <div class="modal-header">
                 <h2>Envíos en Tiempo Real</h2>
-                <button onclick="closeSubmissionsModal()" class="btn-close">✕</button>
+                <div class="header-actions">
+                    <button onclick="exportSubmissionsCSV()" class="btn-secondary btn-small">📥 Exportar CSV</button>
+                    <button onclick="closeSubmissionsModal()" class="btn-close">✕</button>
+                </div>
+            </div>
+
+            <div id="statsContainer" class="stats-container" style="display: none;">
+                <h3>📊 Resumen de Respuestas</h3>
+                <div id="statsCharts" class="charts-grid"></div>
             </div>
 
             <div class="submissions-info">
@@ -226,8 +234,8 @@
         <p>Procesando...</p>
     </div>
 
-    <script src="app.js?v=2"></script>
-    <script src="docente.js?v=2"></script>
+    <script src="app.js?v=3"></script>
+    <script src="docente.js?v=3"></script>
 </body>
 
 </html>
