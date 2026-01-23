@@ -3,7 +3,7 @@
 // ============================================
 
 const CONFIG = {
-    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbytUbUtOcBbTbypbLcqW3hYTif63JfELzP2LAek2BgG0rHBPcvyiOvu7BIB5G4TmBirfQ/exec',
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbw3q75zkwXarG7ioDMvZTR9Du46pu2rtjMEAWobOgfc09-tTC_W-PQIVZhK-htIRbu2Wg/exec',
     GOOGLE_CLIENT_ID: '493373610143-nkdtu88hfa39ved9bf6kj72at1d30rul.apps.googleusercontent.com'
 };
 
