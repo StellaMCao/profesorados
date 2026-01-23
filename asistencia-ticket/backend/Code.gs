@@ -33,7 +33,6 @@ function doPost(e) {
     }
     
     // Rutas docente (requieren autorización)
-    // Comentado: solo hay un docente, no es necesario verificar
     /*
     if (!isDocente(userEmail)) {
       return jsonResponse({ success: false, error: 'No autorizado. Solo docentes.' });
@@ -45,6 +44,8 @@ function doPost(e) {
         return getSessions(userEmail);
       case 'createSession':
         return createSession(params, userEmail);
+      case 'updateSession':
+        return updateSession(params, userEmail);
       case 'duplicateSession':
         return duplicateSession(params, userEmail);
       case 'toggleSession':
@@ -128,29 +129,59 @@ function generateCode() {
 }
 
 function validateToken(token) {
-  // En producción, validar el token de Google OAuth
-  // Por ahora, extraer email del token (simulado)
-  // En frontend, enviar el ID token de Google Sign-In
+  // En producción, se debería validar la firma del token con la API de Google
+  // Para este MVP, decodificamos el payload para obtener el email
   
   try {
-    // Usar OAuth2 library o validar con Google API
-    // Placeholder: asumir que token contiene email
-    return token; // TEMPORAL: En producción, validar con Google
+    if (!token) return null;
+
+    // El token JWT tiene 3 partes separadas por puntos
+    var parts = token.split('.');
+    if (parts.length !== 3) {
+      // Si no es un JWT válido (por ejemplo si enviamos solo el email en pruebas anteriores)
+      // intentamos ver si es un email simple
+      if (token.includes('@')) return token;
+      return null;
+    }
+
+    // Decodificar la parte del payload (segunda parte)
+    // Se necesita reemplazar caracteres para que sea base64 válido URL-safe
+    var base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    var decoded = Utilities.newBlob(Utilities.base64Decode(base64)).getDataAsString();
+    var payload = JSON.parse(decoded);
+
+    return payload.email;
   } catch (e) {
-    return null;
+    Logger.log('Error validating token: ' + e.toString());
+    // FALLBACK FOR DEBUGGING: Return the token itself if it looks like an email, or a dummy email
+    if (token && token.includes('@')) return token;
+    return 'debug_teacher@example.com'; 
   }
+}
+
+function isTrue(val) {
+  if (typeof val === 'boolean') return val;
+  if (typeof val === 'string') return val.toLowerCase() === 'true';
+  if (typeof val === 'number') return val === 1;
+  return false;
 }
 
 function isDocente(email) {
   const sheet = getOrCreateSheet('_docentes');
   const data = sheet.getDataRange().getValues();
   
+  Logger.log('Checking authorization for email: ' + email);
+  
   for (let i = 1; i < data.length; i++) {
-    if (data[i][0].toLowerCase() === email.toLowerCase()) {
+    const sheetEmail = data[i][0].toString();
+    Logger.log('Comparing with: ' + sheetEmail);
+    if (sheetEmail.toLowerCase() === email.toLowerCase()) {
+      Logger.log('Match found!');
       return true;
     }
   }
   
+  Logger.log('No match found in user list.');
   return false;
 }
 
@@ -158,24 +189,55 @@ function getCurrentTimestamp() {
   return Utilities.formatDate(new Date(), CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss');
 }
 
-function parseTime(timeStr) {
-  // Convierte "19:50" a minutos desde medianoche
-  const parts = timeStr.split(':');
-  return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+function parseTime(timeVal) {
+  // Si es un objeto Date (común en Google Sheets para celdas de tiempo)
+  if (timeVal instanceof Date) {
+    return timeVal.getHours() * 60 + timeVal.getMinutes();
+  }
+  
+  // Si es un string "HH:MM"
+  if (typeof timeVal === 'string') {
+    const parts = timeVal.split(':');
+    if (parts.length >= 2) {
+      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+  }
+  
+  // Fallback o error
+  Logger.log('Error: Formato de tiempo no reconocido: ' + timeVal);
+  return 0;
 }
 
 function isWithinTimeWindow(session, allowLate = false) {
   const now = new Date();
   const today = Utilities.formatDate(now, CONFIG.TIMEZONE, 'yyyy-MM-dd');
   
+  // Normalizar fecha de la sesión (puede venir como Date o string)
+  let sessionDate = session.fecha;
+  if (sessionDate instanceof Date) {
+    sessionDate = Utilities.formatDate(sessionDate, CONFIG.TIMEZONE, 'yyyy-MM-dd');
+  } else if (typeof sessionDate === 'string' && sessionDate.includes('T')) {
+    // Manejar strings ISO
+    sessionDate = sessionDate.split('T')[0];
+  }
+  
+  Logger.log('Comparing dates - Session: ' + sessionDate + ', Today: ' + today);
+
   // Verificar fecha
-  if (session.fecha !== today) {
-    return { valid: false, reason: 'Sesión programada para otra fecha' };
+  if (sessionDate !== today) {
+    return { valid: false, reason: 'Sesión programada para otra fecha (' + sessionDate + ' vs ' + today + ')' };
   }
   
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
   const startMinutes = parseTime(session.horario_inicio);
   const endMinutes = parseTime(session.horario_fin);
+  const lateWindow = parseInt(session.ventana_tardios) || 0;
+  const extendedEnd = endMinutes + lateWindow;
+
+  // Lógica de expiración (Cierre automático)
+  if (currentMinutes > extendedEnd) {
+    return { valid: false, reason: 'La sesión ya ha expirado por horario.' };
+  }
   
   // Dentro del horario normal
   if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
@@ -183,16 +245,13 @@ function isWithinTimeWindow(session, allowLate = false) {
   }
   
   // Fuera de horario - verificar tardíos
-  if (allowLate && session.aceptar_tardios === 'true') {
-    const lateWindow = parseInt(session.ventana_tardios) || 0;
-    const extendedEnd = endMinutes + lateWindow;
-    
+  if (allowLate && isTrue(session.aceptar_tardios)) {
     if (currentMinutes > endMinutes && currentMinutes <= extendedEnd) {
       return { valid: true, estado: 'tarde' };
     }
   }
   
-  return { valid: false, reason: 'Fuera del horario permitido' };
+  return { valid: false, reason: 'Fuera del horario permitido (Inicio: ' + session.horario_inicio + ')' };
 }
 
 // ============================================
@@ -204,9 +263,10 @@ function validateCode(codigo, userEmail) {
   const data = sheet.getDataRange().getValues();
   
   // Buscar sesión por código
+  const codigoUpper = codigo.toUpperCase();
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
-    if (row[6] === codigo) { // columna 'codigo'
+    if (row[6].toString().toUpperCase() === codigoUpper) { // columna 'codigo'
       const session = {
         session_id: row[0],
         materia: row[1],
@@ -223,7 +283,7 @@ function validateCode(codigo, userEmail) {
       };
       
       // Verificar si está activa
-      if (session.activa !== 'true') {
+      if (!isTrue(session.activa)) {
         return jsonResponse({
           success: false,
           error: 'Esta sesión no está activa. Consultá con tu docente.'
@@ -364,22 +424,55 @@ function getSessions(userEmail) {
   const sheet = getOrCreateSheet('_sessions');
   const data = sheet.getDataRange().getValues();
   
+  Logger.log('Fetching sessions for email: ' + userEmail);
+  Logger.log('Total rows in _sessions sheet: ' + data.length);
+  
   const sessions = [];
   for (let i = 1; i < data.length; i++) {
+    Logger.log('Row ' + i + ' creator: ' + data[i][12]);
     if (data[i][12] === userEmail) { // creado_por
+      // Safe date formatting
+      let rawDate = data[i][2];
+      let dateStr = '';
+      try {
+        if (rawDate instanceof Date) {
+          dateStr = Utilities.formatDate(rawDate, CONFIG.TIMEZONE, 'yyyy-MM-dd');
+        } else {
+          dateStr = String(rawDate);
+        }
+      } catch (e) {
+        dateStr = '';
+      }
+
+      // Safe time formatting
+      let horarioInicio = '';
+      let horarioFin = '';
+      try {
+        horarioInicio = String(data[i][4] || '');
+        horarioFin = String(data[i][5] || '');
+      } catch (e) {
+        horarioInicio = '';
+        horarioFin = '';
+      }
+
       sessions.push({
-        session_id: data[i][0],
-        materia: data[i][1],
-        fecha: data[i][2],
-        curso: data[i][3],
-        horario_inicio: data[i][4],
-        horario_fin: data[i][5],
-        codigo: data[i][6],
-        activa: data[i][11]
+        session_id: String(data[i][0] || ''),
+        materia: String(data[i][1] || ''),
+        fecha: dateStr,
+        curso: String(data[i][3] || ''),
+        horario_inicio: horarioInicio,
+        horario_fin: horarioFin,
+        codigo: String(data[i][6] || ''),
+        preguntas: data[i][7] || '[]',
+        aceptar_tardios: String(data[i][8] || 'false'),
+        ventana_tardios: String(data[i][9] || '0'),
+        permitir_reenvio: String(data[i][10] || 'false'),
+        activa: String(data[i][11] || 'false')
       });
     }
   }
   
+  Logger.log('Sessions found: ' + sessions.length);
   return jsonResponse({ success: true, sessions });
 }
 
@@ -387,7 +480,7 @@ function createSession(params, userEmail) {
   const sheet = getOrCreateSheet('_sessions');
   
   const sessionId = generateSessionId();
-  const codigo = params.codigo || generateCode();
+  const codigo = (params.codigo || generateCode()).toUpperCase();
   
   const newRow = [
     sessionId,
@@ -439,7 +532,7 @@ function duplicateSession(params, userEmail) {
   
   // Crear nueva sesión con datos copiados
   const newSessionId = generateSessionId();
-  const codigo = nuevo_codigo || generateCode();
+  const codigo = (nuevo_codigo || generateCode()).toUpperCase();
   
   const newRow = [
     newSessionId,
@@ -465,6 +558,33 @@ function duplicateSession(params, userEmail) {
     codigo: codigo,
     message: 'Sesión duplicada correctamente'
   });
+}
+
+function updateSession(params, userEmail) {
+  const {
+      session_id, materia, fecha, curso, horario_inicio, horario_fin,
+      codigo, preguntas, aceptar_tardios, ventana_tardios, permitir_reenvio
+  } = params;
+
+  const sheet = getOrCreateSheet('_sessions');
+  const data = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === session_id) {
+          // Verificar que sea el creador (o ignorar si no hay auth estricta)
+          // if (data[i][12] !== userEmail) return jsonResponse({ success: false, error: 'No autorizado' });
+
+          sheet.getRange(i + 1, 2, 1, 10).setValues([[
+              materia, fecha, curso, horario_inicio, horario_fin,
+              codigo.toUpperCase(), JSON.stringify(preguntas),
+              aceptar_tardios, ventana_tardios, permitir_reenvio
+          ]]);
+
+          return jsonResponse({ success: true, message: 'Sesión actualizada' });
+      }
+  }
+
+  return jsonResponse({ success: false, error: 'Sesión no encontrada' });
 }
 
 function toggleSession(params) {

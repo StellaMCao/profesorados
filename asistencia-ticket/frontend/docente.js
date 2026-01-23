@@ -105,11 +105,14 @@ async function loadSessions() {
             currentSessions = data.sessions || [];
             renderSessions();
         } else {
+            console.error('Backend error:', data.error);
             alert('Error al cargar sesiones: ' + data.error);
         }
     } catch (error) {
-        console.error('Error loading sessions:', error);
-        alert('Error de conexión al cargar sesiones');
+        console.error('Full error details:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        alert('Error de conexión al cargar sesiones. Revisa la consola del navegador (F12) para más detalles.');
     } finally {
         showLoading(false);
     }
