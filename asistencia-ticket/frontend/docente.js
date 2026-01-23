@@ -274,6 +274,23 @@ function renderSessions() {
   `}).join('');
 }
 
+function parseTime(timeVal) {
+    // Si es un objeto Date
+    if (timeVal instanceof Date) {
+        return timeVal.getHours() * 60 + timeVal.getMinutes();
+    }
+
+    // Si es un string "HH:MM"
+    if (typeof timeVal === 'string') {
+        const parts = timeVal.split(':');
+        if (parts.length >= 2) {
+            return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        }
+    }
+
+    return 0;
+}
+
 function checkIsExpired(session) {
     const now = new Date();
     const today = now.toISOString().split('T')[0];
