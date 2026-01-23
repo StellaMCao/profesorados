@@ -3,7 +3,7 @@
 // ============================================
 
 const CONFIG = {
-    APPS_SCRIPT_URL: 'TU_WEB_APP_URL_AQUI', // URL del Web App de Apps Script
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxJS5t52eQY_UvLkkHr0IoSBImxw2HAfNIqZ-7tjM6GqJMS0Pb-YR0GKWZBPCZW0VxEWA/exec',
     GOOGLE_CLIENT_ID: 'TU_GOOGLE_CLIENT_ID_AQUI'
 };
 
