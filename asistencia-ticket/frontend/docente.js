@@ -32,7 +32,7 @@ async function checkDocenteAuth() {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'getSessions',
                 token: docenteUser.email
@@ -74,7 +74,7 @@ async function loadSessions() {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'getSessions',
                 token: docenteUser.email
@@ -146,7 +146,7 @@ async function toggleSessionStatus(sessionId, currentStatus) {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'toggleSession',
                 token: docenteUser.email,
@@ -271,7 +271,7 @@ async function saveSession(event) {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'createSession',
                 token: docenteUser.email,
@@ -349,7 +349,7 @@ async function confirmDuplicate(event) {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'duplicateSession',
                 token: docenteUser.email,
@@ -390,7 +390,7 @@ async function viewSubmissions(sessionId, materia, curso) {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'getSubmissions',
                 token: docenteUser.email,

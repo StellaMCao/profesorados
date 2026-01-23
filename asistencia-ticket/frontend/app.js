@@ -113,7 +113,7 @@ async function validateCode(event) {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'validateCode',
                 token: currentUser.email, // En producción, enviar googleToken
@@ -221,7 +221,7 @@ async function submitAnswers(event) {
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'submitAnswers',
                 token: currentUser.email, // En producción, enviar googleToken
