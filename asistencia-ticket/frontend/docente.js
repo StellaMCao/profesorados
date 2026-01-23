@@ -95,9 +95,18 @@ async function loadSessions() {
 }
 
 function formatDate(dateStr) {
-    // Convierte "2026-01-23" a "23/01/2026"
-    const [year, month, day] = dateStr.split('-');
-    return `${day}/${month}/${year}`;
+    if (!dateStr) return '';
+    // Si viene como string ISO completo (ej: 2026-01-23T03:00:00.000Z)
+    if (dateStr.includes('T')) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+    // Si viene como YYYY-MM-DD
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return dateStr;
 }
 
 function formatTime(timeStr) {
