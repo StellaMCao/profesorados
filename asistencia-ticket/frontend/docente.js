@@ -406,15 +406,70 @@ function updateQuestionType(select) {
     if (select.value === 'multiple') {
         container.style.display = 'block';
         container.innerHTML = `
-      <input type="text" placeholder="Opción A" required>
-      <input type="text" placeholder="Opción B" required>
-      <input type="text" placeholder="Opción C" required>
-      <input type="text" placeholder="Opción D (opcional)">
+      <div class="options-list">
+        <div class="option-row">
+          <input type="text" placeholder="Opción A" required>
+          <button type="button" class="btn-remove-option" onclick="removeOption(this)" style="display:none;">−</button>
+        </div>
+        <div class="option-row">
+          <input type="text" placeholder="Opción B" required>
+          <button type="button" class="btn-remove-option" onclick="removeOption(this)" style="display:none;">−</button>
+        </div>
+      </div>
+      <button type="button" class="btn-add-option" onclick="addOption(this)">+ Agregar opción</button>
     `;
     } else {
         container.style.display = 'none';
         container.innerHTML = '';
     }
+}
+
+function addOption(btn) {
+    const container = btn.previousElementSibling;
+    const currentOptions = container.querySelectorAll('.option-row').length;
+
+    if (currentOptions >= 6) {
+        alert('Máximo 6 opciones permitidas');
+        return;
+    }
+
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const newOption = document.createElement('div');
+    newOption.className = 'option-row';
+    newOption.innerHTML = `
+        <input type="text" placeholder="Opción ${letters[currentOptions]}" required>
+        <button type="button" class="btn-remove-option" onclick="removeOption(this)">−</button>
+    `;
+
+    container.appendChild(newOption);
+    updateRemoveButtons(container);
+}
+
+function removeOption(btn) {
+    const container = btn.closest('.options-list');
+    const currentOptions = container.querySelectorAll('.option-row').length;
+
+    if (currentOptions <= 2) {
+        alert('Mínimo 2 opciones requeridas');
+        return;
+    }
+
+    btn.closest('.option-row').remove();
+    updateRemoveButtons(container);
+
+    // Actualizar placeholders
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    container.querySelectorAll('.option-row').forEach((row, index) => {
+        row.querySelector('input').placeholder = `Opción ${letters[index]}`;
+    });
+}
+
+function updateRemoveButtons(container) {
+    const options = container.querySelectorAll('.option-row');
+    options.forEach(option => {
+        const removeBtn = option.querySelector('.btn-remove-option');
+        removeBtn.style.display = options.length > 2 ? 'inline-block' : 'none';
+    });
 }
 
 async function saveSession(event) {

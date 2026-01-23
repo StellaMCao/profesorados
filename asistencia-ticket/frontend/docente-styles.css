@@ -376,6 +376,55 @@
     margin-bottom: 0.5rem;
 }
 
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.option-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.option-row input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.btn-remove-option {
+    background: var(--error);
+    color: white;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.btn-remove-option:hover {
+    background: #dc2626;
+}
+
+.btn-add-option {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--bg);
+    border: 2px dashed var(--primary);
+    border-radius: 8px;
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.btn-add-option:hover {
+    background: rgba(99, 102, 241, 0.05);
+}
+
 .btn-add-question {
     width: 100%;
     padding: 0.75rem;
