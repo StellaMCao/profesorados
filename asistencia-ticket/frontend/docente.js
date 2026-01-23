@@ -177,7 +177,7 @@ function formatDateForInput(dateVal) {
     if (!dateVal) return '';
     if (dateVal instanceof Date) return dateVal.toISOString().split('T')[0];
     if (typeof dateVal === 'string') {
-        if (dateStr.includes('T')) return dateStr.split('T')[0];
+        if (dateVal.includes('T')) return dateVal.split('T')[0];
         return dateVal; // asumimos YYYY-MM-DD
     }
     return '';
