@@ -4,7 +4,7 @@
 
 const CONFIG = {
     APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxJS5t52eQY_UvLkkHr0IoSBImxw2HAfNIqZ-7tjM6GqJMS0Pb-YR0GKWZBPCZW0VxEWA/exec',
-    GOOGLE_CLIENT_ID: 'TU_GOOGLE_CLIENT_ID_AQUI'
+    GOOGLE_CLIENT_ID: '493373610143-nkdtu88hfa39ved9bf6kj72at1d30rul.apps.googleusercontent.com'
 };
 
 // ============================================
