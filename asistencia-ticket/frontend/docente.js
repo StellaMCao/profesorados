@@ -165,6 +165,7 @@ function renderSessions() {
 }
 
 async function toggleSessionStatus(sessionId, currentStatus) {
+    console.log('Toggle session:', sessionId, currentStatus);
     const accion = currentStatus === 'true' ? 'cerrar' : 'activar';
 
     if (!confirm(`¿Confirmar ${accion} sesión?`)) return;
