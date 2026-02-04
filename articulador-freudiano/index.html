@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articulador Freudiano</title>
+    <!-- Google Fonts: Outfit (Moderno) & Merriweather (Académico) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Outfit:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS (via CDN for speed) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        freud: {
+                            50: '#f4f2ef',
+                            100: '#e3dfd8',
+                            200: '#cbbcac',
+                            300: '#b0947e',
+                            400: '#967358',
+                            500: '#8b5e3c', // Tono Freud clásico (cuero/madera)
+                            600: '#724b32',
+                            700: '#5c3b29',
+                            800: '#4a3024',
+                            900: '#3e2920',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-freud-50 text-slate-800 dark:bg-slate-900 dark:text-freud-100 min-h-screen transition-colors duration-300">
+
+    <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-freud-400 via-freud-600 to-freud-800 z-50"></div>
+
+    <main class="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+
+        <!-- Header -->
+        <header class="text-center mb-12 fade-in">
+            <h1
+                class="text-4xl md:text-5xl font-serif font-bold text-freud-900 dark:text-freud-100 mb-2 tracking-tight">
+                Articulador Freudiano
+            </h1>
+            <p class="text-freud-600 dark:text-freud-300 font-light text-lg italic">
+                "Donde estaba el Ello, debe advenir el Yo" <span class="text-sm not-italic opacity-70 block mt-1">(Wo Es
+                    war, soll Ich werden)</span>
+            </p>
+        </header>
+
+        <!-- Control Panel (Glassmorphism) -->
+        <div
+            class="glass p-8 rounded-3xl shadow-xl border border-white/20 dark:border-white/5 mb-8 fade-in-up md:mx-10 relative overflow-hidden">
+            <!-- Decorative Background Element -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-freud-300/20 rounded-full blur-2xl pointer-events-none">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                <!-- Concept 1 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-freud-700 dark:text-freud-300">
+                        Primer Concepto
+                    </label>
+                    <div class="relative">
+                        <select id="concept1"
+                            class="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-freud-200 dark:border-slate-700 rounded-xl px-4 py-4 pr-10 font-serif text-lg focus:ring-2 focus:ring-freud-500 focus:border-transparent outline-none transition cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80">
+                            <option value="" disabled selected>Selecciona un concepto...</option>
+                            <!-- Injected via JS -->
+                        </select>
+                        <div
+                            class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-freud-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Concept 2 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-freud-700 dark:text-freud-300">
+                        Segundo Concepto
+                    </label>
+                    <div class="relative">
+                        <select id="concept2"
+                            class="w-full appearance-none bg-white/50 dark:bg-slate-800/50 border border-freud-200 dark:border-slate-700 rounded-xl px-4 py-4 pr-10 font-serif text-lg focus:ring-2 focus:ring-freud-500 focus:border-transparent outline-none transition cursor-pointer hover:bg-white/80 dark:hover:bg-slate-800/80">
+                            <option value="" disabled selected>Selecciona un concepto...</option>
+                            <!-- Injected via JS -->
+                        </select>
+                        <div
+                            class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-freud-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="mt-8 text-center relative z-10">
+                <button id="articulateBtn"
+                    class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-freud-800 font-sans rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-freud-900 hover:bg-freud-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl w-full md:w-auto overflow-hidden">
+                    <span
+                        class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
+                    <span class="relative flex items-center gap-2">
+                        <span>Articular Conceptos</span>
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </span>
+                    <!-- Loading Spinner (Hidden by default) -->
+                    <div id="loadingSpinner"
+                        class="absolute inset-0 flex items-center justify-center bg-freud-800 hidden">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Settings Toggle -->
+            <div class="mt-4 text-center">
+                <button onclick="document.getElementById('settingsModal').classList.toggle('hidden')"
+                    class="text-xs text-freud-500 hover:text-freud-700 dark:hover:text-freud-300 underline cursor-pointer transition">
+                    Configurar API Key
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Area -->
+        <div id="resultArea" class="hidden fade-in-up delay-100">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl border-t-4 border-freud-600 relative">
+                <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                    <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
+                    </svg>
+                </div>
+
+                <h2 id="articulationTitle"
+                    class="text-2xl font-serif font-bold text-freud-800 dark:text-freud-100 mb-6 pb-4 border-b border-freud-100 dark:border-slate-700">
+                    Articulación Conceptual
+                </h2>
+
+                <div id="content"
+                    class="prose prose-slate dark:prose-invert prose-lg max-w-none prose-headings:font-serif prose-headings:text-freud-800 dark:prose-headings:text-freud-200 prose-p:leading-relaxed">
+                    <!-- Markdown content by AI -->
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
+                        ⚠️ Aviso: Contenido generado por IA. Puede contener errores.
+                    </p>
+                </div>
+
+                <div class="mt-2 pt-6 border-t border-slate-100 dark:border-slate-700 text-center">
+                    <button onclick="document.getElementById('resultArea').scrollIntoView({behavior: 'smooth'})"
+                        class="text-sm text-slate-400 hover:text-freud-500 transition flex items-center justify-center gap-1 mx-auto">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                        </svg>
+                        Volver arriba
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal"
+        class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 fade-in">
+        <div
+            class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md p-6 shadow-2xl transform transition-all scale-100">
+            <h3 class="text-xl font-serif font-bold text-freud-800 dark:text-freud-100 mb-4">Configuración</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">API Key (Gemini)</label>
+                    <input type="password" id="apiKeyInput"
+                        class="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-freud-500 outline-none dark:text-white"
+                        placeholder="AIzaSy...">
+                    <p class="text-[10px] text-slate-500 mt-1">La clave se guarda localmente en tu navegador.</p>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button onclick="document.getElementById('settingsModal').classList.add('hidden')"
+                        class="px-4 py-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition text-sm">Cancelar</button>
+                    <button onclick="saveSettings()"
+                        class="px-4 py-2 bg-freud-600 text-white rounded-lg hover:bg-freud-700 transition text-sm font-bold">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Texture -->
+    <div class="fixed inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05] z-0"
+        style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23000000\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
