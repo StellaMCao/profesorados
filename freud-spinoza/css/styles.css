@@ -84,6 +84,16 @@ body {
     border-bottom: 2px solid #e2e8f0;
     padding-bottom: 0.2em;
     font-size: 1.25em;
+    line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+    .prose h3 {
+        margin-top: 2em;
+        font-size: 1.35em;
+        /* Slightly larger on mobile for readability */
+        border-bottom-width: 1px;
+    }
 }
 
 .dark .prose h3 {

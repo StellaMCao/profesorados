@@ -124,7 +124,7 @@ function buildPrompt(c1, c2) {
         Organizá la respuesta en estas secciones (COPIA ESTOS TÍTULOS TEXTUALMENTE):
 
         ### 1. Definiciones de partida
-        Brevemente define "${c1}" en Freud y "${c2}" en Spinoza, situándolos en su marco teórico original.
+        Brevemente define **"${c1}"** en Freud y **"${c2}"** en Spinoza, situándolos en su marco teórico original. Usa **negritas** para resaltar los conceptos clave.
 
         ### 2. Puntos de convergencia (Resonancias)
         ¿En qué se tocan estos conceptos? ¿Hay una lógica común (por ejemplo, determinismo, afectos, potencia/libido)?
