@@ -118,8 +118,10 @@ function buildPrompt(c1, c2) {
 
         Objetivo: Explorar resonancias, anticipaciones, divergencias radicales o complementariedades estructurales entre ambos pensamientos. No se trata de "traducir" uno al otro, sino de ponerlos en tensión productiva.
 
+        Idioma: IMPORTANTE: Toda la respuesta debe estar estrictamente en ESPAÑOL (Castellano). No uses portugués ni inglés, incluso si los términos originales son en otro idioma.
+
         Formato de respuesta (Markdown):
-        Organizá la respuesta en estas secciones:
+        Organizá la respuesta en estas secciones (MANTENER LOS TÍTULOS EXACTOS EN ESPAÑOL):
 
         ### 1. Definiciones de partida
         Brevemente define "${c1}" en Freud y "${c2}" en Spinoza, situándolos en su marco teórico original.
