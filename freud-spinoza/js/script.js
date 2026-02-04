@@ -118,10 +118,10 @@ function buildPrompt(c1, c2) {
 
         Objetivo: Explorar resonancias, anticipaciones, divergencias radicales o complementariedades estructurales entre ambos pensamientos. No se trata de "traducir" uno al otro, sino de ponerlos en tensión productiva.
 
-        Idioma: IMPORTANTE: Toda la respuesta debe estar estrictamente en ESPAÑOL (Castellano). No uses portugués ni inglés, incluso si los términos originales son en otro idioma.
+        Idioma: IMPORTANTE: Responde ÚNICAMENTE en ESPAÑOL. NO uses portugués bajo ninguna circunstancia. Si usas palabras como "convergência", "irreductíveis", "diferenças" o "reflexão final", el sistema fallará. Usa "convergencia", "irreductibles", "diferencias", "reflexión final".
 
         Formato de respuesta (Markdown):
-        Organizá la respuesta en estas secciones (MANTENER LOS TÍTULOS EXACTOS EN ESPAÑOL):
+        Organizá la respuesta en estas secciones (COPIA ESTOS TÍTULOS TEXTUALMENTE):
 
         ### 1. Definiciones de partida
         Brevemente define "${c1}" en Freud y "${c2}" en Spinoza, situándolos en su marco teórico original.
@@ -141,6 +141,17 @@ function buildPrompt(c1, c2) {
         Estilo: Filosófico, riguroso pero claro.
         Extensión: Entre 300 y 500 palabras.
     `;
+}
+
+// ... helper function to force Spanish headers if AI slips into Portuguese
+function cleanAndFormatResponse(text) {
+    return text
+        .replace(/Puntos de convergência/g, "Puntos de convergencia")
+        .replace(/Diferencias irreductíveis/g, "Diferencias irreductibles")
+        .replace(/Diferenças irredutíveis/g, "Diferencias irreductibles")
+        .replace(/Reflexão final/g, "Reflexión final")
+        .replace(/Articulação teórica/g, "Articulación teórica")
+        .replace(/Definições de partida/g, "Definiciones de partida");
 }
 
 async function callGeminiAPI(apiKey, prompt) {
@@ -242,8 +253,9 @@ async function callGeminiAPI(apiKey, prompt) {
 }
 
 function renderResponse(c1, c2, text) {
+    const cleanText = cleanAndFormatResponse(text);
     articulationTitle.innerHTML = `<span class="text-freud-600">${c1}</span> <span class="mx-2 text-slate-300">vs</span> <span class="text-freud-600">${c2}</span>`;
-    contentDiv.innerHTML = marked.parse(text);
+    contentDiv.innerHTML = marked.parse(cleanText);
     resultArea.classList.remove('hidden');
     resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
