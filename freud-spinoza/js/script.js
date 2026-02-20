@@ -195,8 +195,16 @@ async function callGeminiAPI(apiKey, prompt) {
         const allModels = modelMaps.flat();
         if (allModels.length > 0) {
             candidates = allModels
-                .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
-                .sort((a, b) => getModelScore(b) - getModelScore(a));
+                .filter(m => {
+                    const name = m.name.toLowerCase();
+                    return m.supportedGenerationMethods?.includes('generateContent') &&
+                        !name.includes('robotics') &&
+                        !name.includes('med-lm') &&
+                        !name.includes('vision') &&
+                        !name.includes('experimental');
+                })
+                .sort((a, b) => getModelScore(b) - getModelScore(a))
+                .slice(0, 6);
         }
     } catch (e) {
         console.warn("Dynamic model listing failed:", e);
@@ -222,16 +230,21 @@ async function callGeminiAPI(apiKey, prompt) {
             updateStats(`Probando ${modelName.split('/').pop()} (${v})...`);
 
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 12000);
+
                 const url = `https://generativelanguage.googleapis.com/${v}/${modelName}:generateContent?key=${apiKey}`;
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal,
                     body: JSON.stringify({
                         contents: [{ parts: [{ text: prompt }] }],
                         generationConfig: { temperature: 0.7 }
                     })
                 });
 
+                clearTimeout(timeoutId);
                 let d = await res.json();
                 if (!res.ok) {
                     if (res.status === 404 || res.status === 400) {

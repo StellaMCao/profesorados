@@ -7,13 +7,19 @@ const CONFIG = {
     GOOGLE_CLIENT_ID: '493373610143-nkdtu88hfa39ved9bf6kj72at1d30rul.apps.googleusercontent.com'
 };
 
-// ============================================
-// ESTADO GLOBAL
-// ============================================
-
 let currentUser = null;
 let currentSession = null;
 let googleToken = null;
+
+// Forzar mayúsculas en el código del alumno
+document.addEventListener('DOMContentLoaded', () => {
+    const codeInput = document.getElementById('codeInput');
+    if (codeInput) {
+        codeInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    }
+});
 
 // ============================================
 // GOOGLE SIGN-IN

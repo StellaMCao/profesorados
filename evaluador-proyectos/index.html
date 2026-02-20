@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluador de Proyectos Institucionales</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.21/mammoth.browser.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Evaluador de Proyectos</h1>
+            <p>Sistema automatizado de evaluación institucional mediante IA</p>
+        </header>
+
+        <section class="config-section">
+            <div class="input-group">
+                <label for="apiKey">Gemini API Key</label>
+                <input type="password" id="apiKey" placeholder="Pega tu API Key de Google Gemini aquí"
+                    value="AIzaSyCKFY55mKj38eFAq5-qkb847vxvm7gTMlw">
+            </div>
+            <div class="input-group">
+                <label for="availableHours">Horas Institucionales Disponibles (Opcional)</label>
+                <input type="number" id="availableHours" placeholder="Ej: 20">
+            </div>
+        </section>
+
+        <section class="upload-section" id="dropZone">
+            <div class="upload-content">
+                <div class="icon">📄</div>
+                <h3>Arrastra y suelta tus archivos aquí</h3>
+                <p>Soporta PDF, Word (.docx) y Texto (.txt)</p>
+                <input type="file" id="fileInput" multiple accept=".pdf,.txt,.doc,.docx" hidden>
+                <button class="btn-secondary" onclick="document.getElementById('fileInput').click()">Seleccionar
+                    Archivos</button>
+            </div>
+            <div id="fileList" class="file-list"></div>
+        </section>
+
+        <section class="text-input-section">
+            <div class="input-group">
+                <label for="textInput">O pega el texto / enlace de Drive aquí</label>
+                <textarea id="textInput" rows="4"
+                    placeholder="Ej: https://docs.google.com/... o pega el contenido completo del proyecto aquí."></textarea>
+                <p class="hint">Nota: Si usas un enlace, asegúrate de que el contenido sea accesible o copia y pega el
+                    texto directamente.</p>
+            </div>
+        </section>
+
+        <section class="action-section">
+            <button id="evaluateBtn" class="btn-primary" disabled>
+                <span class="btn-text">Iniciar Evaluación</span>
+                <span class="loader hidden"></span>
+            </button>
+        </section>
+
+        <section id="resultSection" class="result-section hidden">
+            <div class="result-header">
+                <h2>Informe de Evaluación</h2>
+                <button class="btn-small" onclick="copyReport()">Copiar Informe</button>
+            </div>
+            <div id="reportContent" class="markdown-body"></div>
+        </section>
+    </div>
+
+    <!-- PDF.js for client-side text extraction fallback (optional, but good if we decide to use text-only) -->
+    <!-- For now we will try to use Gemini's native PDF handling if possible, or simple text extraction -->
+    <script src="app.js"></script>
+</body>
+
+</html>

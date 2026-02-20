@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador didáctico pro | IA en educación</title>
+    <!-- Favicon: Un robotito para identificar la pestaña -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { outfit: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        premium: {
+                            50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe',
+                            300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6',
+                            600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .drag-active {
+            border-color: #8b5cf6;
+            background-color: #f5f3ff;
+            transform: scale(1.01);
+        }
+
+        .spinner {
+            border: 3px solid rgba(139, 92, 246, 0.1);
+            border-top: 3px solid #8b5cf6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tab-active {
+            color: #8b5cf6 !important;
+            border-bottom: 3px solid #8b5cf6;
+        }
+
+        .dark .tab-active {
+            border-bottom: 3px solid #a78bfa;
+            color: #a78bfa;
+        }
+
+        /* Estilos para tablas en rúbricas */
+        #markdownOutput table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #markdownOutput th {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #7c3aed;
+        }
+
+        #markdownOutput td {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        #markdownOutput tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        #markdownOutput tr:hover td {
+            background: #f1f5f9;
+        }
+
+        .dark #markdownOutput th {
+            background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+            border-color: #5b21b6;
+        }
+
+        .dark #markdownOutput td {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        .dark #markdownOutput tr:nth-child(even) td {
+            background: #0f172a;
+        }
+
+        .dark #markdownOutput tr:hover td {
+            background: #334155;
+        }
+
+        /* Espaciado mejorado para textos */
+        #markdownOutput h1,
+        #markdownOutput h2,
+        #markdownOutput h3 {
+            margin-top: 2em;
+            margin-bottom: 0.8em;
+        }
+
+        #markdownOutput h1:first-child,
+        #markdownOutput h2:first-child {
+            margin-top: 0;
+        }
+
+        #markdownOutput p {
+            margin-bottom: 1.2em;
+            line-height: 1.7;
+        }
+
+        #markdownOutput ul,
+        #markdownOutput ol {
+            margin-bottom: 1.5em;
+            padding-left: 1.5em;
+        }
+
+        #markdownOutput ul {
+            list-style-type: disc;
+        }
+
+        #markdownOutput ol {
+            list-style-type: decimal;
+        }
+
+        #markdownOutput li {
+            margin-bottom: 0.5em;
+            padding-left: 0.5em;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col md:flex-row">
+
+    <!-- Panel lateral -->
+    <aside
+        class="w-full md:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 p-6 flex flex-col shrink-0 overflow-y-auto z-30">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-premium-700 dark:text-premium-400 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4">
+                    </path>
+                </svg>
+                Ajustes
+            </h2>
+            <div class="flex gap-1">
+                <button onclick="window.location.reload()"
+                    class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:scale-110 transition"
+                    title="Reiniciar App">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
+                </button>
+                <button onclick="openHelp()"
+                    class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:scale-110 transition"
+                    title="Ayuda y Guía">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <button onclick="toggleDarkMode()"
+                class="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 hover:scale-110 transition">
+                <svg id="moonIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z">
+                    </path>
+                </svg>
+                <svg id="sunIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="space-y-6 flex-grow ">
+            <!-- Gemini Key Input -->
+            <div id="geminiKeyArea">
+                <label
+                    class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">Clave
+                    Gemini (Gratis)</label>
+                <input type="password" id="geminiKey" value="AIzaSyCU1hSocX-ST1GFSK0pCySmWV_4k_gaWZI"
+                    placeholder="Pega tu clave AIzaSy..."
+                    class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-premium-500 outline-none text-sm dark:text-white">
+                <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                    class="text-[9px] text-premium-600 dark:text-premium-400 underline font-bold flex items-center gap-1 mt-1">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z">
+                        </path>
+                    </svg>
+                    Consigue tu clave gratis aquí
+                </a>
+            </div>
+
+            <div class="border-t dark:border-slate-800 pt-4">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Nivel
+                    educativo</label>
+                <select id="levelSelect"
+                    class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-premium-500 outline-none text-sm dark:text-white">
+                    <option value="secundaria">🎓 Nivel secundario</option>
+                    <option value="universitario">🎯 Nivel universitario</option>
+                    <option value="docente">👨‍🏫 Formación docente</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Enfoque
+                    didáctico</label>
+                <select id="focusSelect"
+                    class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-premium-500 outline-none text-sm dark:text-white">
+                    <option value="comprension">📖 Comprensión lectora</option>
+                    <option value="debate">🗣️ Debate y pensamiento crítico</option>
+                    <option value="practica">🛠️ Aplicación práctica / casos</option>
+                    <option value="ludico">🎮 Gamificación y juego</option>
+                    <option value="socioemocional">🤝 Habilidades socioemocionales</option>
+                    <option value="steam">🔬 Enfoque STEAM</option>
+                    <option value="creativo">🎨 Creatividad y expresión</option>
+                    <option value="metacognicion">🧠 Metacognición (Aprender a aprender)</option>
+                    <option value="resolucion">🧩 Resolución de problemas</option>
+                </select>
+            </div>
+
+            <div>
+                <label
+                    class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Metodología</label>
+                <select id="methodologySelect"
+                    class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-premium-500 outline-none text-sm dark:text-white">
+                    <option value="tradicional" selected>👨‍🏫 Enseñanza Directa (Explicita)</option>
+                    <option value="abp">🚀 Aprendizaje Basado en Proyectos (ABP)</option>
+                    <option value="flipped">🔄 Flipped Classroom (Aula Invertida)</option>
+                    <option value="indagacion">🔍 Aprendizaje por Indagación</option>
+                    <option value="cooperativo">🧩 Aprendizaje Cooperativo</option>
+                    <option value="design_thinking">💡 Design Thinking</option>
+                    <option value="retos">🏆 Aprendizaje Basado en Retos</option>
+                    <option value="rutinas">🧠 Rutinas de Pensamiento</option>
+                    <option value="gamificacion">🎮 Gamificación Educativa</option>
+                </select>
+            </div>
+
+            <div>
+                <label
+                    class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Duración</label>
+                <select id="durationSelect"
+                    class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-premium-500 outline-none text-sm dark:text-white">
+                    <option value="45min">⏱️ 45 min (Módulo corto)</option>
+                    <option value="60min">🕐 60 min (Hora cátedra)</option>
+                    <option value="90min">⏲️ 90 min (Bloque estándar)</option>
+                    <option value="taller">🛠️ Taller (3+ horas)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Preguntas
+                    Quiz</label>
+                <select id="quizQtySelect"
+                    class="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-premium-500 outline-none text-sm dark:text-white">
+                    <option value="5" selected>📝 5 preguntas</option>
+                    <option value="10">📝 10 preguntas</option>
+                    <option value="15">📝 15 preguntas</option>
+                    <option value="20">📝 20 preguntas</option>
+                </select>
+            </div>
+
+            <!-- Toggle DUA -->
+            <div
+                class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">♿</span>
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase">Modo DUA</p>
+                        <p class="text-[9px] text-slate-500">Inclusión y accesibilidad</p>
+                    </div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="duaToggle" class="sr-only peer">
+                    <div
+                        class="w-8 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-premium-600">
+                    </div>
+                </label>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Información
+                    adicional</label>
+                <textarea id="extraInfo" rows="3"
+                    placeholder="Ej: Centrarse en el capítulo 2, simplificar términos complejos..."
+                    class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-premium-500 outline-none text-xs resize-none dark:text-white"></textarea>
+            </div>
+
+            <!-- Botones de Acción (Ocultos al inicio) -->
+            <div id="actionButtons" class="hidden space-y-2 pt-2">
+                <button onclick="saveVersion()"
+                    class="w-full py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
+                        </path>
+                    </svg>
+                    Guardar versión
+                </button>
+                <button onclick="regeneratePlan()"
+                    class="w-full py-2 bg-premium-600 hover:bg-premium-700 text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
+                    Aplicar cambios
+                </button>
+                <button onclick="resetApp()"
+                    class="w-full py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </svg>
+                    Cargar otro PDF
+                </button>
+            </div>
+
+            <!-- Lista de Versiones Guardadas -->
+            <div id="savedVersionsList" class="hidden mt-6 pt-4 border-t dark:border-slate-800">
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Historial</h3>
+                <div id="versionsContainer" class="space-y-2">
+                    <!-- Las versiones se inyectarán aquí -->
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-4 border-t dark:border-slate-800">
+            <div
+                class="flex items-center gap-3 p-3 bg-premium-50 dark:bg-premium-900/30 rounded-2xl text-premium-700 dark:text-premium-300">
+                <div class="w-2 h-2 bg-premium-600 rounded-full animate-pulse"></div>
+                <div class="flex-grow">
+                    <span class="text-xs font-semibold tracking-tight block">Cerebro: IA Activa</span>
+                    <span id="modelIndicator" class="text-[9px] opacity-70"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Author Credit -->
+        <div class="pt-2 text-center">
+            <p class="text-[9px] text-slate-400 dark:text-slate-600">Hecho por <a href="mailto:stellamariscao@gmail.com"
+                    class="hover:text-premium-500 transition">S. M. Cao</a></p>
+        </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="flex-grow overflow-y-auto p-4 md:p-10 bg-slate-50 dark:bg-slate-950">
+        <div class="max-w-5xl mx-auto">
+            <header class="mb-10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h1 class="text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
+                        Analizador <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-premium-600 to-indigo-600">didáctico</span>
+                    </h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-lg">IA gratuita para convertir PDFs en planes de
+                        clase inclusivos.</p>
+                </div>
+            </header>
+
+            <!-- Dropzone -->
+            <div id="dropzone"
+                class="group relative border-4 border-dashed border-slate-300 dark:border-slate-700 rounded-[2.5rem] p-12 text-center cursor-pointer hover:border-premium-500 dark:hover:border-premium-500 transition-all duration-300 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl overflow-hidden">
+                <input type="file" id="fileInput" accept=".pdf" multiple class="hidden">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-premium-50/50 to-indigo-50/50 dark:from-premium-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                </div>
+                <div class="relative z-10">
+                    <div
+                        class="w-20 h-20 bg-premium-100 dark:bg-premium-900/30 text-premium-600 dark:text-premium-400 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:rotate-12 transition-transform shadow-sm">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                    </div>
+                    <p class="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">Suelta tus PDFs aquí</p>
+                    <p class="text-slate-500 dark:text-slate-400">Puedes subir hasta 5 PDFs para análisis integrado.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Estado de carga -->
+            <div id="processing" class="hidden mt-12 text-center p-12 glass rounded-[2.5rem] shadow-xl fade-in">
+                <div class="spinner mx-auto mb-6"></div>
+                <h3 class="text-2xl font-bold text-slate-800 dark:text-slate-200" id="statusText">Iniciando análisis...
+                </h3>
+                <div class="w-64 h-2 bg-slate-200 dark:bg-slate-800 mx-auto rounded-full mt-6 overflow-hidden">
+                    <div id="progressBar" class="h-full bg-premium-600 w-0 transition-all duration-700"></div>
+                </div>
+            </div>
+
+            <!-- Resultados -->
+            <div id="results" class="hidden mt-12 space-y-6 fade-in pb-20">
+                <div
+                    class="bg-gradient-to-r from-premium-700 to-indigo-800 p-8 rounded-[2.5rem] text-white shadow-xl flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Propuesta didáctica integral</h2>
+                        <div class="flex flex-wrap gap-3" id="resMeta"></div>
+                        <div id="timeEstimate" class="text-sm opacity-90 mt-2"></div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="toggleEdit()" id="btnEdit"
+                            class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-bold transition flex items-center gap-2">
+                            <span>✏️</span> Editar
+                        </button>
+
+                        <button onclick="exportToWord()"
+                            class="px-6 py-3 bg-white text-premium-700 rounded-xl font-black hover:bg-premium-50 transition shadow-lg">Descargar
+                            Word</button>
+                        <button onclick="exportToPdf()"
+                            class="px-6 py-3 bg-white/80 text-premium-700 rounded-xl font-bold hover:bg-white transition shadow-lg">Descargar
+                            PDF</button>
+                    </div>
+                </div>
+
+                <div
+                    class="flex gap-1 border-b border-slate-200 dark:border-slate-800 sticky top-0 bg-slate-50 dark:bg-slate-950 z-20 pt-4 overflow-x-auto">
+                    <button onclick="switchTab('plan')" id="tab-plan"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap tab-active">Plan de clase</button>
+                    <button onclick="switchTab('activities')" id="tab-activities"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap">Actividades</button>
+                    <button onclick="switchTab('ludico')" id="tab-ludico"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap">Propuestas lúdicas</button>
+                    <button onclick="switchTab('evaluation')" id="tab-evaluation"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap">Evaluación</button>
+                    <button onclick="switchTab('criterios')" id="tab-criterios"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap">Criterios</button>
+                    <button onclick="switchTab('quiz')" id="tab-quiz"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap">Quiz</button>
+                    <button onclick="switchTab('rubrica')" id="tab-rubrica"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap">Rúbrica</button>
+                    <button onclick="switchTab('recursos')" id="tab-recursos"
+                        class="px-6 py-3 font-bold text-slate-400 whitespace-nowrap">Recursos</button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-sm border border-slate-200 dark:border-slate-800 p-10 prose dark:prose-invert prose-slate max-w-none"
+                    id="markdownOutput"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        let fullAiText = { plan: '', activities: '', ludico: '', evaluation: '', criterios: '', rubrica: '', recursos: '' };
+        let currentPdfText = '';
+        let usedModel = ''; // Guardar modelo usado
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('fileInput');
+        const processing = document.getElementById('processing');
+        const results = document.getElementById('results');
+        const statusText = document.getElementById('statusText');
+        const markdownOutput = document.getElementById('markdownOutput');
+        const progressBar = document.getElementById('progressBar');
+
+        // Dark Mode Logic
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag-active'); });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-active'));
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('drag-active');
+            if (e.dataTransfer.files.length) handleFiles(Array.from(e.dataTransfer.files));
+        });
+        dropzone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => { if (e.target.files.length) handleFiles(Array.from(e.target.files)); });
+
+
+
+        async function handleFiles(files) {
+            // Validar archivos
+            const pdfFiles = files.filter(f => f.type === 'application/pdf');
+            if (pdfFiles.length === 0) return alert('Por favor, sube archivos PDF.');
+            if (pdfFiles.length > 5) return alert('Máximo 5 PDFs a la vez.');
+
+            const apiKey = document.getElementById('geminiKey').value.trim();
+            if (!apiKey) return alert('Por favor, ingresa tu clave gratuita de Gemini en la barra lateral.');
+
+            showProcessing(true);
+            updateStatus(`Leyendo ${pdfFiles.length} PDF${pdfFiles.length > 1 ? 's' : ''}...`, 25);
+
+            try {
+                // 1. Extraer texto de todos los PDFs
+                let combinedText = '';
+                for (let i = 0; i < pdfFiles.length; i++) {
+                    updateStatus(`Leyendo PDF ${i + 1} de ${pdfFiles.length}...`, 25 + (i * 20 / pdfFiles.length));
+                    const text = await extractPdfText(pdfFiles[i]);
+                    combinedText += `\n\n=== DOCUMENTO ${i + 1}: ${pdfFiles[i].name} ===\n${text}`;
+                }
+
+                currentPdfText = combinedText;
+
+                // 2. Analizar
+                await analyzeText(combinedText, apiKey);
+
+                // 3. Mostrar botones de acción en sidebar
+                document.getElementById('actionButtons').classList.remove('hidden');
+
+            } catch (error) {
+                console.error(error);
+                alert('Error: ' + error.message);
+                showProcessing(false);
+            }
+        }
+
+        async function regeneratePlan() {
+            if (!currentPdfText) return alert('No hay ningún PDF cargado.');
+            const apiKey = document.getElementById('geminiKey').value.trim();
+
+            // Ocultar resultados previos y mostrar carga
+            document.getElementById('results').classList.add('hidden');
+            showProcessing(true);
+
+            try {
+                await analyzeText(currentPdfText, apiKey);
+            } catch (error) {
+                console.error(error);
+                alert('Error al regenerar: ' + error.message);
+                showProcessing(false);
+            }
+        }
+
+        function resetApp() {
+            // Limpiar variables
+            currentPdfText = '';
+            fileInput.value = '';
+            fullAiText = { plan: '', activities: '', ludico: '', evaluation: '', criterios: '', rubrica: '', recursos: '', quiz: '' };
+
+            // Resetear controles del formulario
+            document.getElementById('duaToggle').checked = false;
+            document.getElementById('extraInfo').value = '';
+
+            // UI Reset
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('actionButtons').classList.add('hidden');
+            document.getElementById('dropzone').classList.remove('hidden');
+            showProcessing(false);
+
+            // Scroll arriba
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function analyzeText(text, apiKey) {
+            updateStatus("Analizando con IA...", 55);
+            const aiResponse = await callGemini(apiKey, buildPrompt(text));
+            updateStatus("Estructurando plan...", 85);
+            renderResults(aiResponse);
+        }
+
+
+        async function extractPdfText(file) {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = '';
+            const maxPages = Math.min(pdf.numPages, 12);
+            for (let i = 1; i <= maxPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+            }
+            return fullText;
+        }
+
+        function buildPrompt(text) {
+            const level = document.getElementById('levelSelect').value;
+            const levelText = document.getElementById('levelSelect').options[document.getElementById('levelSelect').selectedIndex].text;
+            const focusVal = document.getElementById('focusSelect');
+            const focus = focusVal.options[focusVal.selectedIndex].text;
+            const methodologyVal = document.getElementById('methodologySelect');
+            const methodology = methodologyVal.options[methodologyVal.selectedIndex].text;
+            const duration = document.getElementById('durationSelect').value;
+            const quizQty = document.getElementById('quizQtySelect').value;
+            const extra = document.getElementById('extraInfo').value;
+            const isDua = document.getElementById('duaToggle').checked;
+
+            let toneInstruction = "";
+            if (level === "secundaria") {
+                toneInstruction = "Usa un lenguaje claro y accesible para adolescentes (12-18 años), equilibrando guía y abstracción.";
+            } else if (level === "universitario") {
+                toneInstruction = "Usa un tono académico, crítico y autónomo, apropiado para estudiantes universitarios.";
+            } else if (level === "docente") {
+                toneInstruction = "Usa un enfoque profesional para docentes en formación, con énfasis en didáctica y pedagogía.";
+            }
+
+            return `
+            Actúa como un diseñador instruccional experto y experto en neurodiversidad. Analiza este texto y genera una secuencia didáctica de alta calidad.
+            
+            ═══════════════════════════════════════════════════════════════
+            ⚠️ PARÁMETROS OBLIGATORIOS - DEBES SEGUIRLOS ESTRICTAMENTE ⚠️
+            ═══════════════════════════════════════════════════════════════
+            
+            📚 NIVEL: ${levelText} - ${toneInstruction}
+            🎯 ENFOQUE: ${focus} (TODO el contenido debe reflejar este enfoque)
+            🛠️ METODOLOGÍA: ${methodology} (Aplica SOLO esta metodología, no mezcles)
+            ⏱️ DURACIÓN: ${duration}
+            ${isDua ? '♿ DUA: SÍ - Aplica Diseño Universal exhaustivamente' : ''}
+            ${extra ? `📝 EXTRA: ${extra}` : ''}
+            
+            ESTRUCTURA OBLIGATORIA (8 secciones):
+            [[[PLAN]]] [[[ACTIVIDADES]]] [[[LUDICO]]] [[[EVALUACION]]] [[[CRITERIOS]]] [[[RUBRICA]]] [[[QUIZ]]] [[[RECURSOS]]]
+            
+            REGLAS:
+            1. Capitalización española: Solo mayúscula inicial en primera palabra y nombres propios.
+            2. RÚbrica: Tabla markdown (Criterio | Excelente | Bueno | Regular | Insuficiente)
+            3. Quiz: ${quizQty} preguntas con formato &&Pregunta: / &&a) / &&b) / &&c) / &&Respuesta: [letra]
+            4. Recursos: NUNCA inventes URLs. Di "Busca 'Título'" en lugar de links falsos.
+            5. Formato visual: Listas markdown, líneas en blanco entre ítems.
+            
+            ANALIZA ESTE TEXTO:
+            ${text.substring(0, 15000)}
+            `;
+        }
+
+        async function callGemini(apiKey, prompt) {
+            updateStatus("Buscando modelos disponibles...", 20);
+            let candidates = [];
+
+            try {
+                // 1. Obtener lista de modelos
+                const listReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+                const listData = await listReq.json();
+
+                if (listData.models) {
+                    // Filtrar por capacidad de generación
+                    const rawModels = listData.models.filter(m =>
+                        m.supportedGenerationMethods &&
+                        m.supportedGenerationMethods.includes('generateContent')
+                    );
+
+                    // Ordenar por prioridad: Flash > 1.5 Pro > 1.0 Pro
+                    candidates = rawModels.sort((a, b) => {
+                        const score = (name) => {
+                            if (name.includes('flash')) return 3;
+                            if (name.includes('1.5-pro')) return 2;
+                            if (name.includes('gemini-pro')) return 1;
+                            return 0;
+                        };
+                        return score(b.name) - score(a.name);
+                    });
+                }
+            } catch (e) {
+                console.warn("Fallo al listar, usando defaults:", e);
+                // Fallbacks manuales si falla el listado
+                candidates = [
+                    { name: 'models/gemini-1.5-flash' },
+                    { name: 'models/gemini-1.5-flash-001' },
+                    { name: 'models/gemini-1.5-pro' },
+                    { name: 'models/gemini-pro' }
+                ];
+            }
+
+            // 2. Probar candidatos hasta que uno funcione
+            let lastError = null;
+
+            for (const model of candidates) {
+                const modelName = model.name.startsWith('models/') ? model.name : `models/${model.name}`;
+                updateStatus(`Probando con ${modelName.replace('models/', '')}...`, 40);
+
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`;
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            generationConfig: {
+                                maxOutputTokens: 8192,
+                                temperature: 0.7
+                            }
+                        })
+                    });
+
+                    const d = await res.json();
+
+                    // Si hay error (quota, not found, etc), lanzar para capturarlo y seguir
+                    if (d.error) throw new Error(d.error.message);
+
+                    if (d.candidates && d.candidates[0] && d.candidates[0].content) {
+                        usedModel = modelName.replace('models/', ''); // Guardar modelo usado
+                        return d.candidates[0].content.parts[0].text;
+                    }
+                } catch (e) {
+                    console.warn(`Falló ${modelName}:`, e.message);
+                    lastError = e.message;
+                    // Continuar al siguiente modelo del bucle
+                }
+            }
+
+            throw new Error(`Todos los modelos fallaron. Último error: ${lastError}`);
+        }
+
+        function renderResults(text) {
+            const tags = ['PLAN', 'ACTIVIDADES', 'LUDICO', 'EVALUACION', 'CRITERIOS', 'RUBRICA', 'RECURSOS', 'QUIZ'];
+            tags.forEach(t => {
+                const reg = new RegExp('\\[\\[\\[' + t + '\\]\\]\\]([\\s\\S]*?)(?=\\[\\[\\[|$)', 'i');
+                const match = text.match(reg);
+                let key = t.toLowerCase();
+                if (t === 'ACTIVIDADES') key = 'activities';
+                if (t === 'EVALUACION') key = 'evaluation';
+                fullAiText[key] = match ? match[1].trim() : '';
+            });
+            if (!fullAiText.plan) fullAiText.plan = text;
+
+            showProcessing(false);
+            dropzone.classList.add('hidden'); // Ocultar zona de carga
+            results.classList.remove('hidden');
+            const levelText = document.getElementById('levelSelect').options[document.getElementById('levelSelect').selectedIndex].text;
+            document.getElementById('resMeta').innerHTML = `<span class="bg-white/20 px-3 py-1 rounded-full text-xs">${levelText}</span> ${document.getElementById('duaToggle').checked ? '<span class="bg-blue-500/30 px-3 py-1 rounded-full text-xs">Modo DUA activo</span>' : ''}`;
+
+            // Mostrar modelo usado
+            document.getElementById('modelIndicator').textContent = `Modelo: ${usedModel}`;
+
+            // Calcular tiempo estimado
+            calculateTimeEstimate();
+
+            switchTab('plan');
+        }
+
+        function switchTab(tab) {
+            ['plan', 'activities', 'ludico', 'evaluation', 'criterios', 'rubrica', 'recursos', 'quiz'].forEach(t => document.getElementById(`tab-${t}`)?.classList.remove('tab-active'));
+            document.getElementById(`tab-${tab}`)?.classList.add('tab-active');
+
+            if (tab === 'quiz' && fullAiText.quiz) {
+                markdownOutput.innerHTML = renderInteractiveQuiz(fullAiText.quiz);
+            } else {
+                markdownOutput.innerHTML = marked.parse(fullAiText[tab] || '*Sección no disponible.*');
+            }
+
+            // Scroll suave solo si no es el primer render
+            if (results.classList.contains('hidden') === false) {
+                window.scrollTo({ top: markdownOutput.offsetTop - 100, behavior: 'smooth' });
+            }
+        }
+
+        function updateStatus(text, progress) { statusText.innerText = text; progressBar.style.width = `${progress}%`; }
+
+        function showProcessing(show) {
+            if (show) { processing.classList.remove('hidden'); dropzone.classList.add('hidden'); results.classList.add('hidden'); }
+            else { processing.classList.add('hidden'); }
+        }
+
+        function exportToPdf() {
+            // Clonamos el contenido para no afectar la vista actual
+            const element = document.createElement('div');
+
+            // Estilos específicos para PDF
+            const styles = `
+                <style>
+                    body { font-family: 'Helvetica', 'Arial', sans-serif; color: #1e293b; line-height: 1.6; }
+                    .header { text-align: center; margin-bottom: 40px; border-bottom: 3px solid #7c3aed; padding-bottom: 20px; }
+                    .header h1 { color: #5b21b6; font-size: 28px; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+                    .header p { color: #64748b; font-size: 14px; margin-top: 5px; }
+                    
+                    h1.section-title { 
+                        color: #6d28d9; 
+                        font-size: 22px; 
+                        border-left: 5px solid #7c3aed; 
+                        padding-left: 15px; 
+                        margin-top: 30px; 
+                        margin-bottom: 20px; 
+                        page-break-after: avoid; 
+                        page-break-inside: avoid;
+                    }
+                    
+                    h2 { 
+                        color: #475569; 
+                        font-size: 18px; 
+                        margin-top: 15px; 
+                        margin-bottom: 10px; 
+                        page-break-after: avoid;
+                        page-break-inside: avoid;
+                    }
+                    
+                    h3, h4 { 
+                        page-break-after: avoid; 
+                        page-break-inside: avoid;
+                    }
+                    
+                    p { 
+                        margin-bottom: 10px; 
+                        text-align: justify; 
+                        orphans: 3; 
+                        widows: 3;
+                        page-break-inside: avoid;
+                    }
+                    
+                    ul, ol { 
+                        margin-bottom: 15px; 
+                        padding-left: 20px; 
+                        page-break-inside: avoid;
+                    }
+                    
+                    li { 
+                        margin-bottom: 5px; 
+                        orphans: 2; 
+                        widows: 2;
+                    }
+                    
+                    /* Tablas (Rúbrias) */
+                    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 12px; page-break-inside: avoid; }
+                    th { background-color: #7c3aed; color: white; padding: 10px; text-align: left; }
+                    td { border: 1px solid #cbd5e1; padding: 8px; vertical-align: top; }
+                    tr:nth-child(even) { background-color: #f8fafc; }
+                    
+                    /* Bloques para evitar cortes feos */
+                    .avoid-break { page-break-inside: avoid; }
+                    .force-break { page-break-before: always; }
+                    .section-container { page-break-inside: avoid; }
+                    
+                    /* Citas y notas */
+                    blockquote { border-left: 4px solid #cbd5e1; padding-left: 15px; color: #64748b; font-style: italic; margin: 15px 0; }
+                </style>
+            `;
+
+            const getSection = (title, content, forceBreak = false) => {
+                if (!content) return '';
+
+                let htmlContent = marked.parse(content);
+
+                // Si es la sección de Quiz, intentamos formatearla bonito si tenemos los datos parseados
+                if (title === 'Quiz' && currentQuizData.length > 0) {
+                    htmlContent = '<div style="margin-top:10px;">';
+                    currentQuizData.forEach((q, idx) => {
+                        htmlContent += `
+                            <div style="margin-bottom: 20px; page-break-inside: avoid;">
+                                <p style="font-weight: bold; color: #1e293b; margin-bottom: 5px;">${idx + 1}. ${q.q}</p>
+                                <ul style="list-style-type: none; padding-left: 15px; margin-top: 5px;">
+                                    ${q.options.map(opt => `
+                                        <li style="margin-bottom: 2px; ${opt.key === q.answer ? 'color: #16a34a; font-weight:bold;' : 'color: #475569;'}">
+                                            ${opt.key}) ${opt.text} ${opt.key === q.answer ? '✅' : ''}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    });
+                    htmlContent += '</div>';
+                }
+
+                return `
+                    <div class="${forceBreak ? 'force-break' : ''} section-container">
+                        <h1 class="section-title">${title}</h1>
+                        <div class="content opacity-90">${htmlContent}</div>
+                    </div>
+                `;
+            };
+
+            const timestamp = new Date().toLocaleString('es-AR');
+            const level = document.getElementById('levelSelect').options[document.getElementById('levelSelect').selectedIndex].text;
+
+            element.innerHTML = `
+                ${styles}
+                <div style="padding: 20px;">
+                    <div class="header">
+                        <h1>Plan Didáctico</h1>
+                        <p>Generado por IA Didáctica • ${timestamp}</p>
+                        <p style="font-size: 12px; margin-top: 5px; color: #94a3b8;">${level} • ${document.getElementById('durationSelect').value}</p>
+                    </div>
+
+                    ${getSection('Planificación', fullAiText.plan)}
+                    ${getSection('Actividades', fullAiText.activities, true)}
+                    ${getSection('Propuesta Lúdica', fullAiText.ludico, true)}
+                    ${getSection('Evaluación', fullAiText.evaluation, true)}
+                    ${getSection('Criterios', fullAiText.criterios)}
+                    ${getSection('Rúbrica', fullAiText.rubrica, true)}
+                    ${getSection('Quiz', fullAiText.quiz, true)}
+                    ${getSection('Recursos', fullAiText.recursos)}
+                </div>
+            `;
+
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5], // Top, Left, Bottom, Right (inches)
+                filename: `Plan_Didactico_${new Date().toISOString().slice(0, 10)}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['css', 'legacy'] }
+            };
+
+            // Notificar inicio
+            const btn = document.querySelector('button[onclick="exportToPdf()"]');
+            const originalText = btn.innerHTML;
+            btn.innerText = '⏳ Generando...';
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText;
+            }).catch(err => {
+                console.error(err);
+                alert('Error al generar PDF');
+                btn.innerHTML = originalText;
+            });
+        }
+
+        async function copyCurrentSection() {
+            try {
+                const htmlContent = markdownOutput.innerHTML;
+                const textContent = markdownOutput.innerText;
+
+                const blobHtml = new Blob([htmlContent], { type: 'text/html' });
+                const blobText = new Blob([textContent], { type: 'text/plain' });
+
+                const data = [new ClipboardItem({
+                    'text/html': blobHtml,
+                    'text/plain': blobText
+                })];
+
+                await navigator.clipboard.write(data);
+
+                // Feedback visual
+                const btn = document.querySelector('button[onclick="copyCurrentSection()"]');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ ¡Copiado!';
+                setTimeout(() => btn.innerHTML = originalText, 2000);
+            } catch (err) {
+                console.error('Error copiando:', err);
+                // Fallback para navegadores antiguos
+                const t = document.querySelector('.tab-active').id.replace('tab-', '');
+                await navigator.clipboard.writeText(fullAiText[t]);
+                alert('¡Copiado (Solo texto)!');
+            }
+        }
+
+        let isEditing = false;
+        function toggleEdit() {
+            const output = document.getElementById('markdownOutput');
+            const btn = document.getElementById('btnEdit');
+
+            if (!isEditing) {
+                // Activar edición
+                isEditing = true;
+                output.contentEditable = "true";
+                output.focus();
+                output.classList.add('ring-4', 'ring-premium-300', 'rounded-xl', 'p-4', 'bg-white', 'dark:bg-slate-900');
+                btn.innerHTML = '<span>💾</span> Guardar';
+                btn.classList.replace('bg-white/10', 'bg-green-500');
+            } else {
+                // Guardar cambios
+                isEditing = false;
+                output.contentEditable = "false";
+                output.classList.remove('ring-4', 'ring-premium-300', 'rounded-xl', 'p-4', 'bg-white', 'dark:bg-slate-900');
+                btn.innerHTML = '<span>✏️</span> Editar';
+                btn.classList.replace('bg-green-500', 'bg-white/10');
+
+                // Actualizar fullAiText con el nuevo HTML (convertido a Markdown sería ideal, pero por ahora guardamos el texto plano o HTML actualizado si soportamos rich text en export)
+                // Nota: Para simplificar, en este paso actualizamos el valor en memoria basándonos en el tab activo.
+                // Como marked.parse es unidireccional, aquí hay un desafío: lo que el usuario edita es HTML renderizado.
+                // Para mantener la consistencia, guardaremos el texto editado como HTML en una propiedad "override" o actualizamos el texto crudo si es simple.
+
+                // Estrategia simple: El usuario edita visualmente. Al exportar, usamos el contenido visual del DOM.
+                // Pero para persistencia en tabs, necesitamos actualizar `fullAiText`.
+                // Dado que convertir HTML -> MD es complejo sin librería extra (turndown), 
+                // optaremos por permitir edición "efímera" por tab o alertar que se perderá al cambiar tab si no se exporta.
+
+                // Mejor opción rápida: Actualizar el array `fullAiText` con el innerText/HTML del momento para este tab.
+                const currentTab = document.querySelector('.tab-active').id.replace('tab-', '');
+
+                // Hack: Guardamos el HTML editado como si fuera el markdown original. 
+                // Al volver a renderizar (switchTab), marked.parse procesará HTML válido sin problemas.
+                fullAiText[currentTab] = output.innerText; // Guardamos texto para que sea "markdown-safe" o el innerHTML si queremos rich edit.
+                // Usar innerText preserva saltos de línea pero pierde negritas si no se escriben como MD.
+                // Usar innerHTML puede romper el parser de MD si se re-inyecta.
+
+                // Solución de compromiso: Guardamos innerText. El usuario pierde formato rico (negritas) visual si no usa notación MD (*texto*), 
+                // PERO es lo más seguro sin librerías extra.
+                fullAiText[currentTab] = output.innerText;
+
+                alert('Cambios guardados en esta sección.');
+            }
+        }
+
+        function calculateTimeEstimate() {
+            const duration = document.getElementById('durationSelect').value;
+            const durationMap = {
+                '45min': 45,
+                '60min': 60,
+                '90min': 90,
+                'taller': 180
+            };
+            const minutes = durationMap[duration] || 60;
+            document.getElementById('timeEstimate').innerHTML = `⏱️ Duración estimada: <strong>${minutes} minutos</strong>`;
+        }
+
+
+
+        function exportToWord() {
+            // Crear HTML que Word puede abrir directamente
+            const htmlContent = `
+<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>Plan Didáctico</title></head>
+<body style="font-family: Arial; padding: 40px;">
+    <h1 style="color: #6d28d9;">Propuesta Didáctica Integral</h1>
+    
+    <h2 style="color: #6d28d9;">Plan de clase</h2>
+    ${marked.parse(fullAiText.plan || 'No disponible')}
+    
+    <h2 style="color: #6d28d9;">Actividades</h2>
+    ${marked.parse(fullAiText.activities || 'No disponible')}
+    
+    <h2 style="color: #6d28d9;">Propuestas lúdicas</h2>
+    ${marked.parse(fullAiText.ludico || 'No disponible')}
+    
+    <h2 style="color: #6d28d9;">Evaluación</h2>
+    ${marked.parse(fullAiText.evaluation || 'No disponible')}
+    
+    <h2 style="color: #6d28d9;">Criterios de evaluación</h2>
+    ${marked.parse(fullAiText.criterios || 'No disponible')}
+    
+    <h2 style="color: #6d28d9;">Quiz</h2>
+    ${marked.parse(fullAiText.quiz || 'No disponible')}
+    
+    <h2 style="color: #6d28d9;">Rúbrica de evaluación</h2>
+    ${marked.parse(fullAiText.rubrica || 'No disponible')}
+    
+    <h2 style="color: #6d28d9;">Recursos sugeridos</h2>
+    ${marked.parse(fullAiText.recursos || 'No disponible')}
+</body>
+</html>`;
+
+            const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'plan_didactico.doc';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function saveVersion() {
+            const timestamp = new Date().toLocaleString('es-AR');
+            const version = {
+                timestamp,
+                content: fullAiText,
+                params: {
+                    level: document.getElementById('levelSelect').options[document.getElementById('levelSelect').selectedIndex].text,
+                    duration: document.getElementById('durationSelect').value,
+                    model: usedModel
+                }
+            };
+
+            // Guardar en localStorage (máximo 3 versiones)
+            let versions = JSON.parse(localStorage.getItem('savedVersions') || '[]');
+            versions.unshift(version); // Agregar al inicio
+            if (versions.length > 3) versions = versions.slice(0, 3); // Mantener solo 3
+            localStorage.setItem('savedVersions', JSON.stringify(versions));
+
+            renderSavedVersions(); // Actualizar lista visual
+            alert(`✅ Versión guardada (${timestamp})`);
+        }
+
+        function renderSavedVersions() {
+            const versions = JSON.parse(localStorage.getItem('savedVersions') || '[]');
+            const container = document.getElementById('versionsContainer');
+            const listContainer = document.getElementById('savedVersionsList');
+
+            if (versions.length === 0) {
+                listContainer.classList.add('hidden');
+                return;
+            }
+
+            listContainer.classList.remove('hidden');
+            container.innerHTML = versions.map((v, index) => `
+                <div class="p-3 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700 group relative">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-[10px] font-bold text-premium-600 dark:text-premium-400 max-w-[70%] truncate">${v.params.level}</span>
+                        <span class="text-[9px] text-slate-400">${v.timestamp.split(' ')[1]}</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mb-2">
+                        ${v.params.duration} • ${v.params.model}
+                    </div>
+                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="compareVersion(${index})" class="flex-1 py-1.5 bg-premium-100 dark:bg-premium-900/40 text-premium-700 dark:text-premium-300 rounded-lg text-[9px] font-bold hover:bg-premium-200 transition" title="Comparar">
+                            👁️
+                        </button>
+                        <button onclick="loadVersion(${index})" class="flex-1 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-[9px] font-bold hover:bg-slate-200 transition" title="Cargar">
+                            📂
+                        </button>
+                        <button onclick="deleteVersion(${index})" class="py-1.5 px-2 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded-lg text-[9px] font-bold hover:bg-red-200 transition" title="Borrar">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadVersion(index) {
+            if (!confirm('¿Cargar esta versión anterior? Se perderán los cambios actuales no guardados.')) return;
+
+            const versions = JSON.parse(localStorage.getItem('savedVersions') || '[]');
+            const v = versions[index];
+            if (!v) return;
+
+            fullAiText = v.content;
+
+            // Restaurar UI
+            document.getElementById('actionButtons').classList.remove('hidden');
+            document.getElementById('dropzone').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+
+            // Actualizar vista
+            switchTab('plan');
+            document.getElementById('resMeta').innerHTML = `<span class="bg-white/20 px-3 py-1 rounded-full text-xs">Versión restaurada: ${v.timestamp}</span>`;
+        }
+
+        function deleteVersion(index) {
+            if (!confirm('¿Seguro que quieres borrar esta versión?')) return;
+            const versions = JSON.parse(localStorage.getItem('savedVersions') || '[]');
+            versions.splice(index, 1);
+            localStorage.setItem('savedVersions', JSON.stringify(versions));
+            renderSavedVersions();
+        }
+
+        let currentQuizData = [];
+
+        function renderInteractiveQuiz(text) {
+            // Parser simple basado en el formato &&
+            const lines = text.split('\n');
+            const questions = [];
+            let currentQ = null;
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.includes('&&Pregunta:')) {
+                    if (currentQ) questions.push(currentQ);
+                    currentQ = { q: line.replace('&&Pregunta:', '').trim(), options: [], answer: '' };
+                } else if (line.indexOf('&&a)') !== -1) {
+                    currentQ?.options.push({ key: 'a', text: line.split('&&a)')[1].trim() });
+                } else if (line.indexOf('&&b)') !== -1) {
+                    currentQ?.options.push({ key: 'b', text: line.split('&&b)')[1].trim() });
+                } else if (line.indexOf('&&c)') !== -1) {
+                    currentQ?.options.push({ key: 'c', text: line.split('&&c)')[1].trim() });
+                } else if (line.includes('&&Respuesta:')) {
+                    // Limpieza estricta: Busca una letra solitaria a, b, c al principio o final.
+                    if (currentQ) {
+                        // 1. Quitar el prefijo
+                        let clean = line.replace('&&Respuesta:', '').trim().toLowerCase();
+                        // 2. Quitar puntos, paréntesis, corchetes (ej: "a.", "a)", "[a]")
+                        clean = clean.replace(/[).\[\]]/g, '');
+                        // 3. Buscar la primera letra válida si está aislada o al inicio
+                        const match = clean.match(/^[abc]/);
+                        if (match) {
+                            currentQ.answer = match[0];
+                        } else {
+                            // Fallback: Si la IA escribió "La respuesta es a", buscamos con word boundary
+                            const wordMatch = clean.match(/\b([abc])\b/);
+                            if (wordMatch) {
+                                currentQ.answer = wordMatch[1];
+                            } else {
+                                // Fallback extremo: buscar cualquier a, b, c
+                                const anyMatch = clean.match(/[abc]/);
+                                if (anyMatch) currentQ.answer = anyMatch[0];
+                            }
+                        }
+                    }
+                }
+            });
+            if (currentQ) questions.push(currentQ);
+
+            if (questions.length === 0) return marked.parse(text); // Fallback a markdown si falla el parseo
+
+            currentQuizData = questions;
+            let html = '<div class="space-y-8">';
+            questions.forEach((q, idx) => {
+                html += `
+                    <div class="quiz-question p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700" id="q-container-${idx}">
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white flex gap-2">
+                            <span class="bg-premium-100 text-premium-700 px-2 rounded-lg text-sm flex items-center">${idx + 1}</span> 
+                            ${q.q}
+                        </h3>
+                        <div class="space-y-3">
+                            ${q.options.map(opt => `
+                                <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition select-none group">
+                                    <input type="radio" name="q${idx}" value="${opt.key}" class="w-5 h-5 text-premium-600 focus:ring-premium-500 border-slate-300">
+                                    <span class="text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">${opt.key}) ${opt.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                        <div class="feedback hidden mt-4 text-sm font-bold p-3 rounded-xl" id="feedback-${idx}"></div>
+                    </div>
+                `;
+            });
+            html += `
+                <div class="text-center pt-6 flex justify-center gap-4">
+                    <button onclick="checkQuiz()" class="px-8 py-3 bg-gradient-to-r from-premium-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition">
+                        ✅ Controlar Respuestas
+                    </button>
+                    <button onclick="resetQuiz()" class="px-8 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl shadow hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+                        🔄 Reiniciar
+                    </button>
+                </div>
+                <div id="quizScore" class="hidden mt-6 text-center text-2xl font-black text-premium-700 dark:text-premium-400"></div>
+            </div>`;
+            return html;
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            currentQuizData.forEach((q, idx) => {
+                const selected = document.querySelector(`input[name="q${idx}"]:checked`)?.value;
+                const feedbackDiv = document.getElementById(`feedback-${idx}`);
+                const container = document.getElementById(`q-container-${idx}`);
+
+                feedbackDiv.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+
+                if (selected === q.answer) {
+                    score++;
+                    feedbackDiv.innerText = "¡Correcto! 🎉";
+                    feedbackDiv.classList.add('bg-green-100', 'text-green-700');
+                    container.classList.add('border-green-500', 'ring-1', 'ring-green-500');
+                } else {
+                    feedbackDiv.innerText = `Incorrecto. La respuesta correcta era: ${q.answer})`;
+                    feedbackDiv.classList.add('bg-red-100', 'text-red-700');
+                    container.classList.add('border-red-500');
+                }
+            });
+            const scoreDiv = document.getElementById('quizScore');
+            scoreDiv.innerText = `Puntuación: ${score} / ${currentQuizData.length}`;
+            scoreDiv.classList.remove('hidden');
+            scoreDiv.classList.add('animate-bounce');
+            setTimeout(() => scoreDiv.classList.remove('animate-bounce'), 1000);
+        }
+
+        function resetQuiz() {
+            // Limpiar radio buttons
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(r => r.checked = false);
+
+            // Limpiar feedback y estilos
+            currentQuizData.forEach((_, idx) => {
+                const feedbackDiv = document.getElementById(`feedback-${idx}`);
+                const container = document.getElementById(`q-container-${idx}`);
+
+                feedbackDiv.classList.add('hidden');
+                feedbackDiv.className = "feedback hidden mt-4 text-sm font-bold p-3 rounded-xl"; // Reset classes
+
+                container.classList.remove('border-green-500', 'ring-1', 'ring-green-500', 'border-red-500');
+            });
+
+            // Ocultar puntaje
+            document.getElementById('quizScore').classList.add('hidden');
+        }
+
+        // Cargar historial al inicio
+        renderSavedVersions();
+
+        // --- Lógica de Comparación ---
+        let currentCompareIndex = -1;
+
+        function compareVersion(index) {
+            const versions = JSON.parse(localStorage.getItem('savedVersions') || '[]');
+            const saved = versions[index];
+            if (!saved) return;
+
+            currentCompareIndex = index;
+
+            // Renderizar Versión Actual
+            const currentHtml = renderMarkdownForComparison(fullAiText);
+            document.getElementById('compareLeft').innerHTML = currentHtml;
+
+            // Renderizar Versión Guardada
+            const savedHtml = renderMarkdownForComparison(saved.content);
+            document.getElementById('compareRight').innerHTML = savedHtml;
+            document.getElementById('compareRightTitle').innerText = `Versión: ${saved.timestamp}`;
+
+            // Mostrar Modal
+            document.getElementById('compareModal').classList.remove('hidden');
+        }
+
+        function closeCompare() {
+            document.getElementById('compareModal').classList.add('hidden');
+            currentCompareIndex = -1;
+        }
+
+        function restoreFromCompare() {
+            if (currentCompareIndex !== -1) {
+                closeCompare(); // Cerrar primero
+                loadVersion(currentCompareIndex); // Luego cargar
+            }
+        }
+
+        function renderMarkdownForComparison(data) {
+            if (!data || Object.keys(data).length === 0) return '<div class="flex flex-col items-center justify-center h-40 text-slate-400"><p class="italic">Todavía no hay contenido generado en esta versión.</p></div>';
+
+            // Si data es solo texto (versiones muy antiguas/legacy), lo mostramos directo
+            if (typeof data === 'string') return marked.parse(data);
+
+            let html = '';
+            const sections = [
+                { key: 'plan', title: 'Plan Didáctico', icon: '📝' },
+                { key: 'activities', title: 'Actividades', icon: '⚡' },
+                { key: 'ludico', title: 'Propuestas Lúdicas', icon: '🎲' },
+                { key: 'evaluation', title: 'Evaluación', icon: '📊' },
+                { key: 'criterios', title: 'Criterios de Evaluación', icon: '📋' },
+                { key: 'rubrica', title: 'Rúbrica', icon: '⚖️' },
+                { key: 'recursos', title: 'Recursos', icon: '📚' }
+            ];
+
+            let hasContent = false;
+            sections.forEach(section => {
+                if (data[section.key]) {
+                    hasContent = true;
+                    html += `
+                        <div class="mb-10 last:mb-0">
+                            <h3 class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-premium-600 dark:text-premium-400 mb-4 pb-2 border-b border-premium-100 dark:border-premium-900/30">
+                                <span>${section.icon}</span> ${section.title}
+                            </h3>
+                            <div class="prose-content pl-2">
+                                ${marked.parse(data[section.key])}
+                            </div>
+                        </div>`;
+                }
+            });
+
+            if (!hasContent) {
+                // Fallback para 'analisis' o si no matchea keys específicas
+                if (data.analisis) {
+                    return `
+                        <div class="mb-8">
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-premium-600 dark:text-premium-400 mb-4 pb-2 border-b border-premium-100">Análisis General</h3>
+                            ${marked.parse(data.analisis)}
+                        </div>`;
+                }
+                return '<p class="text-slate-400 italic text-center py-10">Contenido vacío o formato no reconocido.</p>';
+            }
+
+            return html;
+        }
+    </script>
+
+    <!-- Modal de Comparación -->
+    <div id="compareModal"
+        class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-900 w-full max-w-7xl h-[90vh] rounded-3xl shadow-2xl flex flex-col border border-slate-200 dark:border-slate-800">
+            <!-- Header del Modal -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800">
+                <h2 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 text-premium-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                    </svg>
+                    Comparar Versiones
+                </h2>
+                <button onclick="closeCompare()"
+                    class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition">
+                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Cuerpo de Comparación -->
+            <div class="flex-grow flex overflow-hidden">
+                <!-- Izquierda: Versión Actual -->
+                <div
+                    class="w-1/2 p-6 overflow-y-auto border-r border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                    <div
+                        class="sticky top-0 bg-white dark:bg-slate-900 p-3 mb-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 z-10">
+                        <span class="text-xs font-bold uppercase tracking-widest text-premium-600">Versión Actual</span>
+                    </div>
+                    <div id="compareLeft" class="prose dark:prose-invert prose-sm max-w-none"></div>
+                </div>
+
+                <!-- Derecha: Versión Guardada -->
+                <div class="w-1/2 p-6 overflow-y-auto bg-white dark:bg-slate-950">
+                    <div
+                        class="sticky top-0 bg-white dark:bg-slate-900 p-3 mb-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 z-10 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase tracking-widest text-blue-600"
+                            id="compareRightTitle">Versión Guardada</span>
+                        <button onclick="restoreFromCompare()"
+                            class="text-[10px] bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold hover:bg-blue-200 transition">Restaurar
+                            esta versión</button>
+                    </div>
+                    <div id="compareRight" class="prose dark:prose-invert prose-sm max-w-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Ayuda -->
+    <div id="helpModal"
+        class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col border border-slate-200 dark:border-slate-800">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                    <span class="text-2xl">💡</span> Guía de Uso
+                </h3>
+                <button onclick="closeHelp()"
+                    class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition">✕</button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6 text-sm text-slate-600 dark:text-slate-300">
+                <div>
+                    <h4 class="font-bold text-premium-600 dark:text-premium-400 mb-2">🎓 Nivel Educativo</h4>
+                    <p class="mb-2">Ajusta el tono y la complejidad:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Nivel secundario:</strong> Equilibrio entre guía y abstracción,
+                            apropiado para adolescentes.</li>
+                        <li><strong>Nivel universitario:</strong> Académico, crítico y autónomo, para estudiantes de
+                            educación superior.</li>
+                        <li><strong>Formación docente:</strong> Enfoque profesional para docentes en formación, con
+                            énfasis en didáctica y pedagogía.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-premium-600 dark:text-premium-400 mb-2">🔎 Enfoque Didáctico</h4>
+                    <p class="mb-2">Define <strong>qué quieres lograr</strong> principalmente:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>📖 <strong>Comprensión lectora:</strong> Análisis profundo de textos.</li>
+                        <li>🗣️ <strong>Debate:</strong> Argumentación y juicio crítico.</li>
+                        <li>🛠️ <strong>Práctica/Casos:</strong> Aplicación en situaciones reales.</li>
+                        <li>🎮 <strong>Gamificación:</strong> Motivación mediante el juego.</li>
+                        <li>🤝 <strong>Socioemocional:</strong> Empatía y bienestar.</li>
+                        <li>🔬 <strong>STEAM:</strong> Ciencia, Arte y Tecnología integradas.</li>
+                        <li>🎨 <strong>Creatividad:</strong> Expresión artística y divergente.</li>
+                        <li>🧠 <strong>Metacognición:</strong> Reflexión sobre el aprendizaje.</li>
+                        <li>🧩 <strong>Resolución de Problemas:</strong> Lógica y estrategia.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-premium-600 dark:text-premium-400 mb-2">🛠️ Metodología</h4>
+                    <p class="mb-2">Define la <strong>estrategia de enseñanza</strong>:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>👨‍🏫 <strong>Enseñanza Directa:</strong> Estructurada y guiada.</li>
+                        <li>🚀 <strong>ABP:</strong> Proyectos con producto final.</li>
+                        <li>🔄 <strong>Flipped Classroom:</strong> Teoría en casa, práctica en clase.</li>
+                        <li>🔍 <strong>Indagación:</strong> Investigación guiada por preguntas.</li>
+                        <li>🧩 <strong>Cooperativo:</strong> Trabajo en equipo interdependiente.</li>
+                        <li>💡 <strong>Design Thinking:</strong> Solución creativa en 5 fases.</li>
+                        <li>🏆 <strong>Retos:</strong> Desafíos vivenciales.</li>
+                        <li>🧠 <strong>Rutinas:</strong> Estructuras de pensamiento visible.</li>
+                        <li>🎮 <strong>Gamificación:</strong> Mecánicas de juego en el aula.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-premium-600 dark:text-premium-400 mb-2">⚙️ Otros Ajustes</h4>
+                    <p class="mb-2">Configura detalles adicionales:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Clave API:</strong> Necesitás una clave gratuita de Google Gemini. Conseguila en <a
+                                href="https://aistudio.google.com/app/apikey" target="_blank"
+                                class="text-premium-600 underline">AI Studio</a>.</li>
+                        <li><strong>Duración:</strong> Tiempo estimado de la clase (45, 60, 90 min o Taller).</li>
+                        <li><strong>Preguntas Quiz:</strong> Elige 5, 10, 15 o 20 preguntas para la evaluación
+                            automática.</li>
+                        <li><strong>Modo DUA:</strong> Activa pautas de Diseño Universal para el Aprendizaje
+                            (inclusión).</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-premium-600 dark:text-premium-400 mb-2">✨ Tips PRO</h4>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Modo Edición ✏️:</strong> Haz clic en "Editar" para modificar el texto manualmente.
+                            Guarda antes de exportar.</li>
+                        <li><strong>Quiz Automático 📝:</strong> La pestaña "Quiz" incluye preguntas generadas (cantidad
+                            configurable) para
+                            evaluar comprensión.</li>
+                        <li><strong>Comparar Historial 👁️:</strong> Usa "Comparar" en el panel lateral para ver
+                            versiones lado a lado.</li>
+                        <li><strong>Subida Múltiple 📚:</strong> Arrastra hasta 5 PDFs juntos para un análisis
+                            combinado.</li>
+                        <li><strong>Reiniciar 🔄:</strong> Usa el botón de recargar en ajustes para limpiar todo y
+                            empezar de cero.</li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 rounded-b-3xl text-center">
+                <button onclick="closeHelp()"
+                    class="bg-premium-600 hover:bg-premium-700 text-white px-6 py-2 rounded-xl font-bold transition shadow-lg shadow-premium-500/30">¡Entendido!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openHelp() { document.getElementById('helpModal').classList.remove('hidden'); }
+        function closeHelp() { document.getElementById('helpModal').classList.add('hidden'); }
+    </script>
+
+    <!-- Botón Flotante de Chat -->
+    <button onclick="toggleChat()"
+        class="fixed bottom-6 right-6 p-4 bg-gradient-to-r from-premium-600 to-indigo-600 rounded-full shadow-2xl hover:scale-110 transition z-40 group">
+        <span class="absolute -top-1 -right-1 flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+        </span>
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
+            </path>
+        </svg>
+        <span
+            class="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none">Chatear
+            con el documento</span>
+    </button>
+
+    <!-- Modal Chat -->
+    <div id="chatModal"
+        class="hidden fixed bottom-24 right-6 w-96 h-[500px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 z-40 flex flex-col overflow-hidden transition-transform origin-bottom-right">
+        <div class="p-4 bg-gradient-to-r from-premium-600 to-indigo-600 text-white flex justify-between items-center">
+            <h3 class="font-bold flex items-center gap-2">
+                <span>🤖</span> Asistente Documental
+            </h3>
+            <button onclick="toggleChat()" class="hover:bg-white/20 p-1 rounded-full text-xs">✕</button>
+        </div>
+
+        <div id="chatMessages" class="flex-grow p-4 overflow-y-auto space-y-3 bg-slate-50 dark:bg-slate-950/50">
+            <div class="flex gap-2 items-start">
+                <div class="w-8 h-8 rounded-full bg-premium-100 flex items-center justify-center shrink-0">🤖</div>
+                <div
+                    class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm shadow-sm border border-slate-100 dark:border-slate-800">
+                    Hola. Tengo toda la información de tu documento. ¿En qué puedo ayudarte?
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+            <form onsubmit="sendChatMessage(event)" class="relative">
+                <input type="text" id="chatInput" placeholder="Pregunta algo sobre el texto..."
+                    class="w-full pl-4 pr-10 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm focus:ring-2 focus:ring-premium-500 outline-none">
+                <button type="submit"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-premium-600 text-white rounded-lg hover:bg-premium-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7">
+                        </path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const m = document.getElementById('chatModal');
+            m.classList.toggle('hidden');
+            if (!m.classList.contains('hidden')) document.getElementById('chatInput').focus();
+        }
+
+        async function sendChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            // Añadir mensaje usuario
+            const chatGrid = document.getElementById('chatMessages');
+            chatGrid.innerHTML += `
+                <div class="flex gap-2 items-start justify-end">
+                    <div class="bg-premium-600 text-white p-3 rounded-2xl rounded-tr-none text-sm shadow-sm">
+                        ${msg}
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            chatGrid.scrollTop = chatGrid.scrollHeight;
+
+            // Loading
+            const loadingId = 'loading-' + Date.now();
+            chatGrid.innerHTML += `
+                <div id="${loadingId}" class="flex gap-2 items-start">
+                    <div class="w-8 h-8 rounded-full bg-premium-100 flex items-center justify-center shrink-0">🤖</div>
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm shadow-sm flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-100"></span>
+                        <span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-200"></span>
+                    </div>
+                </div>
+            `;
+            chatGrid.scrollTop = chatGrid.scrollHeight;
+
+            try {
+                const apiKey = document.getElementById('geminiKey').value;
+                // Usamos fullAiText como contexto simplificado porque currentPdfText puede ser enorme y no lo tenemos guardado en memoria persistente de forma limpia en el snippet previo
+                // Pero si no hay texto analizado, no funcionará.
+                // Intentaremos usar fullAiText.plan + activities o un resumen.
+                let context = `Plan: ${fullAiText.plan}\nActividades: ${fullAiText.activities}\nEvaluación: ${fullAiText.evaluation}`;
+                if (context.length < 50) context = "No hay un documento analizado aún. Responde cordialmente que necesitas un documento.";
+
+                const prompt = `
+                CONTEXTO DEL DOCUMENTO EDUCATIVO (Formato Markdown):
+                ${context.substring(0, 10000)}
+
+                PREGUNTA DEL USUARIO: "${msg}"
+
+                Responde brevemente como un asistente pedagógico experto. Usa markdown simple si es necesario.
+                `;
+
+                const response = await callGemini(apiKey, prompt);
+                document.getElementById(loadingId).remove();
+
+                chatGrid.innerHTML += `
+                    <div class="flex gap-2 items-start">
+                        <div class="w-8 h-8 rounded-full bg-premium-100 flex items-center justify-center shrink-0">🤖</div>
+                        <div class="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm shadow-sm border border-slate-100 dark:border-slate-800 prose prose-sm max-w-none">
+                            ${marked.parse(response)}
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById(loadingId).remove();
+                chatGrid.innerHTML += `<div class="text-xs text-red-500 text-center p-2">Error: ${err.message}</div>`;
+            }
+            chatGrid.scrollTop = chatGrid.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>
