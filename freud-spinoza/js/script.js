@@ -55,14 +55,12 @@ function checkButtonState() {
 }
 
 function loadSettings() {
-    const brokenKeys = [
-        "AIzaSyCU1hSocX-ST1GFSK0pCySmWV_4k_gaWZI",
-        ""
-    ];
+    const brokenInitialChars = ["AIzaSyCU1h"];
     let storedKey = localStorage.getItem('geminiApiKey');
 
-    // If it's the old broken key or empty, force the new default
-    if (!storedKey || brokenKeys.includes(storedKey)) {
+    const isOld = storedKey && brokenInitialChars.some(char => storedKey.startsWith(char));
+
+    if (!storedKey || isOld || storedKey.trim() === "") {
         apiKeyInput.value = DEFAULT_API_KEY;
     } else {
         apiKeyInput.value = storedKey;
@@ -256,6 +254,9 @@ async function callGeminiAPI(apiKey, prompt) {
                 clearTimeout(timeoutId);
                 let d = await res.json();
                 if (!res.ok) {
+                    if (res.status === 429) {
+                        throw new Error("Cuota excedida (Too Many Requests). La versión gratuita tiene límites por minuto. Por favor, espera 60 segundos e intenta de nuevo.");
+                    }
                     if (res.status === 404 || res.status === 400) {
                         console.warn(`Model ${modelName} not found or error on ${v}:`, d.error?.message);
                         lastError = d.error?.message || `Error ${res.status}`;

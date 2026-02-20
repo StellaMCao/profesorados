@@ -50,19 +50,20 @@ function checkButtonState() {
 }
 
 function loadSettings() {
-    const brokenKeys = [
-        "AIzaSyCU1hSocX-ST1GFSK0pCySmWV_4k_gaWZI",
-        "" // also check empty
-    ];
+    // Keys that we know are broken or old
+    const brokenInitialChars = ["AIzaSyCU1h"]; // The start of the old key
     let storedKey = localStorage.getItem('geminiApiKey');
 
-    // If it's the old broken key or empty, force the new default
-    if (!storedKey || brokenKeys.includes(storedKey)) {
+    // If no key, or it's the old one, or it's empty -> force the new default
+    const isOld = storedKey && brokenInitialChars.some(char => storedKey.startsWith(char));
+
+    if (!storedKey || isOld || storedKey.trim() === "") {
         apiKeyInput.value = DEFAULT_API_KEY;
-        console.log("Using new default API Key (Obfuscated)");
+        console.log("Forcing new default API Key");
+        // We don't save to localStorage yet to let the user see it first
     } else {
         apiKeyInput.value = storedKey;
-        console.log("Using user-provided stored API Key");
+        console.log("Using stored API Key");
     }
 }
 
@@ -250,6 +251,9 @@ async function callGeminiAPI(apiKey, prompt) {
                 let d = await res.json();
 
                 if (!res.ok) {
+                    if (res.status === 429) {
+                        throw new Error("Cuota excedida (Too Many Requests). La versión gratuita tiene límites por minuto. Por favor, espera 60 segundos e intenta de nuevo.");
+                    }
                     // If 404 or 400, it might just be the wrong version for this model, so we continue to the next version/model
                     if (res.status === 404 || res.status === 400) {
                         console.warn(`Model ${modelName} not found or error on ${v}:`, d.error?.message);
@@ -258,7 +262,7 @@ async function callGeminiAPI(apiKey, prompt) {
                     }
 
                     if (res.status === 403 && d.error?.message?.includes('API key not valid')) {
-                        throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer). Verifica que 'github.io' esté permitida.");
+                        throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer).");
                     }
                     throw new Error(d.error?.message || `Error HTTP ${res.status}`);
                 }
