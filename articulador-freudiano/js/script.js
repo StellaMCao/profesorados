@@ -142,6 +142,12 @@ function buildPrompt(c1, c2) {
 async function callGeminiAPI(apiKey, prompt) {
     let candidates = [];
 
+    const statusLabel = document.getElementById('statusText');
+    const updateStats = (txt) => {
+        if (statusLabel) statusLabel.innerText = txt;
+        console.log("Status:", txt);
+    };
+
     // Prioritization scoring
     const getModelScore = (m) => {
         const name = m.name.toLowerCase();
@@ -155,12 +161,16 @@ async function callGeminiAPI(apiKey, prompt) {
     };
 
     try {
-        // Try to list models from both v1 and v1beta to find the latest
+        updateStats("Buscando modelos...");
         const endpoints = ['v1', 'v1beta'];
         const modelMaps = await Promise.all(endpoints.map(async (v) => {
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/${v}/models?key=${apiKey}`);
                 const data = await res.json();
+                if (data.error) {
+                    console.warn(`Error listing from ${v}:`, data.error.message);
+                    return [];
+                }
                 return (data.models || []).map(m => ({ ...m, apiVersion: v }));
             } catch (e) {
                 console.warn(`Failed to list from ${v}:`, e);
@@ -199,7 +209,7 @@ async function callGeminiAPI(apiKey, prompt) {
         const versionsToTry = model.apiVersion ? [model.apiVersion] : ['v1beta', 'v1'];
 
         for (const v of versionsToTry) {
-            console.log(`Trying model: ${modelName} via ${v}`);
+            updateStats(`Probando ${modelName.split('/').pop()} (${v})...`);
 
             try {
                 const url = `https://generativelanguage.googleapis.com/${v}/${modelName}:generateContent?key=${apiKey}`;
