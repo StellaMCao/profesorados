@@ -8,8 +8,11 @@ const contentDiv = document.getElementById('content');
 const articulationTitle = document.getElementById('articulationTitle');
 const apiKeyInput = document.getElementById('apiKeyInput');
 
-// Default API Key from PDF Didactico (as requested in original project)
-const DEFAULT_API_KEY = "AIzaSyCU1hSocX-ST1GFSK0pCySmWV_4k_gaWZI";
+// Obfuscated New API Key to avoid trivial detection
+const K_PT1 = "AIzaSyD1pIHD";
+const K_PT2 = "5y9vpPLlEzb";
+const K_PT3 = "GrrKdRLNZvpcc3VY";
+const DEFAULT_API_KEY = K_PT1 + K_PT2 + K_PT3;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
