@@ -145,7 +145,7 @@ async function callGeminiAPI(apiKey, prompt) {
 
     try {
         // 1. List available models
-        const listReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+        const listReq = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${apiKey}`);
         const listData = await listReq.json();
 
         if (listData.models) {
@@ -194,7 +194,7 @@ async function callGeminiAPI(apiKey, prompt) {
         console.log(`Trying model: ${modelName}`);
 
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`;
+            const url = `https://generativelanguage.googleapis.com/v1/${modelName}:generateContent?key=${apiKey}`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
