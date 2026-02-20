@@ -157,90 +157,75 @@ function cleanAndFormatResponse(text) {
 async function callGeminiAPI(apiKey, prompt) {
     let candidates = [];
 
+    const getModelScore = (m) => {
+        const name = m.name.toLowerCase();
+        let score = 0;
+        if (name.includes('2.0')) score += 1000;
+        if (name.includes('1.5')) score += 500;
+        if (name.includes('flash')) score += 100;
+        if (name.includes('pro')) score += 50;
+        if (name.includes('exp') || name.includes('beta')) score -= 10;
+        return score;
+    };
+
     try {
-        // 1. List available models
-        const listReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-        const listData = await listReq.json();
+        const endpoints = ['v1', 'v1beta'];
+        const modelMaps = await Promise.all(endpoints.map(async (v) => {
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/${v}/models?key=${apiKey}`);
+                const data = await res.json();
+                return (data.models || []).map(m => ({ ...m, apiVersion: v }));
+            } catch (e) {
+                console.warn(`Failed to list from ${v}:`, e);
+                return [];
+            }
+        }));
 
-        if (listData.models) {
-            // Filter models that support content generation
-            const rawModels = listData.models.filter(m =>
-                m.supportedGenerationMethods &&
-                m.supportedGenerationMethods.includes('generateContent')
-            );
-
-            // Sort by priority: Flash > Pro > Others
-            candidates = rawModels.sort((a, b) => {
-                const score = (name) => {
-                    if (name.includes('flash')) return 3;
-                    if (name.includes('1.5-pro')) return 2;
-                    if (name.includes('gemini-pro')) return 1;
-                    return 0;
-                };
-                return score(b.name) - score(a.name);
-            });
+        const allModels = modelMaps.flat();
+        if (allModels.length > 0) {
+            candidates = allModels
+                .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+                .sort((a, b) => getModelScore(b) - getModelScore(a));
         }
     } catch (e) {
-        console.warn("Model listing failed, using fallbacks:", e);
-        // Manual fallbacks if listing fails
-        candidates = [
-            { name: 'models/gemini-1.5-flash' },
-            { name: 'models/gemini-1.5-flash-001' },
-            { name: 'models/gemini-1.5-pro' },
-            { name: 'models/gemini-pro' }
-        ];
+        console.warn("Dynamic model listing failed:", e);
     }
 
     if (candidates.length === 0) {
         candidates = [
-            { name: 'models/gemini-1.5-flash' },
-            { name: 'models/gemini-1.5-flash-001' },
-            { name: 'models/gemini-1.5-pro' }
+            { name: 'models/gemini-2.0-flash', apiVersion: 'v1' },
+            { name: 'models/gemini-1.5-flash', apiVersion: 'v1' },
+            { name: 'models/gemini-1.5-pro', apiVersion: 'v1' }
         ];
     }
 
-    // 2. Try candidates until one works
     let lastError = null;
-
     for (const model of candidates) {
         const modelName = model.name.startsWith('models/') ? model.name : `models/${model.name}`;
-        console.log(`Trying model: ${modelName}`);
+        const v = model.apiVersion || 'v1beta';
+        console.log(`Trying model: ${modelName} via ${v}`);
 
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`;
+            const url = `https://generativelanguage.googleapis.com/${v}/${modelName}:generateContent?key=${apiKey}`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: {
-                        temperature: 0.7
-                    }
+                    generationConfig: { temperature: 0.7 }
                 })
             });
 
-            // Parse JSON safely
-            let d;
-            const contentType = res.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-                d = await res.json();
-            } else {
-                const text = await res.text();
-                throw new Error(`Respuesta inesperada del servidor (no es JSON): ${res.status} ${res.statusText}. Contenido: ${text.substring(0, 100)}...`);
-            }
-
+            let d = await res.json();
             if (!res.ok) {
-                // Check specifically for domain/key restriction errors
-                if (res.status === 400 || res.status === 403) {
-                    if (d.error && d.error.message && d.error.message.includes('API key not valid')) {
-                        throw new Error("La API Key no es válida para este sitio web. Es probable que tenga restricciones de dominio (Referrer) que bloquean 'github.io'. Necesitas agregar la URL de tu GitHub a las credenciales en Google Cloud o crear una nueva llave sin restricciones.");
-                    }
+                if ((res.status === 400 || res.status === 403) && d.error?.message?.includes('API key not valid')) {
+                    throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer).");
                 }
-                if (d.error) throw new Error(d.error.message || `Error ${res.status}`);
-                throw new Error(`Error HTTP ${res.status}`);
+                throw new Error(d.error?.message || `Error HTTP ${res.status}`);
             }
 
             if (d.candidates && d.candidates[0] && d.candidates[0].content) {
+                console.log(`Success with: ${modelName}`);
                 return d.candidates[0].content.parts[0].text;
             }
         } catch (e) {
@@ -249,7 +234,7 @@ async function callGeminiAPI(apiKey, prompt) {
         }
     }
 
-    throw new Error(`Todos los modelos fallaron. Último error: ${lastError}`);
+    throw new Error(`Error de conexión: ${lastError}`);
 }
 
 function renderResponse(c1, c2, text) {
