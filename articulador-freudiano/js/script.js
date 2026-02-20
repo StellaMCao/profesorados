@@ -50,11 +50,19 @@ function checkButtonState() {
 }
 
 function loadSettings() {
-    const storedKey = localStorage.getItem('geminiApiKey');
-    if (storedKey) {
-        apiKeyInput.value = storedKey;
+    const brokenKeys = [
+        "AIzaSyCU1hSocX-ST1GFSK0pCySmWV_4k_gaWZI",
+        "" // also check empty
+    ];
+    let storedKey = localStorage.getItem('geminiApiKey');
+
+    // If it's the old broken key or empty, force the new default
+    if (!storedKey || brokenKeys.includes(storedKey)) {
+        apiKeyInput.value = DEFAULT_API_KEY;
+        console.log("Using new default API Key (Obfuscated)");
     } else {
-        apiKeyInput.value = DEFAULT_API_KEY; // Use default if none stored (auto-save not triggered to respect privacy, but field pre-filled)
+        apiKeyInput.value = storedKey;
+        console.log("Using user-provided stored API Key");
     }
 }
 

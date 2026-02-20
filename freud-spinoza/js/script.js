@@ -55,11 +55,17 @@ function checkButtonState() {
 }
 
 function loadSettings() {
-    const storedKey = localStorage.getItem('geminiApiKey');
-    if (storedKey) {
-        apiKeyInput.value = storedKey;
+    const brokenKeys = [
+        "AIzaSyCU1hSocX-ST1GFSK0pCySmWV_4k_gaWZI",
+        ""
+    ];
+    let storedKey = localStorage.getItem('geminiApiKey');
+
+    // If it's the old broken key or empty, force the new default
+    if (!storedKey || brokenKeys.includes(storedKey)) {
+        apiKeyInput.value = DEFAULT_API_KEY;
     } else {
-        apiKeyInput.value = DEFAULT_API_KEY; // Use default if none stored
+        apiKeyInput.value = storedKey;
     }
 }
 
