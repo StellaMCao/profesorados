@@ -193,44 +193,56 @@ async function callGeminiAPI(apiKey, prompt) {
 
     if (candidates.length === 0) {
         candidates = [
-            { name: 'models/gemini-2.0-flash', apiVersion: 'v1' },
-            { name: 'models/gemini-1.5-flash', apiVersion: 'v1' },
-            { name: 'models/gemini-1.5-pro', apiVersion: 'v1' }
+            { name: 'models/gemini-2.0-flash', version: 'v1' },
+            { name: 'models/gemini-2.0-flash', version: 'v1beta' },
+            { name: 'models/gemini-1.5-flash', version: 'v1' },
+            { name: 'models/gemini-1.5-flash', version: 'v1beta' },
+            { name: 'models/gemini-1.5-pro', version: 'v1beta' },
+            { name: 'models/gemini-1.5-pro', version: 'v1' }
         ];
     }
 
     let lastError = null;
     for (const model of candidates) {
         const modelName = model.name.startsWith('models/') ? model.name : `models/${model.name}`;
-        const v = model.apiVersion || 'v1beta';
-        console.log(`Trying model: ${modelName} via ${v}`);
+        const versionsToTry = model.apiVersion ? [model.apiVersion] : ['v1beta', 'v1'];
 
-        try {
-            const url = `https://generativelanguage.googleapis.com/${v}/${modelName}:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { temperature: 0.7 }
-                })
-            });
+        for (const v of versionsToTry) {
+            console.log(`Trying model: ${modelName} via ${v}`);
 
-            let d = await res.json();
-            if (!res.ok) {
-                if ((res.status === 400 || res.status === 403) && d.error?.message?.includes('API key not valid')) {
-                    throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer).");
+            try {
+                const url = `https://generativelanguage.googleapis.com/${v}/${modelName}:generateContent?key=${apiKey}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.7 }
+                    })
+                });
+
+                let d = await res.json();
+                if (!res.ok) {
+                    if (res.status === 404 || res.status === 400) {
+                        console.warn(`Model ${modelName} not found or error on ${v}:`, d.error?.message);
+                        lastError = d.error?.message || `Error ${res.status}`;
+                        continue;
+                    }
+                    if ((res.status === 403) && d.error?.message?.includes('API key not valid')) {
+                        throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer).");
+                    }
+                    throw new Error(d.error?.message || `Error HTTP ${res.status}`);
                 }
-                throw new Error(d.error?.message || `Error HTTP ${res.status}`);
-            }
 
-            if (d.candidates && d.candidates[0] && d.candidates[0].content) {
-                console.log(`Success with: ${modelName}`);
-                return d.candidates[0].content.parts[0].text;
+                if (d.candidates && d.candidates[0] && d.candidates[0].content) {
+                    console.log(`Success with: ${modelName} (${v})`);
+                    return d.candidates[0].content.parts[0].text;
+                }
+            } catch (e) {
+                console.warn(`Failed ${modelName} on ${v}:`, e.message);
+                lastError = e.message;
+                if (e.message.includes('API Key') || e.message.includes('Referrer')) throw e;
             }
-        } catch (e) {
-            console.warn(`Failed ${modelName}:`, e.message);
-            lastError = e.message;
         }
     }
 

@@ -179,49 +179,65 @@ async function callGeminiAPI(apiKey, prompt) {
         console.warn("Dynamic model listing failed, using fallbacks:", e);
     }
 
-    // Comprehensive Fallbacks
+    // Comprehensive Fallbacks (trying both v1 and v1beta for maximum compatibility)
     if (candidates.length === 0) {
         candidates = [
-            { name: 'models/gemini-2.0-flash', apiVersion: 'v1' },
-            { name: 'models/gemini-1.5-flash', apiVersion: 'v1' },
-            { name: 'models/gemini-1.5-flash-001', apiVersion: 'v1' },
-            { name: 'models/gemini-1.5-pro', apiVersion: 'v1' }
+            { name: 'models/gemini-2.0-flash', version: 'v1' },
+            { name: 'models/gemini-2.0-flash', version: 'v1beta' },
+            { name: 'models/gemini-1.5-flash', version: 'v1' },
+            { name: 'models/gemini-1.5-flash', version: 'v1beta' },
+            { name: 'models/gemini-1.5-pro', version: 'v1beta' },
+            { name: 'models/gemini-1.5-pro', version: 'v1' }
         ];
     }
 
     let lastError = null;
     for (const model of candidates) {
         const modelName = model.name.startsWith('models/') ? model.name : `models/${model.name}`;
-        const v = model.apiVersion || 'v1';
-        console.log(`Trying model: ${modelName} via ${v}`);
 
-        try {
-            const url = `https://generativelanguage.googleapis.com/${v}/${modelName}:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { temperature: 0.7 }
-                })
-            });
+        // If version is specified, we try that first; otherwise we try v1beta as it's often more permissive
+        const versionsToTry = model.apiVersion ? [model.apiVersion] : ['v1beta', 'v1'];
 
-            let d = await res.json();
+        for (const v of versionsToTry) {
+            console.log(`Trying model: ${modelName} via ${v}`);
 
-            if (!res.ok) {
-                if ((res.status === 400 || res.status === 403) && d.error?.message?.includes('API key not valid')) {
-                    throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer) para 'github.io'. Verifica tu configuración en Google Cloud.");
+            try {
+                const url = `https://generativelanguage.googleapis.com/${v}/${modelName}:generateContent?key=${apiKey}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.7 }
+                    })
+                });
+
+                let d = await res.json();
+
+                if (!res.ok) {
+                    // If 404 or 400, it might just be the wrong version for this model, so we continue to the next version/model
+                    if (res.status === 404 || res.status === 400) {
+                        console.warn(`Model ${modelName} not found or error on ${v}:`, d.error?.message);
+                        lastError = d.error?.message || `Error ${res.status}`;
+                        continue;
+                    }
+
+                    if (res.status === 403 && d.error?.message?.includes('API key not valid')) {
+                        throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer). Verifica que 'github.io' esté permitida.");
+                    }
+                    throw new Error(d.error?.message || `Error HTTP ${res.status}`);
                 }
-                throw new Error(d.error?.message || `Error HTTP ${res.status}`);
-            }
 
-            if (d.candidates && d.candidates[0] && d.candidates[0].content) {
-                console.log(`Success with: ${modelName}`);
-                return d.candidates[0].content.parts[0].text;
+                if (d.candidates && d.candidates[0] && d.candidates[0].content) {
+                    console.log(`Success with: ${modelName} (${v})`);
+                    return d.candidates[0].content.parts[0].text;
+                }
+            } catch (e) {
+                console.warn(`Failed ${modelName} on ${v}:`, e.message);
+                lastError = e.message;
+                // If it's a domain/key error, we stop and show it
+                if (e.message.includes('API Key') || e.message.includes('Referrer')) throw e;
             }
-        } catch (e) {
-            console.warn(`Failed ${modelName}:`, e.message);
-            lastError = e.message;
         }
     }
 
