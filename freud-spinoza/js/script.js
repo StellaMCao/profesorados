@@ -170,6 +170,8 @@ async function callGeminiAPI(apiKey, prompt) {
         console.log("Status:", txt);
     };
 
+    const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
     const getModelScore = (m) => {
         const name = m.name.toLowerCase();
         let score = 0;
@@ -254,18 +256,24 @@ async function callGeminiAPI(apiKey, prompt) {
                 clearTimeout(timeoutId);
                 let d = await res.json();
                 if (!res.ok) {
+                    const errorMsg = d.error?.message || `Error HTTP ${res.status}`;
+
                     if (res.status === 429) {
-                        throw new Error("Cuota excedida (Too Many Requests). La versión gratuita tiene límites por minuto. Por favor, espera 60 segundos e intenta de nuevo.");
+                        console.warn(`Quota exceeded for ${modelName} on ${v}. Skipping...`);
+                        lastError = `Cuota excedida (429) en ${modelName.split('/').pop()}`;
+                        await sleep(500); // Small pacing delay
+                        continue; // Try next model/version instead of throwing
                     }
+
                     if (res.status === 404 || res.status === 400) {
-                        console.warn(`Model ${modelName} not found or error on ${v}:`, d.error?.message);
-                        lastError = d.error?.message || `Error ${res.status}`;
+                        console.warn(`Model ${modelName} not found or error on ${v}:`, errorMsg);
+                        lastError = `${errorMsg} (${res.status})`;
                         continue;
                     }
-                    if ((res.status === 403) && d.error?.message?.includes('API key not valid')) {
+                    if ((res.status === 403) && errorMsg.includes('API key not valid')) {
                         throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer).");
                     }
-                    throw new Error(d.error?.message || `Error HTTP ${res.status}`);
+                    throw new Error(errorMsg);
                 }
 
                 if (d.candidates && d.candidates[0] && d.candidates[0].content) {
@@ -280,7 +288,7 @@ async function callGeminiAPI(apiKey, prompt) {
         }
     }
 
-    throw new Error(`Error de conexión: ${lastError}`);
+    throw new Error(`No se pudo conectar con la IA después de intentar con varios modelos. Último error: ${lastError}. Si el error es de cuota (429), por favor espera un minuto.`);
 }
 
 function renderResponse(c1, c2, text) {
