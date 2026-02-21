@@ -14,6 +14,8 @@ const K_PT2 = "5y9vpPLlEzb";
 const K_PT3 = "GrrKdRLNZvpcc3VY";
 const DEFAULT_API_KEY = K_PT1 + K_PT2 + K_PT3;
 
+let cachedModels = null;
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     populateSelects();
@@ -184,36 +186,42 @@ async function callGeminiAPI(apiKey, prompt) {
     };
 
     try {
-        updateStats("Buscando modelos...");
-        const endpoints = ['v1', 'v1beta'];
-        const modelMaps = await Promise.all(endpoints.map(async (v) => {
-            try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/${v}/models?key=${apiKey}`);
-                const data = await res.json();
-                if (data.error) {
-                    console.warn(`Error listing from ${v}:`, data.error.message);
+        if (!cachedModels) {
+            updateStats("Buscando modelos...");
+            const endpoints = ['v1', 'v1beta'];
+            const modelMaps = await Promise.all(endpoints.map(async (v) => {
+                try {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/${v}/models?key=${apiKey}`);
+                    const data = await res.json();
+                    if (data.error) {
+                        console.warn(`Error listing from ${v}:`, data.error.message);
+                        return [];
+                    }
+                    return (data.models || []).map(m => ({ ...m, apiVersion: v }));
+                } catch (e) {
+                    console.warn(`Failed to list from ${v}:`, e);
                     return [];
                 }
-                return (data.models || []).map(m => ({ ...m, apiVersion: v }));
-            } catch (e) {
-                console.warn(`Failed to list from ${v}:`, e);
-                return [];
-            }
-        }));
+            }));
 
-        const allModels = modelMaps.flat();
-        if (allModels.length > 0) {
-            candidates = allModels
-                .filter(m => {
-                    const name = m.name.toLowerCase();
-                    return m.supportedGenerationMethods?.includes('generateContent') &&
-                        !name.includes('robotics') &&
-                        !name.includes('med-lm') &&
-                        !name.includes('vision') &&
-                        !name.includes('experimental');
-                })
-                .sort((a, b) => getModelScore(b) - getModelScore(a))
-                .slice(0, 6);
+            const allModels = modelMaps.flat();
+            if (allModels.length > 0) {
+                cachedModels = allModels
+                    .filter(m => {
+                        const name = m.name.toLowerCase();
+                        return m.supportedGenerationMethods?.includes('generateContent') &&
+                            !name.includes('robotics') &&
+                            !name.includes('med-lm') &&
+                            !name.includes('vision') &&
+                            !name.includes('experimental');
+                    })
+                    .sort((a, b) => getModelScore(b) - getModelScore(a))
+                    .slice(0, 6);
+            }
+        }
+
+        if (cachedModels) {
+            candidates = [...cachedModels];
         }
     } catch (e) {
         console.warn("Dynamic model listing failed:", e);
@@ -257,23 +265,24 @@ async function callGeminiAPI(apiKey, prompt) {
                 let d = await res.json();
                 if (!res.ok) {
                     const errorMsg = d.error?.message || `Error HTTP ${res.status}`;
+                    const rawDetail = JSON.stringify(d.error || d);
 
                     if (res.status === 429) {
                         console.warn(`Quota exceeded for ${modelName} on ${v}. Skipping...`);
-                        lastError = `Cuota excedida (429) en ${modelName.split('/').pop()}`;
+                        lastError = `Cuota excedida (429) en ${modelName.split('/').pop()}. Detalle: ${rawDetail}`;
                         await sleep(500); // Small pacing delay
                         continue; // Try next model/version instead of throwing
                     }
 
                     if (res.status === 404 || res.status === 400) {
                         console.warn(`Model ${modelName} not found or error on ${v}:`, errorMsg);
-                        lastError = `${errorMsg} (${res.status})`;
+                        lastError = `${errorMsg} (${res.status}). Detalle: ${rawDetail}`;
                         continue;
                     }
                     if ((res.status === 403) && errorMsg.includes('API key not valid')) {
-                        throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer).");
+                        throw new Error("La API Key no es válida o tiene restricciones de dominio (Referrer). Detalle técnico: " + rawDetail);
                     }
-                    throw new Error(errorMsg);
+                    throw new Error(`${errorMsg} (Detalle técnico: ${rawDetail})`);
                 }
 
                 if (d.candidates && d.candidates[0] && d.candidates[0].content) {
