@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencia + Ticket de Salida</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- PANTALLA 1: LOGIN -->
+        <div id="loginScreen" class="screen active">
+            <div class="card">
+                <div class="header">
+                    <h1>📋 Asistencia</h1>
+                    <p>Registrá tu presencia y completá el ticket de salida</p>
+                </div>
+
+                <div id="g_id_onload"
+                    data-client_id="493373610143-nkdtu88hfa39ved9bf6kj72at1d30rul.apps.googleusercontent.com"
+                    data-callback="handleCredentialResponse" data-auto_prompt="false">
+                </div>
+
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"
+                    data-text="signin_with" data-shape="rectangular" data-logo_alignment="left">
+                </div>
+
+                <p class="hint">Usá tu cuenta de Google del colegio</p>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: CÓDIGO -->
+        <div id="codeScreen" class="screen">
+            <div class="card">
+                <div class="user-info">
+                    <img id="userAvatar" src="" alt="Avatar" class="avatar">
+                    <div>
+                        <div id="userName" class="user-name"></div>
+                        <div id="userEmail" class="user-email"></div>
+                    </div>
+                    <button onclick="logout()" class="btn-logout">Salir</button>
+                </div>
+
+                <div class="header">
+                    <h2>Ingresá el código de clase</h2>
+                    <p>Tu docente lo anunció en clase</p>
+                </div>
+
+                <form id="codeForm" onsubmit="validateCode(event)">
+                    <input type="text" id="codeInput" class="code-input" placeholder="ABC123" maxlength="8" required
+                        autocomplete="off">
+                    <button type="submit" class="btn-primary" id="validateBtn">
+                        Validar código
+                    </button>
+                </form>
+
+                <div id="codeError" class="error-message"></div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: SESIÓN ACTIVA -->
+        <div id="sessionScreen" class="screen">
+            <div class="card">
+                <div class="user-info">
+                    <img id="userAvatar2" src="" alt="Avatar" class="avatar">
+                    <div>
+                        <div id="userName2" class="user-name"></div>
+                        <button onclick="backToCode()" class="btn-back">← Cambiar código</button>
+                    </div>
+                </div>
+
+                <div class="session-info">
+                    <div class="info-badge">
+                        <span class="label">Materia:</span>
+                        <span id="sessionMateria" class="value"></span>
+                    </div>
+                    <div class="info-badge">
+                        <span class="label">Curso:</span>
+                        <span id="sessionCurso" class="value"></span>
+                    </div>
+                </div>
+
+                <div class="header">
+                    <h2>Ticket de salida</h2>
+                    <p>Respondé las siguientes preguntas</p>
+                </div>
+
+                <form id="answersForm" onsubmit="submitAnswers(event)">
+                    <div id="questionsContainer"></div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        Enviar respuestas
+                    </button>
+                </form>
+
+                <div id="submitError" class="error-message"></div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: CONFIRMACIÓN -->
+        <div id="confirmationScreen" class="screen">
+            <div class="card">
+                <div class="confirmation-icon">✅</div>
+                <h2 id="confirmationTitle">¡Asistencia registrada!</h2>
+                <p id="confirmationMessage"></p>
+
+                <div class="session-summary">
+                    <div class="summary-item">
+                        <span class="label">Materia:</span>
+                        <span id="confirmMateria"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Curso:</span>
+                        <span id="confirmCurso"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Hora:</span>
+                        <span id="confirmTime"></span>
+                    </div>
+                </div>
+
+                <button onclick="backToCode()" class="btn-secondary">
+                    Ingresar otro código
+                </button>
+            </div>
+        </div>
+
+        <!-- LOADING SPINNER -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Procesando...</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
