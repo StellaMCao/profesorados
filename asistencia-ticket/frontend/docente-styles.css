@@ -752,3 +752,75 @@
 .help-section li {
     margin-bottom: 0.25rem;
 }
+
+/* ============================================
+   MODERN TOGGLE SWITCHES
+   ============================================ */
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.toggle-container:hover {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+}
+
+.toggle-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.switch-input {
+    display: none !important;
+}
+
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.switch-input:checked+.switch-slider {
+    background-color: var(--success);
+}
+
+.switch-input:checked+.switch-slider:before {
+    transform: translateX(20px);
+}
