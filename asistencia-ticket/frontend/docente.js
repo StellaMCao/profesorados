@@ -221,6 +221,14 @@ function isTrue(value) {
     return value === true || value === 'true' || value === 'TRUE' || value === 1 || value === '1';
 }
 
+function showHelpModal() {
+    document.getElementById('helpModal').classList.add('show');
+}
+
+function closeHelpModal() {
+    document.getElementById('helpModal').classList.remove('show');
+}
+
 function renderSessions() {
     const container = document.getElementById('sessionsContainer');
     const noSessions = document.getElementById('noSessions');

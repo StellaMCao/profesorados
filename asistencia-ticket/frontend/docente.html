@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Docente - Asistencia</title>
+    <link rel="icon" href="favicon.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="docente-styles.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -38,6 +39,8 @@
             <div class="nav-content">
                 <h1>📋 Mis Sesiones</h1>
                 <div class="user-info-nav">
+                    <button onclick="showHelpModal()" class="btn-help-nav" title="Ayuda y Manual de Uso">❓
+                        Ayuda</button>
                     <img id="docenteAvatar" src="" alt="Avatar" class="avatar-small">
                     <span id="docenteName"></span>
                     <button onclick="docenteLogout()" class="btn-logout-nav">Salir</button>
@@ -226,6 +229,80 @@
             </div>
 
             <div id="submissionsTable"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: AYUDA DOCENTE -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>📖 Manual de Uso - Panel Docente</h2>
+                <button onclick="closeHelpModal()" class="btn-close">✕</button>
+            </div>
+
+            <div class="help-content">
+                <section class="help-section">
+                    <h3>1. Gestión de Sesiones (Clases)</h3>
+                    <p>Cada clase que dictes es una <strong>"Sesión"</strong>. Para empezar a tomar asistencia, haz clic
+                        en "Nueva Sesión". Los estudiantes verán el código de 6 dígitos que se genera y deberán
+                        ingresarlo en la pantalla principal para poder enviar su asistencia.</p>
+                    <ul>
+                        <li><strong>Estado Activa:</strong> Permite que los estudiantes envíen su respuesta.</li>
+                        <li><strong>Estado Cerrada:</strong> Ningún estudiante puede enviar más respuestas a esa sesión.
+                            El sistema cierra esto automáticamente si superan la hora de finalización (y la ventana de
+                            tardíos).</li>
+                    </ul>
+                </section>
+
+                <section class="help-section">
+                    <h3>2. Materias Dinámicas</h3>
+                    <p>¡No estás limitada a una lista fija! Al crear una sesión, simplemente escribe en el casillero
+                        <strong>Materia</strong> el nombre exacto de la materia (por ejemplo: "Educación Física II"). El
+                        sistema creará automáticamente una pestaña en tu Excel (Google Sheets) con ese nombre, si es que
+                        no existía ya.
+                    </p>
+                </section>
+
+                <section class="help-section">
+                    <h3>3. Temporizador y Entregas Tardías</h3>
+                    <p>Los estudiantes verán una cuenta regresiva basada en el "Horario Fin" que elegiste.</p>
+                    <ul>
+                        <li><span style="color:var(--primary); font-weight:bold;">Color Azul:</span> Están en horario
+                            normal.</li>
+                        <li><span style="color:var(--warning); font-weight:bold;">Color Naranja:</span> La hora oficial
+                            terminó, pero habilitaste la opción "Aceptar tardíos" (Ej: +10 min). El estudiante puede
+                            enviar igual, pero en su reporte figurará el estado como "Tarde".</li>
+                        <li><span style="color:var(--error); font-weight:bold;">Color Rojo:</span> El tiempo se acabó
+                            por completo. El formulario se bloquea.</li>
+                    </ul>
+                </section>
+
+                <section class="help-section">
+                    <h3>4. Estadísticas y Reportes</h3>
+                    <p>Al hacer clic en el botón <strong>👁️ Ver</strong> de cualquier sesión, entrarás a la pantalla de
+                        métricas en tiempo real:</p>
+                    <ul>
+                        <li><strong>Gráficos:</strong> Todas las preguntas que configuraste como "Opción Múltiple" se
+                            graficarán automáticamente en barras de colores para que veas la tendencia de la clase de un
+                            vistazo.</li>
+                        <li><strong>Exportar CSV:</strong> Puedes descargar un archivo de cálculo con todas las
+                            asistencias y respuestas para abrirlo en Excel en tu PC.</li>
+                    </ul>
+                </section>
+
+                <section class="help-section">
+                    <h3>5. Seguridad y Otros Docentes</h3>
+                    <p>Por seguridad, los estudiantes (o intrusos) no pueden acceder a este panel. El sistema solo
+                        dejará entrar a los correos electrónicos de Gmail autorizados.</p>
+                    <p><strong>¿Quieres agregar un colega?</strong> Simplemente abre la hoja de cálculo de Google Sheets
+                        conectada a este sistema, busca la pestaña que dice <code>_docentes</code>, y agrega su correo
+                        electrónico de Gmail en la primera columna vacía. Automáticamente tendrán acceso.</p>
+                </section>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" onclick="closeHelpModal()" class="btn-primary">¡Entendido!</button>
+            </div>
         </div>
     </div>
 

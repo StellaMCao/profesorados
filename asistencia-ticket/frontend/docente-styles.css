@@ -57,6 +57,21 @@
     cursor: pointer;
 }
 
+.btn-help-nav {
+    background: var(--bg);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-help-nav:hover {
+    background: #e2e8f0;
+}
+
 /* ============================================
    DASHBOARD
    ============================================ */
@@ -676,4 +691,49 @@
 .badge-warning {
     background: var(--warning);
     color: white;
+}
+
+/* ============================================
+   HELP MODAL
+   ============================================ */
+
+.help-content {
+    margin-top: 1rem;
+}
+
+.help-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.help-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.help-section h3 {
+    color: var(--primary);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.help-section p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.help-section ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.5;
+}
+
+.help-section li {
+    margin-bottom: 0.25rem;
 }
