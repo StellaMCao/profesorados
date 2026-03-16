@@ -214,9 +214,9 @@ async function validateCode(event) {
 
             document.getElementById('sessionDetails').textContent = `${currentSession.materia} (${currentSession.curso})`;
 
-            // Compatibilidad con backend antiguo (por si no actualizaron Code.gs)
-            if (currentSession.horario_fin) {
-                startSessionTimer(currentSession.horario_fin, currentSession.ventana_tardios, currentSession.aceptar_tardios, currentSession.fecha_fin);
+            // Usar segundos restantes del servidor
+            if (currentSession.seconds_remaining !== undefined) {
+                startSessionTimer(currentSession.seconds_remaining);
                 document.getElementById('timerBadge').style.display = 'block';
             } else {
                 document.getElementById('timerBadge').style.display = 'none';
@@ -318,7 +318,7 @@ function parseTimeValue(timeVal) {
     return null;
 }
 
-function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin) {
+function startSessionTimer(secondsRemaining) {
     if (sessionTimerInterval) clearInterval(sessionTimerInterval);
 
     const timerElement = document.getElementById('sessionTimer');
@@ -326,38 +326,20 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
     const progressContainer = document.getElementById('timerProgressContainer');
     const progressBar = document.getElementById('timerProgressBar');
 
-    const timeParsed = parseTimeValue(horarioFin);
-    if (!timeParsed) {
+    if (secondsRemaining === undefined || secondsRemaining === null) {
         timerElement.textContent = '--:--';
         if (progressContainer) progressContainer.style.display = 'none';
         return;
     }
-    const { h, m } = timeParsed;
 
-    let endTime = new Date();
-    if (fechaFin) {
-        const strFin = String(fechaFin);
-        const dateMatch = strFin.match(/(\d{4})-(\d{2})-(\d{2})/);
-        if (dateMatch) {
-            const [, year, month, day] = dateMatch.map(Number);
-            endTime.setFullYear(year, month - 1, day);
-        }
-    }
-    endTime.setHours(h, m, 0, 0);
-
-    const extendedEndTime = new Date(endTime.getTime());
-    const tardiosMinutos = Number(ventanaTardios) || 0;
-    if (aceptarTardios) {
-        extendedEndTime.setMinutes(extendedEndTime.getMinutes() + tardiosMinutos);
-    }
-
-    const startTime = new Date(); // Referencia para la barra de progreso
-    const totalDuration = extendedEndTime - startTime;
+    const endTime = Date.now() + (secondsRemaining * 1000);
+    const totalDurationMs = secondsRemaining * 1000;
+    
     if (progressContainer) progressContainer.style.display = 'block';
 
     function updateTimer() {
-        const now = new Date();
-        const diff = extendedEndTime - now;
+        const now = Date.now();
+        const diff = endTime - now;
 
         if (diff <= 0) {
             clearInterval(sessionTimerInterval);
@@ -377,8 +359,8 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
         const minsLeft = totalMinutes % 60;
 
         // Actualizar barra de progreso
-        if (progressBar && totalDuration > 0) {
-            const progress = (diff / totalDuration) * 100;
+        if (progressBar && totalDurationMs > 0) {
+            const progress = (diff / totalDurationMs) * 100;
             progressBar.style.width = `${progress}%`;
 
             if (progress < 20) {
@@ -391,15 +373,12 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
         }
 
         // Estilos según el tiempo (regular o tardío)
-        if (now > endTime) {
-            badgeElement.className = "info-badge timer-badge warning pulse";
+        // Nota: El backend ya incluyó la ventana de tardíos en secondsRemaining si aplicaba
+        const criticalTime = 5 * 60 * 1000; // 5 minutos
+        if (diff < criticalTime) {
+            badgeElement.className = "info-badge timer-badge danger";
         } else {
-            const criticalTime = 5 * 60 * 1000; // 5 minutos
-            if (diff < criticalTime) {
-                badgeElement.className = "info-badge timer-badge danger";
-            } else {
-                badgeElement.className = "info-badge timer-badge";
-            }
+            badgeElement.className = "info-badge timer-badge";
         }
 
         if (days > 0) {
@@ -606,7 +585,7 @@ async function confirmAndSubmit() {
             showScreen('confirmationScreen');
 
             // Mostrar botón de resultados en pantalla de confirmación si aplica
-            const hasPoll = currentSession.preguntas.some(q => q.tipo === 'multiple' && q.show_results);
+            const hasPoll = currentSession.preguntas.some(q => q.tipo === 'multiple' && q.show_results !== false);
             if (hasPoll) {
                 const btnConfirm = document.getElementById('btnVerResultadosConfirm');
                 if (btnConfirm) {

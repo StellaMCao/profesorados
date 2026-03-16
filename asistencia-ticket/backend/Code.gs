@@ -322,6 +322,9 @@ function validateCode(codigo, userEmail) {
           error: timeCheck.reason
         });
       }
+
+      // Calcular segundos restantes para el alumno
+      const secondsRemaining = getSecondsRemaining(session);
       
       // Verificar si ya envió
       const yaEnvio = checkDuplicate(session.session_id, userEmail);
@@ -332,6 +335,7 @@ function validateCode(codigo, userEmail) {
       Logger.log('DIAGNOSTIC - raw permitir_reenvio (col 11): [' + session.permitir_reenvio + '] type: ' + typeof session.permitir_reenvio);
       Logger.log('DIAGNOSTIC - isTrue(permitir_reenvio): ' + reenvioPermitido);
       Logger.log('DIAGNOSTIC - yaEnvio: ' + yaEnvio);
+      Logger.log('DIAGNOSTIC - secondsRemaining: ' + secondsRemaining);
 
       if (yaEnvio && !reenvioPermitido) {
         return jsonResponse({
@@ -354,7 +358,8 @@ function validateCode(codigo, userEmail) {
           ventana_tardios: session.ventana_tardios,
           aceptar_tardios: isTrue(session.aceptar_tardios),
           require_gps: isTrue(session.require_gps),
-          ubicacion_docente: session.ubicacion_docente
+          ubicacion_docente: session.ubicacion_docente,
+          seconds_remaining: secondsRemaining
         }
       });
     }
@@ -365,6 +370,40 @@ function validateCode(codigo, userEmail) {
     error: 'Código inválido. Verificá que esté bien escrito.'
   });
 }
+
+function getSecondsRemaining(session) {
+  try {
+    const now = new Date();
+    // Forzar la creación de la fecha fin combinando fecha_fin y horario_fin
+    let datePart = session.fecha_fin || session.fecha;
+    if (datePart instanceof Date) {
+      datePart = Utilities.formatDate(datePart, CONFIG.TIMEZONE, 'yyyy-MM-dd');
+    } else if (typeof datePart === 'string' && datePart.includes('T')) {
+      datePart = datePart.split('T')[0];
+    }
+
+    const timePart = session.horario_fin; // HH:mm
+    const [h, m] = timePart.split(':').map(Number);
+    
+    // Crear objeto Date en la zona horaria de la sesión
+    // Nota: JS Date siempre usa el reloj local del entorno, pero formatemos para comparar
+    const endStr = datePart + ' ' + (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':00';
+    const endDate = new Date(endStr.replace(/-/g, '/')); // Reemplazo para compatibilidad cross-platform en GAS
+    
+    // Si se aceptan tardíos, extender el tiempo
+    if (isTrue(session.aceptar_tardios)) {
+      const lateWindow = parseInt(session.ventana_tardios) || 0;
+      endDate.setMinutes(endDate.getMinutes() + lateWindow);
+    }
+
+    const diffMs = endDate.getTime() - now.getTime();
+    return Math.max(0, Math.floor(diffMs / 1000));
+  } catch (e) {
+    Logger.log('Error calculating seconds remaining: ' + e.toString());
+    return 0;
+  }
+}
+
 
 function checkDuplicate(sessionId, email) {
   // Buscar en todas las hojas de materias
@@ -722,10 +761,10 @@ function getPollResults(sessionId) {
   const data = sheet.getDataRange().getValues();
   for (let i = 1; i < data.length; i++) {
     if (data[i][0].toString() === sessionId.toString()) {
-      // Columnas J-N (índices 9-13) son pregunta_1 a pregunta_5
+      // Columnas J-N (indices 9-13) son pregunta_1 a pregunta_5
       for (let qIdx = 1; qIdx <= 5; qIdx++) {
         if (results[qIdx]) {
-          const respuestaCompleta = String(data[i][8 + qIdx] || '');
+          const respuestaCompleta = String(data[i][8 + qIdx] || ''); // 8+1 = 9 (Col J)
           if (respuestaCompleta) {
             const respuestas = respuestaCompleta.split(',').map(r => r.trim());
             respuestas.forEach(r => {
