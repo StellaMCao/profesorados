@@ -93,9 +93,12 @@ body.dark-mode-gradient {
 
 .screen.active {
     display: block;
-    background: var(--bg);
-    /* Asegurar que cubra lo anterior */
     min-height: 100vh;
+}
+
+#sessionScreen.active {
+    background: var(--bg);
+    /* Solo para la pantalla de preguntas */
 }
 
 /* ============================================
