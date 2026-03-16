@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Docente - Asistencia</title>
     <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="stylesheet" href="styles.css?v=4">
-    <link rel="stylesheet" href="docente-styles.css?v=4">
+    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="docente-styles.css?v=5">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
@@ -90,13 +90,18 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Fecha *</label>
+                        <label>Fecha Desde *</label>
                         <input type="date" id="inputFecha" required>
                     </div>
                     <div class="form-group">
-                        <label>Curso/Comisión *</label>
-                        <input type="text" id="inputCurso" placeholder="Ej: 1A" required>
+                        <label>Fecha Hasta *</label>
+                        <input type="date" id="inputFechaFin" required>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Curso/Comisión *</label>
+                    <input type="text" id="inputCurso" placeholder="Ej: 1A" required>
                 </div>
 
                 <div class="form-row">
@@ -165,9 +170,15 @@
             </div>
 
             <form id="duplicateForm" onsubmit="confirmDuplicate(event)">
-                <div class="form-group">
-                    <label>Nueva Fecha *</label>
-                    <input type="date" id="dupFecha" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha Desde *</label>
+                        <input type="date" id="dupFecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Hasta *</label>
+                        <input type="date" id="dupFechaFin" required>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -312,8 +323,8 @@
         <p>Procesando...</p>
     </div>
 
-    <script src="app.js?v=4"></script>
-    <script src="docente.js?v=4"></script>
+    <script src="app.js?v=5"></script>
+    <script src="docente.js?v=5"></script>
 </body>
 
 </html>

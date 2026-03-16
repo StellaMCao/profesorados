@@ -146,6 +146,7 @@ async function editSession(sessionId) {
     // Poblar campos básicos
     document.getElementById('inputMateria').value = session.materia;
     document.getElementById('inputFecha').value = formatDateForInput(session.fecha);
+    document.getElementById('inputFechaFin').value = formatDateForInput(session.fecha_fin || session.fecha);
     document.getElementById('inputCurso').value = session.curso;
     document.getElementById('inputHorarioInicio').value = formatTimeForInput(session.horario_inicio);
     document.getElementById('inputHorarioFin').value = formatTimeForInput(session.horario_fin);
@@ -255,7 +256,7 @@ function renderSessions() {
       </div>
       <div class="session-info-grid">
         <div><strong>Curso:</strong> ${session.curso}</div>
-        <div><strong>Fecha:</strong> ${formatDate(session.fecha)}</div>
+        <div><strong>Período:</strong> ${formatDate(session.fecha)} al ${formatDate(session.fecha_fin || session.fecha)}</div>
         <div><strong>Horario:</strong> ${formatTime(session.horario_inicio)} - ${formatTime(session.horario_fin)}</div>
         <div><strong>Código:</strong> <code>${session.codigo}</code></div>
       </div>
@@ -310,15 +311,20 @@ function checkIsExpired(session) {
     const today = `${year}-${month}-${day}`;
 
     const sessionDate = formatDateForInput(session.fecha);
+    const sessionDateFin = formatDateForInput(session.fecha_fin || session.fecha);
 
-    if (sessionDate < today) return true;
     if (sessionDate > today) return false;
+    if (sessionDateFin < today) return true;
 
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
-    const endMinutes = parseTime(session.horario_fin);
-    const lateWindow = parseInt(session.ventana_tardios) || 0;
+    if (today === sessionDateFin) {
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+        const endMinutes = parseTime(session.horario_fin);
+        const lateWindow = parseInt(session.ventana_tardios) || 0;
 
-    return currentMinutes > (endMinutes + lateWindow);
+        return currentMinutes > (endMinutes + lateWindow);
+    }
+
+    return false;
 }
 
 async function toggleSessionStatus(sessionId, isActive) {
@@ -366,6 +372,17 @@ function showCreateSessionModal() {
     questionCount = 0;
     addQuestion(); // Agregar primera pregunta por defecto
     generateNewCode();
+
+    // Set default dates to today
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
+
+    document.getElementById('inputFecha').value = todayStr;
+    document.getElementById('inputFechaFin').value = todayStr;
+
     document.getElementById('sessionModal').classList.add('show');
 }
 
@@ -517,6 +534,7 @@ async function saveSession(event) {
             session_id: currentEditingSessionId,
             materia: document.getElementById('inputMateria').value,
             fecha: document.getElementById('inputFecha').value,
+            fecha_fin: document.getElementById('inputFechaFin').value,
             curso: document.getElementById('inputCurso').value,
             horario_inicio: document.getElementById('inputHorarioInicio').value,
             horario_fin: document.getElementById('inputHorarioFin').value,
@@ -600,6 +618,7 @@ async function confirmDuplicate(event) {
                 token: docenteToken,
                 session_id_original: currentSessionForDuplicate.session_id,
                 nueva_fecha: document.getElementById('dupFecha').value,
+                nueva_fecha_fin: document.getElementById('dupFechaFin').value,
                 nuevo_horario_inicio: document.getElementById('dupHorarioInicio').value,
                 nuevo_horario_fin: document.getElementById('dupHorarioFin').value,
                 nuevo_codigo: document.getElementById('dupCodigo').value

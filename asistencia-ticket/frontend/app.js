@@ -141,7 +141,7 @@ async function validateCode(event) {
 
             // Compatibilidad con backend antiguo (por si no actualizaron Code.gs)
             if (currentSession.horario_fin) {
-                startSessionTimer(currentSession.horario_fin, currentSession.ventana_tardios, currentSession.aceptar_tardios);
+                startSessionTimer(currentSession.horario_fin, currentSession.ventana_tardios, currentSession.aceptar_tardios, currentSession.fecha_fin);
                 document.getElementById('timerBadge').style.display = 'block';
             } else {
                 document.getElementById('timerBadge').style.display = 'none';
@@ -163,16 +163,28 @@ async function validateCode(event) {
 // TEMPORIZADOR DE SESIÓN
 // ============================================
 
-function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios) {
+function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin) {
     if (sessionTimerInterval) clearInterval(sessionTimerInterval);
 
     const timerElement = document.getElementById('sessionTimer');
     const badgeElement = document.getElementById('timerBadge');
 
-    // Parsear horarioFin "HH:MM"
-    const [hours, minutes] = horarioFin.split(':').map(Number);
-    const endTime = new Date();
-    endTime.setHours(hours, minutes, 0, 0);
+    // Parsear fechaFin y horarioFin
+    let endTime;
+    if (fechaFin) {
+        // Formato seguro YYYY-MM-DD
+        const dateStr = fechaFin.split('T')[0];
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const [hours, minutes] = horarioFin.split(':').map(Number);
+
+        endTime = new Date();
+        endTime.setFullYear(year, month - 1, day);
+        endTime.setHours(hours, minutes, 0, 0);
+    } else {
+        const [hours, minutes] = horarioFin.split(':').map(Number);
+        endTime = new Date();
+        endTime.setHours(hours, minutes, 0, 0);
+    }
 
     // Agregar ventana de tardíos si aplica
     const extendedEndTime = new Date(endTime.getTime());
@@ -196,6 +208,11 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios) {
         const totalMinutes = Math.floor(diff / 1000 / 60);
         const secs = Math.floor((diff / 1000) % 60);
 
+        // Si dura más de 24 horas, calcular horas y días
+        const days = Math.floor(totalMinutes / (60 * 24));
+        const hoursLeft = Math.floor((totalMinutes % (60 * 24)) / 60);
+        const minsLeft = totalMinutes % 60;
+
         // Estilos según el tiempo (regular o tardío)
         if (now > endTime) {
             badgeElement.className = "info-badge timer-badge warning";
@@ -203,7 +220,13 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios) {
             badgeElement.className = "info-badge timer-badge";
         }
 
-        timerElement.textContent = `${totalMinutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        if (days > 0) {
+            timerElement.textContent = `${days}d ${hoursLeft}h ${minsLeft}m`;
+        } else if (hoursLeft > 0) {
+            timerElement.textContent = `${hoursLeft}h ${minsLeft}m ${secs}s`;
+        } else {
+            timerElement.textContent = `${minsLeft.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
     }
 
     document.getElementById('submitBtn').disabled = false;
