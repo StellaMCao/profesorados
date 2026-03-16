@@ -227,28 +227,47 @@ function verifyStudentLocation(ubicacionDocente) {
 // TEMPORIZADOR DE SESIÓN
 // ============================================
 
+// Extrae horas y minutos de cualquier formato de tiempo posible
+// Acepta: "14:30", "14:30:00", "1899-12-30T14:30:00.000Z", Date serializado, etc.
+function parseTimeValue(timeVal) {
+    if (!timeVal) return null;
+    const str = String(timeVal);
+    // Formato HH:MM o HH:MM:SS
+    const simple = str.match(/^(\d{1,2}):(\d{2})/);
+    if (simple) return { h: Number(simple[1]), m: Number(simple[2]) };
+    // ISO con T (ej: "1899-12-30T14:30:00.000Z" o "2026-03-16T14:30:00.000Z")
+    const iso = str.match(/T(\d{2}):(\d{2})/);
+    if (iso) return { h: Number(iso[1]), m: Number(iso[2]) };
+    return null;
+}
+
 function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin) {
     if (sessionTimerInterval) clearInterval(sessionTimerInterval);
 
     const timerElement = document.getElementById('sessionTimer');
     const badgeElement = document.getElementById('timerBadge');
 
-    // Parsear fechaFin y horarioFin
-    let endTime;
-    if (fechaFin) {
-        // Formato seguro YYYY-MM-DD
-        const dateStr = fechaFin.split('T')[0];
-        const [year, month, day] = dateStr.split('-').map(Number);
-        const [hours, minutes] = horarioFin.split(':').map(Number);
-
-        endTime = new Date();
-        endTime.setFullYear(year, month - 1, day);
-        endTime.setHours(hours, minutes, 0, 0);
-    } else {
-        const [hours, minutes] = horarioFin.split(':').map(Number);
-        endTime = new Date();
-        endTime.setHours(hours, minutes, 0, 0);
+    // Parsear la hora de fin
+    const timeParsed = parseTimeValue(horarioFin);
+    if (!timeParsed) {
+        timerElement.textContent = '--:--';
+        console.warn('startSessionTimer: no se pudo parsear horarioFin =', horarioFin);
+        return;
     }
+    const { h, m } = timeParsed;
+
+    // Construir la fecha/hora de fin
+    let endTime = new Date();
+    if (fechaFin) {
+        // Extraer YYYY-MM-DD de cualquier formato
+        const strFin = String(fechaFin);
+        const dateMatch = strFin.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (dateMatch) {
+            const [, year, month, day] = dateMatch.map(Number);
+            endTime.setFullYear(year, month - 1, day);
+        }
+    }
+    endTime.setHours(h, m, 0, 0);
 
     // Agregar ventana de tardíos si aplica
     const extendedEndTime = new Date(endTime.getTime());
@@ -269,20 +288,17 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
             return;
         }
 
-        const totalMinutes = Math.floor(diff / 1000 / 60);
-        const secs = Math.floor((diff / 1000) % 60);
-
-        // Si dura más de 24 horas, calcular horas y días
+        const totalSeconds = Math.floor(diff / 1000);
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
         const days = Math.floor(totalMinutes / (60 * 24));
         const hoursLeft = Math.floor((totalMinutes % (60 * 24)) / 60);
         const minsLeft = totalMinutes % 60;
 
         // Estilos según el tiempo (regular o tardío)
-        if (now > endTime) {
-            badgeElement.className = "info-badge timer-badge warning";
-        } else {
-            badgeElement.className = "info-badge timer-badge";
-        }
+        badgeElement.className = now > endTime
+            ? "info-badge timer-badge warning"
+            : "info-badge timer-badge";
 
         if (days > 0) {
             timerElement.textContent = `${days}d ${hoursLeft}h ${minsLeft}m`;
@@ -294,7 +310,7 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
     }
 
     document.getElementById('submitBtn').disabled = false;
-    updateTimer(); // Primera ejecución inmediata
+    updateTimer();
     sessionTimerInterval = setInterval(updateTimer, 1000);
 }
 
