@@ -325,7 +325,9 @@ function validateCode(codigo, userEmail) {
       
       // Verificar si ya envió
       const yaEnvio = checkDuplicate(session.session_id, userEmail);
-      if (yaEnvio && session.permitir_reenvio !== 'true') {
+      const reenvioPermitido = isTrue(session.permitir_reenvio);
+      
+      if (yaEnvio && !reenvioPermitido) {
         return jsonResponse({
           success: false,
           error: 'Ya enviaste respuestas para esta sesión.'
