@@ -327,6 +327,11 @@ function validateCode(codigo, userEmail) {
       const yaEnvio = checkDuplicate(session.session_id, userEmail);
       const reenvioPermitido = isTrue(session.permitir_reenvio);
       
+      Logger.log('validateCode - Session ID: ' + session.session_id);
+      Logger.log('validateCode - User: ' + userEmail);
+      Logger.log('validateCode - Ya envió: ' + yaEnvio);
+      Logger.log('validateCode - Permitir reenvío: ' + reenvioPermitido + ' (Valor crudo: ' + session.permitir_reenvio + ')');
+
       if (yaEnvio && !reenvioPermitido) {
         return jsonResponse({
           success: false,
@@ -416,8 +421,12 @@ function submitAnswers(params, userEmail) {
   
   // Verificar duplicado
   const yaEnvio = checkDuplicate(session_id, userEmail);
-  const reenvioPermitido = String(session.permitir_reenvio).toLowerCase() === 'true' || session.permitir_reenvio === true;
+  const reenvioPermitido = isTrue(session.permitir_reenvio);
   
+  Logger.log('submitAnswers - Session ID: ' + session_id);
+  Logger.log('submitAnswers - Ya envió: ' + yaEnvio);
+  Logger.log('submitAnswers - Reenvío permitido: ' + reenvioPermitido);
+
   if (yaEnvio && !reenvioPermitido) {
     return jsonResponse({ success: false, error: 'Ya enviaste respuestas para esta sesión. El docente no habilitó el reenvío.' });
   }
