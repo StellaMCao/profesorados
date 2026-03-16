@@ -210,6 +210,22 @@ async function validateCode(event) {
 
         if (data.success) {
             currentSession = data.session;
+
+            if (currentSession.ya_envio) {
+                showScreen('confirmationScreen');
+                document.getElementById('confirmMateria').textContent = currentSession.materia;
+                document.getElementById('confirmCurso').textContent = currentSession.curso;
+                document.getElementById('confirmTime').textContent = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                
+                const hasPoll = currentSession.preguntas.some(q => q.tipo === 'multiple' && q.show_results !== false);
+                const btnResults = document.getElementById('btnVerResultadosConfirm');
+                if (btnResults) {
+                    btnResults.style.display = hasPoll ? 'block' : 'none';
+                    btnResults.textContent = 'Ver resultados de la clase';
+                }
+                return;
+            }
+
             renderQuestions(currentSession.preguntas);
 
             document.getElementById('sessionDetails').textContent = `${currentSession.materia} (${currentSession.curso})`;

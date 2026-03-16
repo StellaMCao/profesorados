@@ -164,9 +164,7 @@ function validateToken(token) {
 }
 
 function isTrue(val) {
-  if (typeof val === 'boolean') return val;
-  if (typeof val === 'string') return val.toLowerCase() === 'true';
-  if (typeof val === 'number') return val === 1;
+  if (val === true || val === 'true' || val === 'TRUE' || val === 1 || val === '1') return true;
   return false;
 }
 
@@ -779,7 +777,9 @@ function getPollResults(sessionId) {
   if (!session) return jsonResponse({ success: false, error: 'Sesión no encontrada' });
 
   // Inicializar contadores para preguntas de opción múltiple (solo si son encuestas)
-  session.preguntas.forEach((q, idx) => {
+  const preguntas = JSON.parse(session.preguntas_json || '[]');
+  
+  preguntas.forEach((q, idx) => {
     if (q.tipo === 'multiple' && q.show_results !== false) {
       results[idx + 1] = { 
         pregunta: q.texto,
