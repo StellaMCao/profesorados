@@ -466,6 +466,9 @@ function updateQuestionType(select) {
         <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
           <input type="checkbox" class="multiple-selection"> Selección múltiple
         </label>
+        <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+          <input type="checkbox" class="show-results" checked> Mostrar resultados a alumnos
+        </label>
       </div>
     `;
     } else {
@@ -539,6 +542,7 @@ async function saveSession(event) {
                 .filter(val => val.trim() !== '');
             pregunta.opciones = opciones;
             pregunta.multiple_selection = qb.querySelector('.multiple-selection').checked;
+            pregunta.show_results = qb.querySelector('.show-results').checked;
         }
 
         preguntas.push(pregunta);

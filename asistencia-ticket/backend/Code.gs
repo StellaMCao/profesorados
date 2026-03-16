@@ -684,14 +684,14 @@ function getPollResults(sessionId) {
   
   if (!session) return jsonResponse({ success: false, error: 'Sesión no encontrada' });
 
-  // Inicializar contadores para preguntas de opción múltiple
+  // Inicializar contadores para preguntas de opción múltiple (solo si son encuestas)
   session.preguntas.forEach((q, idx) => {
-    if (q.type === 'multiple_choice') {
+    if (q.tipo === 'multiple' && q.show_results !== false) {
       results[idx + 1] = { 
-        pregunta: q.text,
+        pregunta: q.texto,
         opciones: {} 
       };
-      q.options.forEach(opt => {
+      q.opciones.forEach(opt => {
         results[idx + 1].opciones[opt] = 0;
       });
     }

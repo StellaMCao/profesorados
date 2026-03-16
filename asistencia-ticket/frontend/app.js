@@ -221,9 +221,9 @@ async function validateCode(event) {
                 verifyStudentLocation(currentSession.ubicacion_docente);
             }
 
-            // Mostrar botón de resultados si hay preguntas de opción múltiple
-            const hasMCQ = currentSession.preguntas.some(q => q.tipo === 'multiple');
-            if (hasMCQ) {
+            // Mostrar botón de resultados si hay preguntas de opción múltiple marcadas como encuesta
+            const hasPoll = currentSession.preguntas.some(q => q.tipo === 'multiple' && q.show_results);
+            if (hasPoll) {
                 document.getElementById('btnVerResultados').style.display = 'block';
             }
         } else {
@@ -432,20 +432,31 @@ function renderQuestions(preguntas) {
         const savedValue = savedAnswers[name] || '';
 
         if (pregunta.tipo === 'multiple') {
+            const isMultiple = pregunta.multiple_selection === true;
             pregunta.opciones.forEach((opcion) => {
                 const label = document.createElement('label');
                 label.className = 'option-label';
+                const input = document.createElement('input');
+                input.type = isMultiple ? 'checkbox' : 'radio';
+                input.name = name;
+                input.value = opcion;
+                if (!isMultiple) input.required = true;
 
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = name;
-                radio.value = opcion;
-                radio.required = true;
-                if (opcion === savedValue) radio.checked = true;
+                if (isMultiple) {
+                    try {
+                        const vals = JSON.parse(savedValue || '[]');
+                        if (Array.isArray(vals) && vals.includes(opcion)) input.checked = true;
+                    } catch (e) { }
+                } else if (opcion === savedValue) input.checked = true;
 
-                radio.addEventListener('change', () => autoSave(name, opcion));
-
-                label.appendChild(radio);
+                input.addEventListener('change', () => {
+                    let val = opcion;
+                    if (isMultiple) {
+                        val = JSON.stringify(Array.from(questionDiv.querySelectorAll('input:checked')).map(i => i.value));
+                    }
+                    autoSave(name, val);
+                });
+                label.appendChild(input);
                 label.appendChild(document.createTextNode(opcion));
                 questionDiv.appendChild(label);
             });
@@ -512,7 +523,11 @@ function submitAnswers(event) {
     container.innerHTML = '';
 
     currentSession.preguntas.forEach((pregunta, index) => {
-        const value = formData.get(`pregunta_${index}`);
+        const name = `pregunta_${index}`;
+        let value = formData.get(name);
+        if (pregunta.multiple_selection === true) {
+            value = Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(i => i.value).join(', ');
+        }
         const div = document.createElement('div');
         div.className = 'preview-item';
         div.innerHTML = `
@@ -540,11 +555,17 @@ async function confirmAndSubmit() {
     }
 
     const form = document.getElementById('answersForm');
-    const formData = new FormData(form);
     const respuestas = [];
 
     currentSession.preguntas.forEach((pregunta, index) => {
-        respuestas.push(formData.get(`pregunta_${index}`) || '');
+        const name = `pregunta_${index}`;
+        if (pregunta.multiple_selection === true) {
+            const vals = Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(i => i.value);
+            respuestas.push(vals.join(', '));
+        } else {
+            const formData = new FormData(form);
+            respuestas.push(formData.get(name) || '');
+        }
     });
 
     try {
@@ -661,6 +682,9 @@ function renderPollResults(results) {
 
     let hasResults = false;
     for (const qIdx in results) {
+        const qData = currentSession.preguntas[parseInt(qIdx) - 1];
+        if (qData && qData.show_results === false) continue; // Saltear si no es encuesta
+
         hasResults = true;
         const q = results[qIdx];
         const qDiv = document.createElement('div');
