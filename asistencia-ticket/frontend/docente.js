@@ -435,7 +435,7 @@ function addQuestion(data = null) {
       <option value="multiple">Opción múltiple</option>
     </select>
     <input type="text" class="question-text" placeholder="Texto de la pregunta" required>
-    <div class="options-container" style="display: none;"></div>
+    <div class="options-container" style="display: none; margin-top: 1rem;"></div>
   `;
 
     if (data) {
@@ -449,56 +449,64 @@ function addQuestion(data = null) {
 
 function removeQuestion(btn) {
     btn.closest('.question-builder').remove();
-    questionCount--;
+    // Don't decrement questionCount globally to keep IDs unique even if others are removed
 }
 
 function updateQuestionType(select, data = null) {
     const builder = select.closest('.question-builder');
+    if (!builder) return;
+
     const container = builder.querySelector('.options-container');
-    const qId = builder.id.split('-').pop(); // Obtener el ID numérico del q-builder-X
+    if (!container) return;
 
     if (select.value === 'multiple') {
         container.style.display = 'block';
+
+        // Generar un ID único interno para los labels/inputs
+        const uid = builder.id ? builder.id.replace('q-builder-', '') : Math.floor(Math.random() * 1000);
+
         container.innerHTML = `
-      <div class="options-list">
-      </div>
-      <button type="button" class="btn-add-option" onclick="addOption(this)">+ Agregar opción</button>
-      
-      <div class="mcq-configs" style="margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
-        <div class="toggle-container">
-          <label class="toggle-label" for="ms-${qId}">Selección múltiple</label>
-          <label class="switch">
-            <input type="checkbox" class="multiple-selection switch-input" id="ms-${qId}">
-            <span class="switch-slider"></span>
-          </label>
-        </div>
-        
-        <div class="toggle-container">
-          <label class="toggle-label" for="sr-${qId}">Mostrar resultados a alumnos</label>
-          <label class="switch">
-            <input type="checkbox" class="show-results switch-input" id="sr-${qId}" checked>
-            <span class="switch-slider"></span>
-          </label>
-        </div>
-      </div>
-    `;
+          <div class="options-list"></div>
+          <button type="button" class="btn-add-option" onclick="addOption(this)">+ Agregar opción</button>
+          
+          <div class="mcq-configs" style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+            <div class="toggle-container">
+              <label class="toggle-label" for="ms-${uid}">Selección múltiple</label>
+              <label class="switch">
+                <input type="checkbox" class="multiple-selection switch-input" id="ms-${uid}">
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+            
+            <div class="toggle-container">
+              <label class="toggle-label" for="sr-${uid}">Mostrar resultados a alumnos</label>
+              <label class="switch">
+                <input type="checkbox" class="show-results switch-input" id="sr-${uid}" checked>
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+          </div>
+        `;
 
         const optionsList = container.querySelector('.options-list');
-        const options = (data && data.opciones) ? data.opciones : ['Opción A', 'Opción B'];
+        const defaultOptions = ['Opción A', 'Opción B'];
+        const optionsData = (data && data.opciones && data.opciones.length > 0) ? data.opciones : defaultOptions;
 
-        options.forEach((opt, idx) => {
+        optionsData.forEach((optValue, idx) => {
             const row = document.createElement('div');
             row.className = 'option-row';
             row.innerHTML = `
-        <input type="text" placeholder="Opción ${String.fromCharCode(65 + idx)}" value="${data ? opt : ''}" required>
-        <button type="button" class="btn-remove-option" onclick="removeOption(this)" style="display:none;">−</button>
-      `;
+              <input type="text" placeholder="Opción ${String.fromCharCode(65 + idx)}" value="${optValue || ''}" required>
+              <button type="button" class="btn-remove-option" onclick="removeOption(this)" style="display:none;">−</button>
+            `;
             optionsList.appendChild(row);
         });
 
         if (data) {
-            container.querySelector('.multiple-selection').checked = data.multiple_selection === true;
-            container.querySelector('.show-results').checked = data.show_results !== false;
+            const msCheck = container.querySelector('.multiple-selection');
+            const srCheck = container.querySelector('.show-results');
+            if (msCheck) msCheck.checked = data.multiple_selection === true;
+            if (srCheck) srCheck.checked = data.show_results !== false;
         }
 
         updateRemoveButtons(optionsList);
