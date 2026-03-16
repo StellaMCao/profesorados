@@ -412,7 +412,9 @@ function submitAnswers(params, userEmail) {
   
   // Verificar duplicado
   const yaEnvio = checkDuplicate(session_id, userEmail);
-  if (yaEnvio && session.permitir_reenvio !== 'true') {
+  const reenvioPermitido = String(session.permitir_reenvio) === 'true' || session.permitir_reenvio === true;
+  
+  if (yaEnvio && !reenvioPermitido) {
     return jsonResponse({ success: false, error: 'Ya enviaste respuestas para esta sesión' });
   }
   
@@ -707,9 +709,15 @@ function getPollResults(sessionId) {
       // Columnas I-M (9-13 en 1-indexed, 8-12 en 0-indexed) son pregunta_1 a pregunta_5
       for (let qIdx = 1; qIdx <= 5; qIdx++) {
         if (results[qIdx]) {
-          const respuesta = data[i][8 + qIdx];
-          if (respuesta && results[qIdx].opciones.hasOwnProperty(respuesta)) {
-            results[qIdx].opciones[respuesta]++;
+          const respuestaCompleta = String(data[i][8 + qIdx] || '');
+          if (respuestaCompleta) {
+            // Dividir por coma por si es selección múltiple
+            const respuestas = respuestaCompleta.split(',').map(r => r.trim());
+            respuestas.forEach(r => {
+              if (results[qIdx].opciones.hasOwnProperty(r)) {
+                results[qIdx].opciones[r]++;
+              }
+            });
           }
         }
       }

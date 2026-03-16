@@ -164,6 +164,14 @@ function backToCode() {
         btnVer.style.display = 'none';
         btnVer.textContent = 'Ver resultados de la clase';
     }
+    const btnVerConfirm = document.getElementById('btnVerResultadosConfirm');
+    if (btnVerConfirm) {
+        btnVerConfirm.style.display = 'none';
+        btnVerConfirm.textContent = 'Ver resultados de la clase';
+    }
+    const pollSectionConfirm = document.getElementById('pollSectionConfirm');
+    if (pollSectionConfirm) pollSectionConfirm.style.display = 'none';
+
     const pollCont = document.getElementById('pollResultsContainer');
     if (pollCont) pollCont.innerHTML = '<p class="hint">Cargando resultados...</p>';
 
@@ -221,10 +229,9 @@ async function validateCode(event) {
                 verifyStudentLocation(currentSession.ubicacion_docente);
             }
 
-            // Mostrar botón de resultados si hay preguntas de opción múltiple marcadas como encuesta
-            const hasPoll = currentSession.preguntas.some(q => q.tipo === 'multiple' && q.show_results);
-            if (hasPoll) {
-                document.getElementById('btnVerResultados').style.display = 'block';
+            // GPS check si aplica
+            if (currentSession.require_gps && currentSession.ubicacion_docente) {
+                verifyStudentLocation(currentSession.ubicacion_docente);
             }
         } else {
             showError('codeError', data.error);
