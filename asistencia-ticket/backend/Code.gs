@@ -314,7 +314,10 @@ function validateCode(codigo, userEmail) {
           curso: session.curso,
           preguntas: session.preguntas,
           ya_envio: yaEnvio,
-          permitir_reenvio: session.permitir_reenvio === 'true'
+          permitir_reenvio: session.permitir_reenvio === 'true',
+          horario_fin: session.horario_fin,
+          ventana_tardios: session.ventana_tardios,
+          aceptar_tardios: isTrue(session.aceptar_tardios)
         }
       });
     }

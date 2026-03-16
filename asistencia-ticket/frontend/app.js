@@ -139,7 +139,13 @@ async function validateCode(event) {
             document.getElementById('sessionMateria').textContent = currentSession.materia;
             document.getElementById('sessionCurso').textContent = currentSession.curso;
 
-            startSessionTimer(currentSession.horario_fin, currentSession.ventana_tardios, currentSession.aceptar_tardios);
+            // Compatibilidad con backend antiguo (por si no actualizaron Code.gs)
+            if (currentSession.horario_fin) {
+                startSessionTimer(currentSession.horario_fin, currentSession.ventana_tardios, currentSession.aceptar_tardios);
+                document.getElementById('timerBadge').style.display = 'block';
+            } else {
+                document.getElementById('timerBadge').style.display = 'none';
+            }
 
             showScreen('sessionScreen');
         } else {
