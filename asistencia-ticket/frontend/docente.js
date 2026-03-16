@@ -412,7 +412,7 @@ function generateNewCode() {
     document.getElementById('inputCodigo').value = code;
 }
 
-function addQuestion() {
+function addQuestion(data = null) {
     if (questionCount >= 5) {
         alert('Se permiten hasta 5 preguntas por sesión.');
         return;
@@ -437,6 +437,12 @@ function addQuestion() {
     <div class="options-container" style="display: none;"></div>
   `;
 
+    if (data) {
+        questionDiv.querySelector('.question-type').value = data.tipo;
+        questionDiv.querySelector('.question-text').value = data.texto;
+        updateQuestionType(questionDiv.querySelector('.question-type'), data);
+    }
+
     container.appendChild(questionDiv);
 }
 
@@ -445,21 +451,13 @@ function removeQuestion(btn) {
     questionCount--;
 }
 
-function updateQuestionType(select) {
+function updateQuestionType(select, data = null) {
     const container = select.closest('.question-builder').querySelector('.options-container');
 
     if (select.value === 'multiple') {
         container.style.display = 'block';
         container.innerHTML = `
       <div class="options-list">
-        <div class="option-row">
-          <input type="text" placeholder="Opción A" required>
-          <button type="button" class="btn-remove-option" onclick="removeOption(this)" style="display:none;">−</button>
-        </div>
-        <div class="option-row">
-          <input type="text" placeholder="Opción B" required>
-          <button type="button" class="btn-remove-option" onclick="removeOption(this)" style="display:none;">−</button>
-        </div>
       </div>
       <button type="button" class="btn-add-option" onclick="addOption(this)">+ Agregar opción</button>
       <div style="margin-top: 10px;">
@@ -471,6 +469,26 @@ function updateQuestionType(select) {
         </label>
       </div>
     `;
+
+        const optionsList = container.querySelector('.options-list');
+        const options = (data && data.opciones) ? data.opciones : ['Opción A', 'Opción B'];
+
+        options.forEach((opt, idx) => {
+            const row = document.createElement('div');
+            row.className = 'option-row';
+            row.innerHTML = `
+        <input type="text" placeholder="Opción ${String.fromCharCode(65 + idx)}" value="${data ? opt : ''}" required>
+        <button type="button" class="btn-remove-option" onclick="removeOption(this)" style="display:none;">−</button>
+      `;
+            optionsList.appendChild(row);
+        });
+
+        if (data) {
+            container.querySelector('.multiple-selection').checked = data.multiple_selection === true;
+            container.querySelector('.show-results').checked = data.show_results !== false;
+        }
+
+        updateRemoveButtons(optionsList);
     } else {
         container.style.display = 'none';
         container.innerHTML = '';
