@@ -93,6 +93,9 @@ body.dark-mode-gradient {
 
 .screen.active {
     display: block;
+    background: var(--bg);
+    /* Asegurar que cubra lo anterior */
+    min-height: 100vh;
 }
 
 /* ============================================
@@ -383,7 +386,8 @@ body.dark-mode-gradient {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 500;
+    /* Bajar z-index para que no tape botones si hay bugs visuales */
     overflow: hidden;
     /* Evitar scrollbars */
 }

@@ -365,11 +365,13 @@ function checkDuplicate(sessionId, email) {
   
   for (const sheet of sheets) {
     const sheetName = sheet.getName();
-    if (sheetName.startsWith('_')) continue; // Saltar hojas de sistema
+    if (sheetName.startsWith('_')) continue; 
     
     const data = sheet.getDataRange().getValues();
     for (let i = 1; i < data.length; i++) {
-      if (data[i][0] === sessionId && data[i][4].toLowerCase() === email.toLowerCase()) {
+      const rowId = String(data[i][0]).trim();
+      const rowEmail = String(data[i][4]).trim().toLowerCase();
+      if (rowId === String(sessionId).trim() && rowEmail === email.toLowerCase().trim()) {
         return true;
       }
     }
@@ -412,10 +414,10 @@ function submitAnswers(params, userEmail) {
   
   // Verificar duplicado
   const yaEnvio = checkDuplicate(session_id, userEmail);
-  const reenvioPermitido = String(session.permitir_reenvio) === 'true' || session.permitir_reenvio === true;
+  const reenvioPermitido = String(session.permitir_reenvio).toLowerCase() === 'true' || session.permitir_reenvio === true;
   
   if (yaEnvio && !reenvioPermitido) {
-    return jsonResponse({ success: false, error: 'Ya enviaste respuestas para esta sesión' });
+    return jsonResponse({ success: false, error: 'Ya enviaste respuestas para esta sesión. El docente no habilitó el reenvío.' });
   }
   
   // Verificar horario
@@ -705,13 +707,12 @@ function getPollResults(sessionId) {
 
   const data = sheet.getDataRange().getValues();
   for (let i = 1; i < data.length; i++) {
-    if (data[i][0] === sessionId) {
-      // Columnas I-M (9-13 en 1-indexed, 8-12 en 0-indexed) son pregunta_1 a pregunta_5
+    if (data[i][0].toString() === sessionId.toString()) {
+      // Columnas J-N (índices 9-13) son pregunta_1 a pregunta_5
       for (let qIdx = 1; qIdx <= 5; qIdx++) {
         if (results[qIdx]) {
           const respuestaCompleta = String(data[i][8 + qIdx] || '');
           if (respuestaCompleta) {
-            // Dividir por coma por si es selección múltiple
             const respuestas = respuestaCompleta.split(',').map(r => r.trim());
             respuestas.forEach(r => {
               if (results[qIdx].opciones.hasOwnProperty(r)) {

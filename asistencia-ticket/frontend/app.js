@@ -608,7 +608,11 @@ async function confirmAndSubmit() {
             // Mostrar botón de resultados en pantalla de confirmación si aplica
             const hasPoll = currentSession.preguntas.some(q => q.tipo === 'multiple' && q.show_results);
             if (hasPoll) {
-                document.getElementById('btnVerResultadosConfirm').style.display = 'block';
+                const btnConfirm = document.getElementById('btnVerResultadosConfirm');
+                if (btnConfirm) {
+                    btnConfirm.style.display = 'block';
+                    btnConfirm.textContent = 'Ver resultados de la clase';
+                }
             }
         } else {
             showError('submitError', data.error);
