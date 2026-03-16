@@ -155,6 +155,18 @@ function backToCode() {
     document.getElementById('questionsContainer').innerHTML = '';
     showError('codeError', '');
     showError('submitError', '');
+
+    // Reset Poll UI
+    const pollSection = document.getElementById('pollSection');
+    const btnVer = document.getElementById('btnVerResultados');
+    if (pollSection) pollSection.style.display = 'none';
+    if (btnVer) {
+        btnVer.style.display = 'none';
+        btnVer.textContent = 'Ver resultados de la clase';
+    }
+    const pollCont = document.getElementById('pollResultsContainer');
+    if (pollCont) pollCont.innerHTML = '<p class="hint">Cargando resultados...</p>';
+
     showScreen('codeScreen');
 }
 
@@ -192,8 +204,7 @@ async function validateCode(event) {
             currentSession = data.session;
             renderQuestions(currentSession.preguntas);
 
-            document.getElementById('sessionMateria').textContent = currentSession.materia;
-            document.getElementById('sessionCurso').textContent = currentSession.curso;
+            document.getElementById('sessionDetails').textContent = `${currentSession.materia} (${currentSession.curso})`;
 
             // Compatibilidad con backend antiguo (por si no actualizaron Code.gs)
             if (currentSession.horario_fin) {
@@ -208,6 +219,12 @@ async function validateCode(event) {
             // GPS check si aplica
             if (currentSession.require_gps && currentSession.ubicacion_docente) {
                 verifyStudentLocation(currentSession.ubicacion_docente);
+            }
+
+            // Mostrar botón de resultados si hay preguntas de opción múltiple
+            const hasMCQ = currentSession.preguntas.some(q => q.type === 'multiple_choice');
+            if (hasMCQ) {
+                document.getElementById('btnVerResultados').style.display = 'block';
             }
         } else {
             showError('codeError', data.error);
@@ -598,4 +615,100 @@ function triggerConfetti() {
     setTimeout(() => {
         container.style.display = 'none';
     }, 5000);
+}
+
+// ============================================
+// ENCUESTAS EN TIEMPO REAL
+// ============================================
+
+function togglePollResults() {
+    const section = document.getElementById('pollSection');
+    const btn = document.getElementById('btnVerResultados');
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        btn.textContent = 'Ocultar resultados';
+        loadPollResults();
+    } else {
+        section.style.display = 'none';
+        btn.textContent = 'Ver resultados de la clase';
+    }
+}
+
+async function loadPollResults() {
+    const container = document.getElementById('pollResultsContainer');
+    try {
+        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({
+                action: 'getPollResults',
+                token: currentUser.email,
+                session_id: currentSession.session_id
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            renderPollResults(data.results);
+        }
+    } catch (e) {
+        console.error('Error loading polls:', e);
+    }
+}
+
+function renderPollResults(results) {
+    const container = document.getElementById('pollResultsContainer');
+    container.innerHTML = '';
+
+    let hasResults = false;
+    for (const qIdx in results) {
+        hasResults = true;
+        const q = results[qIdx];
+        const qDiv = document.createElement('div');
+        qDiv.style.marginBottom = '1.5rem';
+
+        const qTitle = document.createElement('h4');
+        qTitle.style.fontSize = '0.9rem';
+        qTitle.style.marginBottom = '0.5rem';
+        qTitle.textContent = q.pregunta;
+        qDiv.appendChild(qTitle);
+
+        const total = Object.values(q.opciones).reduce((a, b) => a + b, 0);
+
+        for (const opt in q.opciones) {
+            const count = q.opciones[opt];
+            const pct = total > 0 ? (count / total * 100).toFixed(0) : 0;
+
+            const barContainer = document.createElement('div');
+            barContainer.style.marginBottom = '0.4rem';
+
+            const labelRow = document.createElement('div');
+            labelRow.style.display = 'flex';
+            labelRow.style.justifyContent = 'space-between';
+            labelRow.style.fontSize = '0.8rem';
+            labelRow.innerHTML = `<span>${opt}</span> <span>${count} (${pct}%)</span>`;
+            barContainer.appendChild(labelRow);
+
+            const barBg = document.createElement('div');
+            barBg.style.height = '8px';
+            barBg.style.background = 'var(--border)';
+            barBg.style.borderRadius = '4px';
+            barBg.style.marginTop = '2px';
+            barBg.style.overflow = 'hidden';
+
+            const barFill = document.createElement('div');
+            barFill.style.height = '100%';
+            barFill.style.width = pct + '%';
+            barFill.style.background = 'var(--primary)';
+            barFill.style.transition = 'width 1s ease';
+            barBg.appendChild(barFill);
+
+            barContainer.appendChild(barBg);
+            qDiv.appendChild(barContainer);
+        }
+        container.appendChild(qDiv);
+    }
+
+    if (!hasResults) {
+        container.innerHTML = '<p class="hint">No hay preguntas de opción múltiple en esta sesión.</p>';
+    }
 }

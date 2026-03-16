@@ -31,6 +31,10 @@ function doPost(e) {
       return submitAnswers(params, userEmail);
     }
     
+    if (action === 'getPollResults') {
+      return getPollResults(params.session_id);
+    }
+    
     // Rutas docente (requieren autorización)
     // Rutas docente (requieren autorización)
     if (!isDocente(userEmail)) {
@@ -657,6 +661,62 @@ function toggleSession(params) {
   }
   
   return jsonResponse({ success: false, error: 'Sesión no encontrada' });
+}
+
+function getPollResults(sessionId) {
+  const results = {};
+  const ss = getSpreadsheet();
+  const sheets = ss.getSheets();
+  
+  // Buscar la sesión para conocer las preguntas
+  const sessionsSheet = getOrCreateSheet('_sessions');
+  const sessionsData = sessionsSheet.getDataRange().getValues();
+  let session = null;
+  for (let i = 1; i < sessionsData.length; i++) {
+    if (sessionsData[i][0] === sessionId) {
+      session = {
+        materia: sessionsData[i][1],
+        preguntas: JSON.parse(sessionsData[i][7] || '[]')
+      };
+      break;
+    }
+  }
+  
+  if (!session) return jsonResponse({ success: false, error: 'Sesión no encontrada' });
+
+  // Inicializar contadores para preguntas de opción múltiple
+  session.preguntas.forEach((q, idx) => {
+    if (q.type === 'multiple_choice') {
+      results[idx + 1] = { 
+        pregunta: q.text,
+        opciones: {} 
+      };
+      q.options.forEach(opt => {
+        results[idx + 1].opciones[opt] = 0;
+      });
+    }
+  });
+
+  // Buscar todas las respuestas en la hoja de la materia
+  const sheet = ss.getSheetByName(session.materia);
+  if (!sheet) return jsonResponse({ success: true, results });
+
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === sessionId) {
+      // Columnas I-M (9-13 en 1-indexed, 8-12 en 0-indexed) son pregunta_1 a pregunta_5
+      for (let qIdx = 1; qIdx <= 5; qIdx++) {
+        if (results[qIdx]) {
+          const respuesta = data[i][8 + qIdx];
+          if (respuesta && results[qIdx].opciones.hasOwnProperty(respuesta)) {
+            results[qIdx].opciones[respuesta]++;
+          }
+        }
+      }
+    }
+  }
+
+  return jsonResponse({ success: true, results });
 }
 
 function getSubmissions(sessionId) {

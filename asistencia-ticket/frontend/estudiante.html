@@ -76,15 +76,11 @@
 
                 <div class="session-info">
                     <div class="info-badge">
-                        <span class="label">Materia:</span>
-                        <span id="sessionMateria" class="value"></span>
-                    </div>
-                    <div class="info-badge">
-                        <span class="label">Curso:</span>
-                        <span id="sessionCurso" class="value"></span>
+                        <span class="label">📚 Materia y Curso</span>
+                        <span id="sessionDetails" class="value"></span>
                     </div>
                     <div class="info-badge timer-badge" id="timerBadge">
-                        <span class="label">Tiempo Restante:</span>
+                        <span class="label">⏰ Tiempo Restante</span>
                         <span id="sessionTimer" class="value">--:--</span>
                     </div>
                 </div>
@@ -106,8 +102,26 @@
                     </button>
                 </form>
 
-                <p id="gpsStatus" class="hint" style="display:none; color: var(--warning);"></p>
                 <div id="submitError" class="error-message"></div>
+
+                <!-- SECCIÓN DE ENCUESTA / RESULTADOS -->
+                <div id="pollSection"
+                    style="display:none; margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 0;">📊 Resultados en vivo</h3>
+                        <button onclick="loadPollResults()" class="btn-back"
+                            style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">🔄 Actualizar</button>
+                    </div>
+                    <div id="pollResultsContainer">
+                        <p class="hint">Cargando resultados...</p>
+                    </div>
+                </div>
+
+                <button id="btnVerResultados" onclick="togglePollResults()" class="btn-secondary"
+                    style="display:none; margin-top: 1rem;">
+                    Ver resultados de la clase
+                </button>
             </div>
         </div>
 
