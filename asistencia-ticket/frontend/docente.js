@@ -153,11 +153,17 @@ async function editSession(sessionId) {
     document.getElementById('inputCodigo').value = session.codigo;
 
     // Configuración avanzada
-    const isTardios = isTrue(session.aceptar_tardios);
-    document.getElementById('inputAceptarTardios').checked = isTardios;
-    document.getElementById('tardiosConfig').style.display = isTardios ? 'block' : 'none';
+    document.getElementById('inputAceptarTardios').checked = isTrue(session.aceptar_tardios);
     document.getElementById('inputVentanaTardios').value = session.ventana_tardios || 10;
     document.getElementById('inputPermitirReenvio').checked = isTrue(session.permitir_reenvio);
+
+    // Check if require_gps is passed on the session object
+    const requireGpsCheckbox = document.getElementById('inputRequireGPS');
+    if (requireGpsCheckbox) {
+        requireGpsCheckbox.checked = isTrue(session.require_gps);
+    }
+
+    document.getElementById('tardiosConfig').style.display = isTrue(session.aceptar_tardios) ? 'block' : 'none';
 
     // Reconstruir preguntas
     document.getElementById('questionsBuilder').innerHTML = '';
@@ -400,8 +406,8 @@ function generateNewCode() {
 }
 
 function addQuestion() {
-    if (questionCount >= 3) {
-        alert('Máximo 3 preguntas por sesión');
+    if (questionCount >= 5) {
+        alert('Se permiten hasta 5 preguntas por sesión.');
         return;
     }
 
@@ -525,45 +531,73 @@ async function saveSession(event) {
         preguntas.push(pregunta);
     });
 
+    const requireGps = document.getElementById('inputRequireGPS').checked;
+
     showLoading(true);
 
-    try {
-        const payload = {
-            action: action,
-            token: docenteToken,
-            session_id: currentEditingSessionId,
-            materia: document.getElementById('inputMateria').value,
-            fecha: document.getElementById('inputFecha').value,
-            fecha_fin: document.getElementById('inputFechaFin').value,
-            curso: document.getElementById('inputCurso').value,
-            horario_inicio: document.getElementById('inputHorarioInicio').value,
-            horario_fin: document.getElementById('inputHorarioFin').value,
-            codigo: document.getElementById('inputCodigo').value,
-            preguntas: preguntas,
-            aceptar_tardios: document.getElementById('inputAceptarTardios').checked,
-            ventana_tardios: parseInt(document.getElementById('inputVentanaTardios').value) || 0,
-            permitir_reenvio: document.getElementById('inputPermitirReenvio').checked
-        };
+    const submitPayload = async (ubicacionDocente = null) => {
+        try {
+            const payload = {
+                action: action,
+                token: docenteToken,
+                session_id: currentEditingSessionId,
+                materia: document.getElementById('inputMateria').value,
+                fecha: document.getElementById('inputFecha').value,
+                fecha_fin: document.getElementById('inputFechaFin').value,
+                curso: document.getElementById('inputCurso').value,
+                horario_inicio: document.getElementById('inputHorarioInicio').value,
+                horario_fin: document.getElementById('inputHorarioFin').value,
+                codigo: document.getElementById('inputCodigo').value,
+                preguntas: preguntas,
+                aceptar_tardios: document.getElementById('inputAceptarTardios').checked,
+                ventana_tardios: parseInt(document.getElementById('inputVentanaTardios').value) || 0,
+                permitir_reenvio: document.getElementById('inputPermitirReenvio').checked,
+                require_gps: requireGps,
+                ubicacion_docente: ubicacionDocente
+            };
 
-        const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload)
-        });
+            const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(payload)
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (data.success) {
-            closeSessionModal();
-            loadSessions();
-            alert(currentEditingSessionId ? 'Sesión actualizada' : `Sesión creada. Código: ${data.codigo}`);
-        } else {
-            alert('Error: ' + data.error);
+            if (data.success) {
+                closeSessionModal();
+                loadSessions();
+                alert(currentEditingSessionId ? 'Sesión actualizada' : `Sesión creada. Código: ${data.codigo}`);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error de conexión');
+        } finally {
+            showLoading(false);
         }
-    } catch (error) {
-        alert('Error de conexión');
-    } finally {
-        showLoading(false);
+    };
+
+    if (requireGps) {
+        if (!navigator.geolocation) {
+            alert('Tu navegador no soporta geolocalización. Desmarca la opción de requerir GPS.');
+            showLoading(false);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const coordenadas = `${position.coords.latitude},${position.coords.longitude}`;
+                submitPayload(coordenadas);
+            },
+            (error) => {
+                alert('No se pudo obtener tu ubicación. Verifica si le diste permisos al navegador para marcar el "Punto Cero" (el aula).');
+                showLoading(false);
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    } else {
+        submitPayload(null);
     }
 }
 

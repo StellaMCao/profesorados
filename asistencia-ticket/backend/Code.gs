@@ -88,18 +88,20 @@ function getOrCreateSheet(sheetName) {
     
     // Configurar encabezados según el tipo de hoja
     if (sheetName === '_sessions') {
-      sheet.getRange(1, 1, 1, 13).setValues([[
+      sheet.getRange(1, 1, 1, 16).setValues([[
         'session_id', 'materia', 'fecha', 'curso', 'horario_inicio', 'horario_fin',
         'codigo', 'preguntas_json', 'aceptar_tardios', 'ventana_tardios',
-        'permitir_reenvio', 'activa', 'creado_por'
+        'permitir_reenvio', 'activa', 'creado_por', 'fecha_fin',
+        'require_gps', 'ubicacion_docente'
       ]]);
     } else if (sheetName === '_docentes') {
       sheet.getRange(1, 1, 1, 1).setValues([['email']]);
     } else {
-      // Hoja de materia
-      sheet.getRange(1, 1, 1, 12).setValues([[
+      // Hoja de materia (max 5 preguntas)
+      sheet.getRange(1, 1, 1, 14).setValues([[
         'session_id', 'fecha', 'curso', 'materia', 'email', 'nombre',
-        'timestamp', 'estado', 'codigo', 'pregunta_1', 'pregunta_2', 'pregunta_3'
+        'timestamp', 'estado', 'codigo',
+        'pregunta_1', 'pregunta_2', 'pregunta_3', 'pregunta_4', 'pregunta_5'
       ]]);
     }
     
@@ -207,49 +209,62 @@ function parseTime(timeVal) {
 }
 
 function isWithinTimeWindow(session, allowLate = false) {
-  const now = new Date();
-  const today = Utilities.formatDate(now, CONFIG.TIMEZONE, 'yyyy-MM-dd');
+  const nowStr = Utilities.formatDate(new Date(), CONFIG.TIMEZONE, 'yyyy-MM-dd HH:mm:ss');
+  const chunks = nowStr.split(' ');
+  const todayDate = chunks[0];
+  const [todayHour, todayMins] = chunks[1].split(':').map(Number);
+  const currentMinutes = todayHour * 60 + todayMins;
   
   // Normalizar fecha de la sesión (puede venir como Date o string)
   let sessionDate = session.fecha;
   if (sessionDate instanceof Date) {
     sessionDate = Utilities.formatDate(sessionDate, CONFIG.TIMEZONE, 'yyyy-MM-dd');
   } else if (typeof sessionDate === 'string' && sessionDate.includes('T')) {
-    // Manejar strings ISO
     sessionDate = sessionDate.split('T')[0];
   }
-  
-  Logger.log('Comparing dates - Session: ' + sessionDate + ', Today: ' + today);
 
-  // Verificar fecha
-  if (sessionDate !== today) {
-    return { valid: false, reason: 'Sesión programada para otra fecha (' + sessionDate + ' vs ' + today + ')' };
+  // Normalizar fecha fin (fallback a fecha de inicio)
+  let sessionDateFin = session.fecha_fin || session.fecha;
+  if (sessionDateFin instanceof Date) {
+    sessionDateFin = Utilities.formatDate(sessionDateFin, CONFIG.TIMEZONE, 'yyyy-MM-dd');
+  } else if (typeof sessionDateFin === 'string' && sessionDateFin.includes('T')) {
+    sessionDateFin = sessionDateFin.split('T')[0];
   }
   
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  Logger.log('Comparing dates - Hoy: ' + todayDate + ', Inicio: ' + sessionDate + ', Fin: ' + sessionDateFin);
+
+  // Verificar fecha base
+  if (todayDate < sessionDate) {
+    return { valid: false, reason: 'La sesión comienza el ' + sessionDate };
+  }
+  if (todayDate > sessionDateFin) {
+    return { valid: false, reason: 'La sesión finalizó el ' + sessionDateFin };
+  }
+  
   const startMinutes = parseTime(session.horario_inicio);
   const endMinutes = parseTime(session.horario_fin);
   const lateWindow = parseInt(session.ventana_tardios) || 0;
   const extendedEnd = endMinutes + lateWindow;
 
-  // Lógica de expiración (Cierre automático)
-  if (currentMinutes > extendedEnd) {
-    return { valid: false, reason: 'La sesión ya ha expirado por horario.' };
+  // Si estamos en el día de inicio
+  if (todayDate === sessionDate && currentMinutes < startMinutes) {
+    return { valid: false, reason: 'La sesión aún no ha comenzado hoy.' };
   }
-  
-  // Dentro del horario normal
-  if (currentMinutes >= startMinutes && currentMinutes <= endMinutes) {
-    return { valid: true, estado: 'a tiempo' };
-  }
-  
-  // Fuera de horario - verificar tardíos
-  if (allowLate && isTrue(session.aceptar_tardios)) {
-    if (currentMinutes > endMinutes && currentMinutes <= extendedEnd) {
-      return { valid: true, estado: 'tarde' };
+
+  // Si estamos en el día de fin
+  if (todayDate === sessionDateFin) {
+    if (currentMinutes > extendedEnd) {
+      return { valid: false, reason: 'La sesión ya ha expirado por horario.' };
+    }
+    
+    if (allowLate && isTrue(session.aceptar_tardios)) {
+      if (currentMinutes > endMinutes && currentMinutes <= extendedEnd) {
+        return { valid: true, estado: 'tarde' };
+      }
     }
   }
   
-  return { valid: false, reason: 'Fuera del horario permitido (Inicio: ' + session.horario_inicio + ')' };
+  return { valid: true, estado: 'a tiempo' };
 }
 
 // ============================================
@@ -277,7 +292,10 @@ function validateCode(codigo, userEmail) {
         aceptar_tardios: row[8],
         ventana_tardios: row[9],
         permitir_reenvio: row[10],
-        activa: row[11]
+        activa: row[11],
+        fecha_fin: row[13] || row[2],
+        require_gps: row[14] || 'false',
+        ubicacion_docente: row[15] || ''
       };
       
       // Verificar si está activa
@@ -316,8 +334,11 @@ function validateCode(codigo, userEmail) {
           ya_envio: yaEnvio,
           permitir_reenvio: session.permitir_reenvio === 'true',
           horario_fin: session.horario_fin,
+          fecha_fin: session.fecha_fin || session.fecha,
           ventana_tardios: session.ventana_tardios,
-          aceptar_tardios: isTrue(session.aceptar_tardios)
+          aceptar_tardios: isTrue(session.aceptar_tardios),
+          require_gps: isTrue(session.require_gps),
+          ubicacion_docente: session.ubicacion_docente
         }
       });
     }
@@ -370,7 +391,8 @@ function submitAnswers(params, userEmail) {
         aceptar_tardios: sessionsData[i][8],
         ventana_tardios: sessionsData[i][9],
         permitir_reenvio: sessionsData[i][10],
-        activa: sessionsData[i][11]
+        activa: sessionsData[i][11],
+        fecha_fin: sessionsData[i][13] || sessionsData[i][2]
       };
       break;
     }
@@ -408,7 +430,9 @@ function submitAnswers(params, userEmail) {
     session.codigo,
     respuestas[0] || '',
     respuestas[1] || '',
-    respuestas[2] || ''
+    respuestas[2] || '',
+    respuestas[3] || '',
+    respuestas[4] || ''
   ];
   
   materiaSheet.appendRow(newRow);
@@ -469,7 +493,10 @@ function getSessions(userEmail) {
         aceptar_tardios: String(data[i][8] || 'false'),
         ventana_tardios: String(data[i][9] || '0'),
         permitir_reenvio: String(data[i][10] || 'false'),
-        activa: String(data[i][11] || 'false')
+        activa: String(data[i][11] || 'false'),
+        fecha_fin: data[i][13] ? (data[i][13] instanceof Date ? Utilities.formatDate(data[i][13], CONFIG.TIMEZONE, 'yyyy-MM-dd') : String(data[i][13])) : dateStr,
+        require_gps: String(data[i][14] || 'false'),
+        ubicacion_docente: String(data[i][15] || '')
       });
     }
   }
@@ -497,7 +524,10 @@ function createSession(params, userEmail) {
     params.ventana_tardios || 0,
     params.permitir_reenvio ? 'true' : 'false',
     'false', // activa
-    userEmail
+    userEmail,
+    params.fecha_fin || params.fecha,
+    params.require_gps ? 'true' : 'false',
+    params.ubicacion_docente || ''
   ];
   
   sheet.appendRow(newRow);
@@ -549,7 +579,10 @@ function duplicateSession(params, userEmail) {
     originalSession[9], // ventana_tardios
     originalSession[10], // permitir_reenvio
     'false', // activa
-    userEmail
+    userEmail,
+    params.nueva_fecha_fin || nueva_fecha,
+    originalSession[14] || 'false', // require_gps
+    originalSession[15] || ''       // ubicacion_docente (se omite al duplicar para re-capturar)
   ];
   
   sheet.appendRow(newRow);
@@ -565,7 +598,8 @@ function duplicateSession(params, userEmail) {
 function updateSession(params, userEmail) {
   const {
       session_id, materia, fecha, curso, horario_inicio, horario_fin,
-      codigo, preguntas, aceptar_tardios, ventana_tardios, permitir_reenvio
+      codigo, preguntas, aceptar_tardios, ventana_tardios, permitir_reenvio,
+      fecha_fin, require_gps, ubicacion_docente
   } = params;
 
   const sheet = getOrCreateSheet('_sessions');
@@ -573,14 +607,19 @@ function updateSession(params, userEmail) {
 
   for (let i = 1; i < data.length; i++) {
       if (data[i][0] === session_id) {
-          // Verificar que sea el creador (o ignorar si no hay auth estricta)
-          // if (data[i][12] !== userEmail) return jsonResponse({ success: false, error: 'No autorizado' });
-
+          // Update cols 2-11 (materia → permitir_reenvio)
           sheet.getRange(i + 1, 2, 1, 10).setValues([[
               materia, fecha, curso, horario_inicio, horario_fin,
               codigo.toUpperCase(), JSON.stringify(preguntas),
               aceptar_tardios, ventana_tardios, permitir_reenvio
           ]]);
+          // Update fecha_fin (col 14)
+          sheet.getRange(i + 1, 14).setValue(fecha_fin || fecha);
+          // Update GPS fields (cols 15-16)
+          sheet.getRange(i + 1, 15).setValue(require_gps ? 'true' : 'false');
+          if (ubicacion_docente) {
+            sheet.getRange(i + 1, 16).setValue(ubicacion_docente);
+          }
 
           return jsonResponse({ success: true, message: 'Sesión actualizada' });
       }

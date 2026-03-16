@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Docente - Asistencia</title>
     <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="stylesheet" href="styles.css?v=5">
-    <link rel="stylesheet" href="docente-styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="docente-styles.css?v=6">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
@@ -145,6 +145,17 @@
                         <input type="checkbox" id="inputPermitirReenvio">
                         <span>Permitir reenvío de respuestas</span>
                     </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="inputRequireGPS">
+                        <span>📍 Requerir que el alumno esté en el aula (GPS)</span>
+                    </label>
+                    <p class="hint" style="margin-left: 2rem; margin-top: 0.25rem;">
+                        Al guardar la sesión, se usará tu ubicación actual como el "aula" y se verificará que los
+                        alumnos estén dentro de un radio de 100 metros.
+                    </p>
                 </div>
 
                 <div class="modal-actions">
@@ -323,8 +334,8 @@
         <p>Procesando...</p>
     </div>
 
-    <script src="app.js?v=5"></script>
-    <script src="docente.js?v=5"></script>
+    <script src="app.js?v=6"></script>
+    <script src="docente.js?v=6"></script>
 </body>
 
 </html>

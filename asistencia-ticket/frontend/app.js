@@ -148,6 +148,11 @@ async function validateCode(event) {
             }
 
             showScreen('sessionScreen');
+
+            // GPS check si aplica
+            if (currentSession.require_gps && currentSession.ubicacion_docente) {
+                verifyStudentLocation(currentSession.ubicacion_docente);
+            }
         } else {
             showError('codeError', data.error);
         }
@@ -157,6 +162,65 @@ async function validateCode(event) {
     } finally {
         showLoading(false);
     }
+}
+
+// ============================================
+// VERIFICACIÓN DE UBICACIÓN (GPS)
+// ============================================
+
+function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // Metros
+    const toRad = (deg) => deg * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2
+        + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function verifyStudentLocation(ubicacionDocente) {
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+
+    const gpsInicio = document.getElementById('gpsStatus');
+    if (gpsInicio) {
+        gpsInicio.textContent = '📍 Verificando tu ubicación física...';
+        gpsInicio.style.display = 'block';
+    }
+
+    if (!navigator.geolocation) {
+        showError('submitError', '⚠️ Tu navegador no soporta GPS. Consultá con tu docente.');
+        submitBtn.disabled = false;
+        return;
+    }
+
+    const [lat2, lon2] = ubicacionDocente.split(',').map(Number);
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat1 = position.coords.latitude;
+            const lon1 = position.coords.longitude;
+            const distancia = haversineDistance(lat1, lon1, lat2, lon2);
+            const MAX_METROS = 100;
+
+            if (gpsInicio) gpsInicio.style.display = 'none';
+
+            if (distancia > MAX_METROS) {
+                showError('submitError',
+                    `📍 Estás a ${Math.round(distancia)} m del aula. Debés estar a menos de ${MAX_METROS} m para registrar tu asistencia.`);
+                submitBtn.disabled = true;
+            } else {
+                showError('submitError', '');
+                submitBtn.disabled = false;
+            }
+        },
+        (error) => {
+            if (gpsInicio) gpsInicio.style.display = 'none';
+            showError('submitError', '⚠️ No se pudo obtener tu ubicación GPS. Activá el GPS de tu dispositivo y recargá la página.');
+            submitBtn.disabled = true;
+        },
+        { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
 }
 
 // ============================================
