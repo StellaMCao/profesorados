@@ -356,10 +356,18 @@
    ============================================ */
 
 .question-builder {
-    background: var(--bg);
-    padding: 1rem;
-    border-radius: 12px;
-    margin-bottom: 1rem;
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.question-builder:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
 }
 
 .question-header {
@@ -407,6 +415,13 @@
 .option-row input {
     flex: 1;
     margin-bottom: 0;
+    border-width: 1px;
+    background: #f8fafc;
+}
+
+.option-row input:focus {
+    background: #ffffff;
+    border-color: var(--primary);
 }
 
 .btn-remove-option {

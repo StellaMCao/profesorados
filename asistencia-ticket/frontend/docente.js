@@ -423,6 +423,7 @@ function addQuestion(data = null) {
 
     const questionDiv = document.createElement('div');
     questionDiv.className = 'question-builder';
+    questionDiv.id = `q-builder-${questionId}`;
     questionDiv.innerHTML = `
     <div class="question-header">
       <span>Pregunta ${questionId + 1}</span>
@@ -460,13 +461,23 @@ function updateQuestionType(select, data = null) {
       <div class="options-list">
       </div>
       <button type="button" class="btn-add-option" onclick="addOption(this)">+ Agregar opción</button>
-      <div style="margin-top: 10px;">
-        <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
-          <input type="checkbox" class="multiple-selection"> Selección múltiple
-        </label>
-        <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px; margin-top: 5px;">
-          <input type="checkbox" class="show-results" checked> Mostrar resultados a alumnos
-        </label>
+      
+      <div class="mcq-configs" style="margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+        <div class="toggle-container">
+          <label class="toggle-label" for="ms-${questionId}">Selección múltiple</label>
+          <label class="switch">
+            <input type="checkbox" class="multiple-selection switch-input" id="ms-${questionId}">
+            <span class="switch-slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-container">
+          <label class="toggle-label" for="sr-${questionId}">Mostrar resultados a alumnos</label>
+          <label class="switch">
+            <input type="checkbox" class="show-results switch-input" id="sr-${questionId}" checked>
+            <span class="switch-slider"></span>
+          </label>
+        </div>
       </div>
     `;
 
