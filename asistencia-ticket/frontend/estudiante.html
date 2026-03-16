@@ -51,11 +51,11 @@
                     <p>Tu docente lo anunció en clase</p>
                 </div>
 
-                <form id="codeForm" onsubmit="validateCode(event)">
-                    <input type="text" id="codeInput" class="code-input" placeholder="ABC123" maxlength="8" required
+                <form id="codeForm" onsubmit="validateCode(event)" class="code-form">
+                    <input type="text" id="codeInput" class="code-input" placeholder="CÓDIGO" maxlength="8" required
                         autocomplete="off">
                     <button type="submit" class="btn-primary" id="validateBtn">
-                        Validar código
+                        Entrar a Clase
                     </button>
                 </form>
 
@@ -150,6 +150,24 @@
 
                 <button onclick="backToCode()" class="btn-secondary">
                     Ingresar otro código
+                </button>
+
+                <!-- SECCIÓN DE RESULTADOS EN CONFIRMACIÓN -->
+                <div id="pollSectionConfirm" class="poll-section" style="display:none;">
+                    <div class="poll-header">
+                        <h3>📊 Resultados de la clase</h3>
+                        <button onclick="loadPollResults('pollResultsContainerConfirm')"
+                            class="btn-refresh-poll">🔄</button>
+                    </div>
+                    <div id="pollResultsContainerConfirm" class="poll-results-container">
+                        <p class="hint">Cargando resultados...</p>
+                    </div>
+                </div>
+
+                <button id="btnVerResultadosConfirm"
+                    onclick="togglePollResults('pollSectionConfirm', 'btnVerResultadosConfirm', 'pollResultsContainerConfirm')"
+                    class="btn-secondary" style="display:none;">
+                    Ver resultados de la clase
                 </button>
             </div>
         </div>

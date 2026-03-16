@@ -597,6 +597,12 @@ async function confirmAndSubmit() {
             document.getElementById('confirmTime').textContent = new Date().toLocaleTimeString('es-AR');
 
             showScreen('confirmationScreen');
+
+            // Mostrar botón de resultados en pantalla de confirmación si aplica
+            const hasPoll = currentSession.preguntas.some(q => q.tipo === 'multiple' && q.show_results);
+            if (hasPoll) {
+                document.getElementById('btnVerResultadosConfirm').style.display = 'block';
+            }
         } else {
             showError('submitError', data.error);
         }
@@ -621,15 +627,21 @@ function triggerConfetti() {
 
     const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 60; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         confetti.style.left = Math.random() * 100 + '%';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.width = Math.random() * 8 + 4 + 'px';
-        confetti.style.height = confetti.style.width;
-        confetti.style.animationDelay = Math.random() * 2 + 's';
-        confetti.style.animationDuration = Math.random() * 1 + 2 + 's';
+        const size = Math.random() * 8 + 6 + 'px';
+        confetti.style.width = size;
+        confetti.style.height = size;
+        confetti.style.opacity = Math.random() * 0.5 + 0.5;
+
+        // Animación mejorada
+        const duration = Math.random() * 2 + 3;
+        const delay = Math.random() * 2;
+        confetti.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+
         container.appendChild(confetti);
     }
 
@@ -642,21 +654,26 @@ function triggerConfetti() {
 // ENCUESTAS EN TIEMPO REAL
 // ============================================
 
-function togglePollResults() {
-    const section = document.getElementById('pollSection');
-    const btn = document.getElementById('btnVerResultados');
+function togglePollResults(sectionId = 'pollSection', btnId = 'btnVerResultados', containerId = 'pollResultsContainer') {
+    const section = document.getElementById(sectionId);
+    const btn = document.getElementById(btnId);
+    if (!section || !btn) return;
+
     if (section.style.display === 'none') {
         section.style.display = 'block';
         btn.textContent = 'Ocultar resultados';
-        loadPollResults();
+        loadPollResults(containerId);
     } else {
         section.style.display = 'none';
         btn.textContent = 'Ver resultados de la clase';
     }
 }
 
-async function loadPollResults() {
-    const container = document.getElementById('pollResultsContainer');
+async function loadPollResults(containerId = 'pollResultsContainer') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '<p class="hint">Cargando resultados...</p>';
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
@@ -669,15 +686,16 @@ async function loadPollResults() {
         });
         const data = await response.json();
         if (data.success) {
-            renderPollResults(data.results);
+            renderPollResults(data.results, containerId);
         }
     } catch (e) {
         console.error('Error loading polls:', e);
     }
 }
 
-function renderPollResults(results) {
-    const container = document.getElementById('pollResultsContainer');
+function renderPollResults(results, containerId = 'pollResultsContainer') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
     container.innerHTML = '';
 
     let hasResults = false;
@@ -688,11 +706,10 @@ function renderPollResults(results) {
         hasResults = true;
         const q = results[qIdx];
         const qDiv = document.createElement('div');
-        qDiv.style.marginBottom = '1.5rem';
+        qDiv.className = 'poll-question-item';
 
-        const qTitle = document.createElement('h4');
-        qTitle.style.fontSize = '0.9rem';
-        qTitle.style.marginBottom = '0.5rem';
+        const qTitle = document.createElement('span');
+        qTitle.className = 'poll-question-title';
         qTitle.textContent = q.pregunta;
         qDiv.appendChild(qTitle);
 
@@ -702,32 +719,19 @@ function renderPollResults(results) {
             const count = q.opciones[opt];
             const pct = total > 0 ? (count / total * 100).toFixed(0) : 0;
 
-            const barContainer = document.createElement('div');
-            barContainer.style.marginBottom = '0.4rem';
+            const barRow = document.createElement('div');
+            barRow.className = 'poll-bar-row';
 
-            const labelRow = document.createElement('div');
-            labelRow.style.display = 'flex';
-            labelRow.style.justifyContent = 'space-between';
-            labelRow.style.fontSize = '0.8rem';
-            labelRow.innerHTML = `<span>${opt}</span> <span>${count} (${pct}%)</span>`;
-            barContainer.appendChild(labelRow);
-
-            const barBg = document.createElement('div');
-            barBg.style.height = '8px';
-            barBg.style.background = 'var(--border)';
-            barBg.style.borderRadius = '4px';
-            barBg.style.marginTop = '2px';
-            barBg.style.overflow = 'hidden';
-
-            const barFill = document.createElement('div');
-            barFill.style.height = '100%';
-            barFill.style.width = pct + '%';
-            barFill.style.background = 'var(--primary)';
-            barFill.style.transition = 'width 1s ease';
-            barBg.appendChild(barFill);
-
-            barContainer.appendChild(barBg);
-            qDiv.appendChild(barContainer);
+            barRow.innerHTML = `
+                <div class="poll-label-info">
+                    <span>${opt}</span>
+                    <span>${count} (${pct}%)</span>
+                </div>
+                <div class="poll-bar-bg">
+                    <div class="poll-bar-fill" style="width: ${pct}%"></div>
+                </div>
+            `;
+            qDiv.appendChild(barRow);
         }
         container.appendChild(qDiv);
     }

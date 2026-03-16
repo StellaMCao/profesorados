@@ -576,7 +576,7 @@ async function saveSession(event) {
         const pregunta = { tipo, texto };
 
         if (tipo === 'multiple') {
-            const opciones = Array.from(qb.querySelectorAll('.options-container input'))
+            const opciones = Array.from(qb.querySelectorAll('.option-row input'))
                 .map(input => input.value)
                 .filter(val => val.trim() !== '');
             pregunta.opciones = opciones;
