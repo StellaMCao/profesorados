@@ -453,7 +453,9 @@ function removeQuestion(btn) {
 }
 
 function updateQuestionType(select, data = null) {
-    const container = select.closest('.question-builder').querySelector('.options-container');
+    const builder = select.closest('.question-builder');
+    const container = builder.querySelector('.options-container');
+    const qId = builder.id.split('-').pop(); // Obtener el ID numérico del q-builder-X
 
     if (select.value === 'multiple') {
         container.style.display = 'block';
@@ -464,17 +466,17 @@ function updateQuestionType(select, data = null) {
       
       <div class="mcq-configs" style="margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
         <div class="toggle-container">
-          <label class="toggle-label" for="ms-${questionId}">Selección múltiple</label>
+          <label class="toggle-label" for="ms-${qId}">Selección múltiple</label>
           <label class="switch">
-            <input type="checkbox" class="multiple-selection switch-input" id="ms-${questionId}">
+            <input type="checkbox" class="multiple-selection switch-input" id="ms-${qId}">
             <span class="switch-slider"></span>
           </label>
         </div>
         
         <div class="toggle-container">
-          <label class="toggle-label" for="sr-${questionId}">Mostrar resultados a alumnos</label>
+          <label class="toggle-label" for="sr-${qId}">Mostrar resultados a alumnos</label>
           <label class="switch">
-            <input type="checkbox" class="show-results switch-input" id="sr-${questionId}" checked>
+            <input type="checkbox" class="show-results switch-input" id="sr-${qId}" checked>
             <span class="switch-slider"></span>
           </label>
         </div>
