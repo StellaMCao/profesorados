@@ -292,8 +292,15 @@ function parseTime(timeVal) {
 }
 
 function checkIsExpired(session) {
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
+    // Obtener la fecha y hora actual en la zona horaria de Argentina
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }));
+
+    // Formatear la fecha actual a YYYY-MM-DD para comparar
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const today = `${year}-${month}-${day}`;
+
     const sessionDate = formatDateForInput(session.fecha);
 
     if (sessionDate < today) return true;
