@@ -720,6 +720,41 @@ function toggleSession(params) {
   return jsonResponse({ success: false, error: 'Sesión no encontrada' });
 }
 
+function getSecondsRemaining(session) {
+  try {
+    const now = new Date();
+    let datePart = session.fecha_fin || session.fecha;
+    
+    // Normalizar datePart a YYYY-MM-DD
+    if (datePart instanceof Date) {
+      datePart = Utilities.formatDate(datePart, CONFIG.TIMEZONE, 'yyyy-MM-dd');
+    } else if (typeof datePart === 'string') {
+      datePart = datePart.split('T')[0];
+    }
+
+    const timePart = session.horario_fin; // HH:mm
+    
+    // Crear string ISO-ish para parsear
+    const fullDateStr = datePart + 'T' + timePart + ':00';
+    const endDate = Utilities.parseDate(fullDateStr, CONFIG.TIMEZONE, "yyyy-MM-dd'T'HH:mm:ss");
+    
+    // Si se aceptan tardíos, extender el tiempo
+    if (isTrue(session.aceptar_tardios)) {
+      const lateWindow = parseInt(session.ventana_tardios) || 0;
+      endDate.setTime(endDate.getTime() + (lateWindow * 60 * 1000));
+    }
+
+    const diffMs = endDate.getTime() - now.getTime();
+    const secs = Math.floor(diffMs / 1000);
+    
+    Logger.log('Timer Calculation: End=' + endDate + ' Now=' + now + ' Diff=' + secs);
+    return Math.max(0, secs);
+  } catch (e) {
+    Logger.log('Error calculating seconds remaining: ' + e.toString());
+    return 0;
+  }
+}
+
 function getPollResults(sessionId) {
   const results = {};
   const ss = getSpreadsheet();
@@ -729,8 +764,10 @@ function getPollResults(sessionId) {
   const sessionsSheet = getOrCreateSheet('_sessions');
   const sessionsData = sessionsSheet.getDataRange().getValues();
   let session = null;
+  const sIdStr = String(sessionId).trim();
+
   for (let i = 1; i < sessionsData.length; i++) {
-    if (sessionsData[i][0] === sessionId) {
+    if (String(sessionsData[i][0]).trim() === sIdStr) {
       session = {
         materia: sessionsData[i][1],
         preguntas: JSON.parse(sessionsData[i][7] || '[]')
@@ -748,9 +785,11 @@ function getPollResults(sessionId) {
         pregunta: q.texto,
         opciones: {} 
       };
-      q.opciones.forEach(opt => {
-        results[idx + 1].opciones[opt] = 0;
-      });
+      if (Array.isArray(q.opciones)) {
+        q.opciones.forEach(opt => {
+          results[idx + 1].opciones[opt] = 0;
+        });
+      }
     }
   });
 
@@ -760,7 +799,7 @@ function getPollResults(sessionId) {
 
   const data = sheet.getDataRange().getValues();
   for (let i = 1; i < data.length; i++) {
-    if (data[i][0].toString() === sessionId.toString()) {
+    if (String(data[i][0]).trim() === sIdStr) {
       // Columnas J-N (indices 9-13) son pregunta_1 a pregunta_5
       for (let qIdx = 1; qIdx <= 5; qIdx++) {
         if (results[qIdx]) {

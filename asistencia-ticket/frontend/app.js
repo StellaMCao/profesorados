@@ -576,8 +576,8 @@ async function confirmAndSubmit() {
             triggerConfetti();
 
             document.getElementById('confirmationTitle').textContent =
-                data.estado === 'tarde' ? '⚠️ Registrado como tardío' : '✅ ¡Asistencia registrada!';
-            document.getElementById('confirmationMessage').textContent = data.message;
+                data.estado === 'tarde' ? 'Registrado como tardío' : '¡Asistencia registrada!';
+            document.getElementById('confirmationMessage').textContent = data.message.replace(/✅|⚠️/g, '').trim();
             document.getElementById('confirmMateria').textContent = currentSession.materia;
             document.getElementById('confirmCurso').textContent = currentSession.curso;
             document.getElementById('confirmTime').textContent = new Date().toLocaleTimeString('es-AR');
@@ -675,11 +675,14 @@ async function loadPollResults(containerId = 'pollResultsContainer') {
             })
         });
         const data = await response.json();
-        if (data.success) {
+        if (data && data.success) {
             renderPollResults(data.results, containerId);
+        } else {
+            container.innerHTML = `<p class="error-message">Error al cargar resultados: ${data ? data.error : 'Sin respuesta'}</p>`;
         }
     } catch (e) {
         console.error('Error loading polls:', e);
+        container.innerHTML = '<p class="error-message">Error de conexión al cargar resultados.</p>';
     }
 }
 
