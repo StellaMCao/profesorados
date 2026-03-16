@@ -73,15 +73,16 @@
             <form id="sessionForm" onsubmit="saveSession(event)">
                 <div class="form-group">
                     <label>Materia *</label>
-                    <select id="inputMateria" required>
-                        <option value="">Seleccioná una materia</option>
-                        <option value="Sujetos">Sujetos</option>
-                        <option value="Educacional">Educacional</option>
-                        <option value="Evaluación">Evaluación</option>
-                        <option value="Neurociencia">Neurociencia</option>
-                        <option value="Problemáticas">Problemáticas</option>
-                        <option value="Comunitaria">Comunitaria</option>
-                    </select>
+                    <input type="text" id="inputMateria" list="materiasList"
+                        placeholder="Escribí o seleccioná una materia" required>
+                    <datalist id="materiasList">
+                        <option value="Sujetos">
+                        <option value="Educacional">
+                        <option value="Evaluación">
+                        <option value="Neurociencia">
+                        <option value="Problemáticas">
+                        <option value="Comunitaria">
+                    </datalist>
                 </div>
 
                 <div class="form-row">

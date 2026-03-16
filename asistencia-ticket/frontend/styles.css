@@ -192,6 +192,19 @@ body {
     font-weight: 700;
 }
 
+.timer-badge {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    transition: background 0.3s ease;
+}
+
+.timer-badge.warning {
+    background: linear-gradient(135deg, var(--warning), #d97706);
+}
+
+.timer-badge.danger {
+    background: linear-gradient(135deg, var(--error), #dc2626);
+}
+
 /* ============================================
    FORMS
    ============================================ */

@@ -10,6 +10,7 @@ const CONFIG = {
 let currentUser = null;
 let currentSession = null;
 let googleToken = null;
+let sessionTimerInterval = null;
 
 // Forzar mayúsculas en el código del alumno
 document.addEventListener('DOMContentLoaded', () => {
@@ -65,6 +66,7 @@ function logout() {
     currentUser = null;
     googleToken = null;
     currentSession = null;
+    if (sessionTimerInterval) clearInterval(sessionTimerInterval);
     showScreen('loginScreen');
     document.getElementById('codeInput').value = '';
 }
@@ -92,6 +94,7 @@ function showError(elementId, message) {
 
 function backToCode() {
     currentSession = null;
+    if (sessionTimerInterval) clearInterval(sessionTimerInterval);
     document.getElementById('codeInput').value = '';
     document.getElementById('questionsContainer').innerHTML = '';
     showError('codeError', '');
@@ -136,6 +139,8 @@ async function validateCode(event) {
             document.getElementById('sessionMateria').textContent = currentSession.materia;
             document.getElementById('sessionCurso').textContent = currentSession.curso;
 
+            startSessionTimer(currentSession.horario_fin, currentSession.ventana_tardios, currentSession.aceptar_tardios);
+
             showScreen('sessionScreen');
         } else {
             showError('codeError', data.error);
@@ -146,6 +151,58 @@ async function validateCode(event) {
     } finally {
         showLoading(false);
     }
+}
+
+// ============================================
+// TEMPORIZADOR DE SESIÓN
+// ============================================
+
+function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios) {
+    if (sessionTimerInterval) clearInterval(sessionTimerInterval);
+
+    const timerElement = document.getElementById('sessionTimer');
+    const badgeElement = document.getElementById('timerBadge');
+
+    // Parsear horarioFin "HH:MM"
+    const [hours, minutes] = horarioFin.split(':').map(Number);
+    const endTime = new Date();
+    endTime.setHours(hours, minutes, 0, 0);
+
+    // Agregar ventana de tardíos si aplica
+    const extendedEndTime = new Date(endTime.getTime());
+    if (aceptarTardios) {
+        extendedEndTime.setMinutes(extendedEndTime.getMinutes() + (Number(ventanaTardios) || 0));
+    }
+
+    function updateTimer() {
+        const now = new Date();
+        const diff = extendedEndTime - now;
+
+        if (diff <= 0) {
+            clearInterval(sessionTimerInterval);
+            timerElement.textContent = "00:00";
+            badgeElement.className = "info-badge timer-badge danger";
+            showError('submitError', 'El tiempo de la sesión ha finalizado.');
+            document.getElementById('submitBtn').disabled = true;
+            return;
+        }
+
+        const totalMinutes = Math.floor(diff / 1000 / 60);
+        const secs = Math.floor((diff / 1000) % 60);
+
+        // Estilos según el tiempo (regular o tardío)
+        if (now > endTime) {
+            badgeElement.className = "info-badge timer-badge warning";
+        } else {
+            badgeElement.className = "info-badge timer-badge";
+        }
+
+        timerElement.textContent = `${totalMinutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    document.getElementById('submitBtn').disabled = false;
+    updateTimer(); // Primera ejecución inmediata
+    sessionTimerInterval = setInterval(updateTimer, 1000);
 }
 
 // ============================================

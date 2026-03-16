@@ -4,8 +4,7 @@
 
 const CONFIG = {
   SPREADSHEET_ID: 'TU_SPREADSHEET_ID_AQUI', // Reemplazar con ID real
-  TIMEZONE: 'America/Argentina/Buenos_Aires',
-  MATERIAS: ['Sujetos', 'Educacional', 'Evaluación', 'Neurociencia', 'Problemáticas', 'Comunitaria']
+  TIMEZONE: 'America/Argentina/Buenos_Aires'
 };
 
 // ============================================
@@ -33,11 +32,10 @@ function doPost(e) {
     }
     
     // Rutas docente (requieren autorización)
-    /*
+    // Rutas docente (requieren autorización)
     if (!isDocente(userEmail)) {
       return jsonResponse({ success: false, error: 'No autorizado. Solo docentes.' });
     }
-    */
     
     switch (action) {
       case 'getSessions':
@@ -331,10 +329,11 @@ function validateCode(codigo, userEmail) {
 function checkDuplicate(sessionId, email) {
   // Buscar en todas las hojas de materias
   const ss = getSpreadsheet();
+  const sheets = ss.getSheets();
   
-  for (const materia of CONFIG.MATERIAS) {
-    const sheet = ss.getSheetByName(materia);
-    if (!sheet) continue;
+  for (const sheet of sheets) {
+    const sheetName = sheet.getName();
+    if (sheetName.startsWith('_')) continue; // Saltar hojas de sistema
     
     const data = sheet.getDataRange().getValues();
     for (let i = 1; i < data.length; i++) {
@@ -611,11 +610,12 @@ function toggleSession(params) {
 function getSubmissions(sessionId) {
   const submissions = [];
   const ss = getSpreadsheet();
+  const sheets = ss.getSheets();
   
   // Buscar en todas las hojas de materias
-  for (const materia of CONFIG.MATERIAS) {
-    const sheet = ss.getSheetByName(materia);
-    if (!sheet) continue;
+  for (const sheet of sheets) {
+    const sheetName = sheet.getName();
+    if (sheetName.startsWith('_')) continue; // Saltar hojas de sistema
     
     const data = sheet.getDataRange().getValues();
     for (let i = 1; i < data.length; i++) {
