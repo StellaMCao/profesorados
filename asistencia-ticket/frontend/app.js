@@ -222,7 +222,7 @@ async function validateCode(event) {
             }
 
             // Mostrar botón de resultados si hay preguntas de opción múltiple
-            const hasMCQ = currentSession.preguntas.some(q => q.type === 'multiple_choice');
+            const hasMCQ = currentSession.preguntas.some(q => q.tipo === 'multiple');
             if (hasMCQ) {
                 document.getElementById('btnVerResultados').style.display = 'block';
             }

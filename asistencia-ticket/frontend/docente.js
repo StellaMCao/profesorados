@@ -462,6 +462,11 @@ function updateQuestionType(select) {
         </div>
       </div>
       <button type="button" class="btn-add-option" onclick="addOption(this)">+ Agregar opción</button>
+      <div style="margin-top: 10px;">
+        <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
+          <input type="checkbox" class="multiple-selection"> Selección múltiple
+        </label>
+      </div>
     `;
     } else {
         container.style.display = 'none';
@@ -533,6 +538,7 @@ async function saveSession(event) {
                 .map(input => input.value)
                 .filter(val => val.trim() !== '');
             pregunta.opciones = opciones;
+            pregunta.multiple_selection = qb.querySelector('.multiple-selection').checked;
         }
 
         preguntas.push(pregunta);
