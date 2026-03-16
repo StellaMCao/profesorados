@@ -280,13 +280,17 @@ function validateCode(codigo, userEmail) {
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
     if (row[6].toString().toUpperCase() === codigoUpper) { // columna 'codigo'
+      const formatTime = (val) => val instanceof Date
+        ? Utilities.formatDate(val, CONFIG.TIMEZONE, 'HH:mm')
+        : String(val || '');
+
       const session = {
         session_id: row[0],
         materia: row[1],
         fecha: row[2],
         curso: row[3],
-        horario_inicio: row[4],
-        horario_fin: row[5],
+        horario_inicio: formatTime(row[4]),
+        horario_fin: formatTime(row[5]),
         codigo: row[6],
         preguntas: JSON.parse(row[7] || '[]'),
         aceptar_tardios: row[8],
@@ -470,12 +474,18 @@ function getSessions(userEmail) {
         dateStr = '';
       }
 
-      // Safe time formatting
+      // Safe time formatting - Sheets stores times as Date objects internally
       let horarioInicio = '';
       let horarioFin = '';
       try {
-        horarioInicio = String(data[i][4] || '');
-        horarioFin = String(data[i][5] || '');
+        const rawInicio = data[i][4];
+        const rawFin = data[i][5];
+        horarioInicio = rawInicio instanceof Date
+          ? Utilities.formatDate(rawInicio, CONFIG.TIMEZONE, 'HH:mm')
+          : String(rawInicio || '');
+        horarioFin = rawFin instanceof Date
+          ? Utilities.formatDate(rawFin, CONFIG.TIMEZONE, 'HH:mm')
+          : String(rawFin || '');
       } catch (e) {
         horarioInicio = '';
         horarioFin = '';
