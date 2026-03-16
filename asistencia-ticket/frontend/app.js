@@ -12,15 +12,64 @@ let currentSession = null;
 let googleToken = null;
 let sessionTimerInterval = null;
 
-// Forzar mayúsculas en el código del alumno
+// Forzar mayúsculas en el código del alumno y detectar parámetros URL
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+
     const codeInput = document.getElementById('codeInput');
     if (codeInput) {
         codeInput.addEventListener('input', (e) => {
             e.target.value = e.target.value.toUpperCase();
         });
     }
+
+    // Detectar código en la URL (?code=XYZ)
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromUrl = urlParams.get('code');
+    if (codeFromUrl && codeInput) {
+        codeInput.value = codeFromUrl.toUpperCase();
+        // Opcional: Auto-validar si el usuario ya está logueado
+        if (currentUser) {
+            validateCode(new Event('submit'));
+        }
+    }
 });
+
+// ============================================
+// TEMAS (DARK MODE)
+// ============================================
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode-gradient');
+    }
+    updateThemeIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    if (newTheme === 'dark') {
+        document.body.classList.add('dark-mode-gradient');
+    } else {
+        document.body.classList.remove('dark-mode-gradient');
+    }
+
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        btn.textContent = theme === 'dark' ? '☀️' : '🌓';
+    }
+}
 
 // ============================================
 // GOOGLE SIGN-IN
@@ -41,6 +90,13 @@ function handleCredentialResponse(response) {
     // Mostrar pantalla de código
     showScreen('codeScreen');
     updateUserInfo();
+
+    // Si había un código en la URL, validarlo ahora que tenemos usuario
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromUrl = urlParams.get('code');
+    if (codeFromUrl) {
+        validateCode(new Event('submit'));
+    }
 }
 
 function parseJwt(token) {
@@ -107,7 +163,7 @@ function backToCode() {
 // ============================================
 
 async function validateCode(event) {
-    event.preventDefault();
+    if (event && event.preventDefault) event.preventDefault();
 
     const codigo = document.getElementById('codeInput').value.trim().toUpperCase();
 

@@ -9,8 +9,9 @@ let currentSessionForDuplicate = null;
 let currentEditingSessionId = null;
 let questionCount = 0;
 
-// Forzar mayúsculas en campos de código
+// Forzar mayúsculas en campos de código y temas
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     const codeInputs = ['inputCodigo', 'dupCodigo'];
     codeInputs.forEach(id => {
         const el = document.getElementById(id);
@@ -278,8 +279,14 @@ function renderSessions() {
                 class="btn-view">
           👁️ Ver
         </button>
-        <button onclick="duplicateSession('${session.session_id}')" class="btn-duplicate">
-          📋 Copiar
+        <button onclick="duplicateSession('${session.session_id}')" class="btn-duplicate" title="Duplicar">
+          📋
+        </button>
+        <button onclick="showQrModal('${session.codigo}', '${session.materia.replace(/'/g, "\\'")}')" class="btn-activate" style="background: var(--primary);">
+          📲 QR
+        </button>
+        <button onclick="copyDirectLinkFromSession('${session.codigo}')" class="btn-secondary" style="padding: 0.5rem;">
+          🔗 Link
         </button>
         <button onclick="deleteSessionConfirm('${session.session_id}')" class="btn-delete">
           🗑️
@@ -892,5 +899,94 @@ async function deleteSessionConfirm(sessionId) {
         alert('Error de conexión');
     } finally {
         showLoading(false);
+    }
+}
+
+// ============================================
+// CÓDIGO QR Y ENLACES
+// ============================================
+
+function getBaseUrl() {
+    return window.location.href.split('/').slice(0, -1).join('/') + '/estudiante.html';
+}
+
+function showQrModal(codigo, materia) {
+    const modal = document.getElementById('qrModal');
+    const canvas = document.getElementById('qrCanvas');
+    const linkEl = document.getElementById('directLink');
+    const titleEl = document.getElementById('qrMateriaTitle');
+
+    const directUrl = `${getBaseUrl()}?code=${codigo}`;
+
+    titleEl.textContent = `Materia: ${materia} (Código: ${codigo})`;
+    linkEl.textContent = directUrl;
+
+    // Generar QR
+    new QRious({
+        element: canvas,
+        value: directUrl,
+        size: 300,
+        level: 'H'
+    });
+
+    modal.style.display = 'flex';
+}
+
+function closeQrModal() {
+    document.getElementById('qrModal').style.display = 'none';
+}
+
+function copyDirectLink() {
+    const link = document.getElementById('directLink').textContent;
+    copyToClipboard(link);
+}
+
+function copyDirectLinkFromSession(codigo) {
+    const directUrl = `${getBaseUrl()}?code=${codigo}`;
+    copyToClipboard(directUrl);
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('¡Enlace copiado al portapapeles!');
+    }).catch(err => {
+        console.error('Error al copiar:', err);
+        alert('No se pudo copiar. Enlace: ' + text);
+    });
+}
+
+// ============================================
+// TEMAS (DARK MODE) - Reutilizado de app.js
+// ============================================
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode-gradient');
+    }
+    updateThemeIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    if (newTheme === 'dark') {
+        document.body.classList.add('dark-mode-gradient');
+    } else {
+        document.body.classList.remove('dark-mode-gradient');
+    }
+
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        btn.textContent = theme === 'dark' ? '☀️' : '🌓';
     }
 }
