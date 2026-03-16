@@ -327,15 +327,16 @@ function validateCode(codigo, userEmail) {
       const yaEnvio = checkDuplicate(session.session_id, userEmail);
       const reenvioPermitido = isTrue(session.permitir_reenvio);
       
-      Logger.log('validateCode - Session ID: ' + session.session_id);
-      Logger.log('validateCode - User: ' + userEmail);
-      Logger.log('validateCode - Ya envió: ' + yaEnvio);
-      Logger.log('validateCode - Permitir reenvío: ' + reenvioPermitido + ' (Valor crudo: ' + session.permitir_reenvio + ')');
+      Logger.log('DIAGNOSTIC - Session ID: ' + session.session_id);
+      Logger.log('DIAGNOSTIC - User: ' + userEmail);
+      Logger.log('DIAGNOSTIC - raw permitir_reenvio (col 11): [' + session.permitir_reenvio + '] type: ' + typeof session.permitir_reenvio);
+      Logger.log('DIAGNOSTIC - isTrue(permitir_reenvio): ' + reenvioPermitido);
+      Logger.log('DIAGNOSTIC - yaEnvio: ' + yaEnvio);
 
       if (yaEnvio && !reenvioPermitido) {
         return jsonResponse({
           success: false,
-          error: 'Ya enviaste respuestas para esta sesión.'
+          error: 'Ya enviaste respuestas para esta sesión. (Reenvío: ' + reenvioPermitido + ')'
         });
       }
       
@@ -640,7 +641,9 @@ function updateSession(params, userEmail) {
           sheet.getRange(i + 1, 2, 1, 10).setValues([[
               materia, fecha, curso, horario_inicio, horario_fin,
               codigo.toUpperCase(), JSON.stringify(preguntas),
-              aceptar_tardios, ventana_tardios, permitir_reenvio
+              aceptar_tardios ? 'true' : 'false', 
+              ventana_tardios, 
+              permitir_reenvio ? 'true' : 'false'
           ]]);
           // Update fecha_fin (col 14)
           sheet.getRange(i + 1, 14).setValue(fecha_fin || fecha);
