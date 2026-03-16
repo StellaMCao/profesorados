@@ -228,14 +228,11 @@ function verifyStudentLocation(ubicacionDocente) {
 // ============================================
 
 // Extrae horas y minutos de cualquier formato de tiempo posible
-// Acepta: "14:30", "14:30:00", "1899-12-30T14:30:00.000Z", Date serializado, etc.
 function parseTimeValue(timeVal) {
     if (!timeVal) return null;
     const str = String(timeVal);
-    // Formato HH:MM o HH:MM:SS
     const simple = str.match(/^(\d{1,2}):(\d{2})/);
     if (simple) return { h: Number(simple[1]), m: Number(simple[2]) };
-    // ISO con T (ej: "1899-12-30T14:30:00.000Z" o "2026-03-16T14:30:00.000Z")
     const iso = str.match(/T(\d{2}):(\d{2})/);
     if (iso) return { h: Number(iso[1]), m: Number(iso[2]) };
     return null;
@@ -246,20 +243,19 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
 
     const timerElement = document.getElementById('sessionTimer');
     const badgeElement = document.getElementById('timerBadge');
+    const progressContainer = document.getElementById('timerProgressContainer');
+    const progressBar = document.getElementById('timerProgressBar');
 
-    // Parsear la hora de fin
     const timeParsed = parseTimeValue(horarioFin);
     if (!timeParsed) {
         timerElement.textContent = '--:--';
-        console.warn('startSessionTimer: no se pudo parsear horarioFin =', horarioFin);
+        if (progressContainer) progressContainer.style.display = 'none';
         return;
     }
     const { h, m } = timeParsed;
 
-    // Construir la fecha/hora de fin
     let endTime = new Date();
     if (fechaFin) {
-        // Extraer YYYY-MM-DD de cualquier formato
         const strFin = String(fechaFin);
         const dateMatch = strFin.match(/(\d{4})-(\d{2})-(\d{2})/);
         if (dateMatch) {
@@ -269,11 +265,15 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
     }
     endTime.setHours(h, m, 0, 0);
 
-    // Agregar ventana de tardíos si aplica
     const extendedEndTime = new Date(endTime.getTime());
+    const tardiosMinutos = Number(ventanaTardios) || 0;
     if (aceptarTardios) {
-        extendedEndTime.setMinutes(extendedEndTime.getMinutes() + (Number(ventanaTardios) || 0));
+        extendedEndTime.setMinutes(extendedEndTime.getMinutes() + tardiosMinutos);
     }
+
+    const startTime = new Date(); // Referencia para la barra de progreso
+    const totalDuration = extendedEndTime - startTime;
+    if (progressContainer) progressContainer.style.display = 'block';
 
     function updateTimer() {
         const now = new Date();
@@ -282,6 +282,7 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
         if (diff <= 0) {
             clearInterval(sessionTimerInterval);
             timerElement.textContent = "00:00";
+            if (progressBar) progressBar.style.width = '0%';
             badgeElement.className = "info-badge timer-badge danger";
             showError('submitError', 'El tiempo de la sesión ha finalizado.');
             document.getElementById('submitBtn').disabled = true;
@@ -295,10 +296,31 @@ function startSessionTimer(horarioFin, ventanaTardios, aceptarTardios, fechaFin)
         const hoursLeft = Math.floor((totalMinutes % (60 * 24)) / 60);
         const minsLeft = totalMinutes % 60;
 
+        // Actualizar barra de progreso
+        if (progressBar && totalDuration > 0) {
+            const progress = (diff / totalDuration) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            if (progress < 20) {
+                progressBar.className = 'progress-bar danger';
+            } else if (progress < 50) {
+                progressBar.className = 'progress-bar warning';
+            } else {
+                progressBar.className = 'progress-bar';
+            }
+        }
+
         // Estilos según el tiempo (regular o tardío)
-        badgeElement.className = now > endTime
-            ? "info-badge timer-badge warning"
-            : "info-badge timer-badge";
+        if (now > endTime) {
+            badgeElement.className = "info-badge timer-badge warning pulse";
+        } else {
+            const criticalTime = 5 * 60 * 1000; // 5 minutos
+            if (diff < criticalTime) {
+                badgeElement.className = "info-badge timer-badge danger";
+            } else {
+                badgeElement.className = "info-badge timer-badge";
+            }
+        }
 
         if (days > 0) {
             timerElement.textContent = `${days}d ${hoursLeft}h ${minsLeft}m`;
@@ -322,6 +344,9 @@ function renderQuestions(preguntas) {
     const container = document.getElementById('questionsContainer');
     container.innerHTML = '';
 
+    // Cargar respuestas guardadas localmente para esta sesión
+    const savedAnswers = JSON.parse(localStorage.getItem(`answers_${currentSession.session_id}`) || '{}');
+
     preguntas.forEach((pregunta, index) => {
         const questionDiv = document.createElement('div');
         questionDiv.className = 'question';
@@ -330,65 +355,124 @@ function renderQuestions(preguntas) {
         questionTitle.textContent = `${index + 1}. ${pregunta.texto}`;
         questionDiv.appendChild(questionTitle);
 
+        const name = `pregunta_${index}`;
+        const savedValue = savedAnswers[name] || '';
+
         if (pregunta.tipo === 'multiple') {
-            // Opciones múltiples
-            pregunta.opciones.forEach((opcion, optIndex) => {
+            pregunta.opciones.forEach((opcion) => {
                 const label = document.createElement('label');
                 label.className = 'option-label';
 
                 const radio = document.createElement('input');
                 radio.type = 'radio';
-                radio.name = `pregunta_${index}`;
+                radio.name = name;
                 radio.value = opcion;
                 radio.required = true;
+                if (opcion === savedValue) radio.checked = true;
+
+                radio.addEventListener('change', () => autoSave(name, opcion));
 
                 label.appendChild(radio);
                 label.appendChild(document.createTextNode(opcion));
                 questionDiv.appendChild(label);
             });
         } else if (pregunta.tipo === 'corta') {
-            // Respuesta corta
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'text-input';
-            input.name = `pregunta_${index}`;
+            input.name = name;
             input.placeholder = 'Tu respuesta...';
             input.required = true;
+            input.value = savedValue;
+
+            input.addEventListener('input', (e) => autoSave(name, e.target.value));
+
             questionDiv.appendChild(input);
         } else if (pregunta.tipo === 'parrafo') {
-            // Párrafo
             const textarea = document.createElement('textarea');
             textarea.className = 'textarea-input';
-            textarea.name = `pregunta_${index}`;
+            textarea.name = name;
             textarea.placeholder = 'Escribí tu respuesta...';
             textarea.rows = 4;
             textarea.required = true;
+            textarea.value = savedValue;
+
+            const counter = document.createElement('span');
+            counter.className = 'char-counter';
+            counter.textContent = `${savedValue.length} caracteres`;
+
+            textarea.addEventListener('input', (e) => {
+                autoSave(name, e.target.value);
+                counter.textContent = `${e.target.value.length} caracteres`;
+            });
+
             questionDiv.appendChild(textarea);
+            questionDiv.appendChild(counter);
         }
 
         container.appendChild(questionDiv);
     });
 }
 
+function autoSave(name, value) {
+    const key = `answers_${currentSession.session_id}`;
+    const saved = JSON.parse(localStorage.getItem(key) || '{}');
+    saved[name] = value;
+    localStorage.setItem(key, JSON.stringify(saved));
+}
+
 // ============================================
-// ENVÍO DE RESPUESTAS
+// ENVÍO DE RESPUESTAS (VISTA PREVIA Y SUBMIT)
 // ============================================
 
-async function submitAnswers(event) {
+function submitAnswers(event) {
     event.preventDefault();
 
     const form = document.getElementById('answersForm');
-    const formData = new FormData(form);
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
 
-    const respuestas = [];
+    const formData = new FormData(form);
+    const container = document.getElementById('previewContent');
+    container.innerHTML = '';
+
     currentSession.preguntas.forEach((pregunta, index) => {
-        const name = `pregunta_${index}`;
-        const value = formData.get(name);
-        respuestas.push(value || '');
+        const value = formData.get(`pregunta_${index}`);
+        const div = document.createElement('div');
+        div.className = 'preview-item';
+        div.innerHTML = `
+            <div class="preview-q">${pregunta.texto}</div>
+            <div class="preview-a">${value || '(Sin respuesta)'}</div>
+        `;
+        container.appendChild(div);
     });
 
+    document.getElementById('previewModal').style.display = 'flex';
+}
+
+function closePreview() {
+    document.getElementById('previewModal').style.display = 'none';
+}
+
+async function confirmAndSubmit() {
+    closePreview();
     showLoading(true);
     showError('submitError', '');
+
+    // Feedback háptico si está disponible
+    if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(50);
+    }
+
+    const form = document.getElementById('answersForm');
+    const formData = new FormData(form);
+    const respuestas = [];
+
+    currentSession.preguntas.forEach((pregunta, index) => {
+        respuestas.push(formData.get(`pregunta_${index}`) || '');
+    });
 
     try {
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
@@ -396,7 +480,7 @@ async function submitAnswers(event) {
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'submitAnswers',
-                token: currentUser.email, // En producción, enviar googleToken
+                token: currentUser.email,
                 session_id: currentSession.session_id,
                 nombre: currentUser.name,
                 respuestas: respuestas
@@ -406,7 +490,11 @@ async function submitAnswers(event) {
         const data = await response.json();
 
         if (data.success) {
-            // Mostrar confirmación
+            // Limpiar auto-save
+            localStorage.removeItem(`answers_${currentSession.session_id}`);
+
+            triggerConfetti();
+
             document.getElementById('confirmationTitle').textContent =
                 data.estado === 'tarde' ? '⚠️ Registrado como tardío' : '✅ ¡Asistencia registrada!';
             document.getElementById('confirmationMessage').textContent = data.message;
@@ -424,4 +512,34 @@ async function submitAnswers(event) {
     } finally {
         showLoading(false);
     }
+}
+
+// ============================================
+// EFECTOS ESPECIALES
+// ============================================
+
+function triggerConfetti() {
+    const container = document.getElementById('confettiContainer');
+    if (!container) return;
+
+    container.innerHTML = '';
+    container.style.display = 'block';
+
+    const colors = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
+
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = Math.random() * 8 + 4 + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.animationDuration = Math.random() * 1 + 2 + 's';
+        container.appendChild(confetti);
+    }
+
+    setTimeout(() => {
+        container.style.display = 'none';
+    }, 5000);
 }
