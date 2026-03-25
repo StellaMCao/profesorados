@@ -156,81 +156,10 @@
             margin-top: 20px;
         }
 
-        /* Brain Comparison Chart */
-        .brain-chart {
-            margin: 40px 0;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            padding: 40px 20px;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            border: 1px solid #edf2f7;
-            gap: 10px;
-        }
-
-        .brain-bar {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 150px;
-        }
-
-        .brain-visual {
-            background: var(--secondary);
-            border-radius: 20% 20% 40% 40% / 30% 30% 60% 60%;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 0.9rem;
-            padding: 10px;
-            text-align: center;
-            box-shadow: inset 0 -4px 10px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        .brain-visual::after {
-            content: "";
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            width: 80%;
-            height: 40%;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            transform: translateX(-50%);
-        }
-
-        .brain-label {
-            margin-top: 15px;
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--primary);
-        }
-
-        .brain-weight {
-            font-size: 0.9rem;
-            color: #718096;
-            margin-top: 5px;
-        }
-
-        /* Scale factors (roughly quadratic for visual volume feel) */
-        .scale-h { height: 60px; width: 60px; background: #90cdf4; font-size: 0.7rem; }
-        .scale-d { height: 65px; width: 65px; background: #63b3ed; font-size: 0.7rem; }
-        .scale-e { height: 110px; width: 110px; background: #4299e1; }
-        .scale-b { height: 160px; width: 160px; background: #3182ce; }
-
         @media (max-width: 600px) {
             .pregunta-row { flex-direction: column; align-items: flex-start; }
             .options { width: 100%; margin-top: 15px; }
             .btn-op { flex: 1; }
-            .brain-chart { flex-wrap: wrap; }
-            .brain-bar { min-width: 120px; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -330,6 +259,7 @@
                 <div class="exp-item" style="display:none" id="exp-${index}">
                     <span class="exp-title">${index + 1}. ${item.q}</span>
                     <p class="exp-content">${item.exp}</p>
+                    ${item.img ? `<img src="${item.img}" style="max-width:100%; border-radius:12px; margin-top:15px; display:block; margin: 15px auto;">` : ''}
                     ${item.customEl ? item.customEl : ''}
                     ${item.pensa ? `<div class="pensa-box"><p class="pensa-text"><strong>Para pensar:</strong> ${item.pensa}</p></div>` : ''}
                 </div>`;
