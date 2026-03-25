@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuromitos en Educación | Evaluación Interactiva Completa</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Evaluación interactiva completa sobre los mitos y realidades de la neurociencia aplicada a la educación. Basado en investigaciones científicas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --bg: #f4f7f6;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text: #2c3e50;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .intro-p {
+            font-weight: 300;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .pregunta-row {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #edf2f7;
+            transition: transform 0.2s;
+        }
+
+        .pregunta-row:hover { transform: translateY(-3px); }
+
+        .pregunta-text {
+            flex: 1;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding-right: 20px;
+        }
+
+        .options { display: flex; gap: 12px; }
+
+        .btn-op {
+            padding: 10px 24px;
+            border: 2px solid #e2e8f0;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        .btn-op.selected {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .btn-op.correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
+        .btn-op.incorrect { background: var(--accent) !important; color: white !important; border-color: var(--accent) !important; }
+
+        #btn-corregir {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .explicaciones { display: none; margin-top: 40px; }
+        .explicaciones.visible { display: block; }
+
+        .result-stats {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+
+        .exp-item {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border-left: 8px solid var(--secondary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .exp-title { font-weight: 700; font-size: 1.3rem; display: block; margin-bottom: 15px; color: var(--primary); }
+        .exp-content { font-size: 1.05rem; color: #4a5568; margin-bottom: 15px; }
+
+        .pensa-box {
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid #feebc8;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .pregunta-row { flex-direction: column; align-items: flex-start; }
+            .options { width: 100%; margin-top: 15px; }
+            .btn-op { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Neurociencias y Educación</h1>
+        <p class="intro-p">Respuestas a la encuesta de Neuromitos</p>
+    </header>
+
+    <div class="glass-card" id="quiz-card">
+        <div id="contenedor-preguntas"></div>
+        <button id="btn-corregir" onclick="corregir()">Finalizar y corregir encuesta</button>
+    </div>
+
+    <div class="explicaciones" id="area-explicaciones">
+        <h2>Retroalimentación Completa</h2>
+        <div class="result-stats" id="puntuacion"></div>
+        <div id="contenedor-explicaciones"></div>
+    </div>
+</div>
+
+<script>
+    const datos = [
+        { 
+            q: "Usamos solo el 10% de nuestro cerebro.", 
+            a: "F", 
+            exp: "Esta afirmación es falsa. Quizá generada por falsas interpretaciones de ciertas investigaciones y difundida casi universalmente por la película francesa Lucy de 2014, lo cierto es que usamos el 100% de nuestro cerebro, aunque con diferentes niveles de activación de las regiones cerebrales, según la tarea que estemos enfrentando en cada momento." 
+        },
+        { 
+            q: "La producción de nuevas conexiones cerebrales se detiene en la adolescencia.", 
+            a: "F", 
+            exp: "No hay mucho que decir sobre esta afirmación: se trata de un enunciado falso. Se establecen nuevas conexiones a lo largo de toda la vida, y esto es porque nunca dejamos de aprender." 
+        },
+        { 
+            q: "Cuando una región cerebral está dañada, otras regiones pueden asumir su función.", 
+            a: "V", 
+            exp: "Esta afirmación es verdadera. Sobre todo en los primeros años de vida, donde todavía no se consolidó la especialización de las áreas del cerebro, es posible que un área cerebral se especialice en una función que en principio no le es propia, si la que debe cumplir esta tarea no se encuentra disponible. Esto está estrechamente vinculado con la noción de “plasticidad” neuronal y cerebral.<br><br>Pero aún en los adultos y adultos mayores, por ejemplo, luego de un ACV isquémico o hemorrágico, es posible “reentrenar” ciertas áreas para que cumplan una función de suplencia ante la habilidad perdida, aunque en los adultos la mayor parte de las veces la restitución de la función no se produce ad integrum.",
+            pensa: "¿Qué puede pasar con la corteza visual (en el lóbulo occipital) en un ciego de nacimiento? ¿Se atrofiará el área o se dedicará a alguna otra tarea?"
+        },
+        { 
+            q: "El cerebro de los hombres es de mayor tamaño que el de las mujeres.", 
+            a: "V", 
+            exp: "Para horror de ciertas posiciones feministas que, a mi juicio, confunden el modo de entender el concepto de “igualdad”, esta afirmación es estadísticamente verdadera. No obstante, la buena noticia es que (permítaseme decirlo así) “el tamaño no importa”. Científicamente, la inteligencia se relaciona más con el <strong>Índice de Encefalización</strong> (la relación entre el peso del cerebro y el del cuerpo) que con el tamaño absoluto. Fíjense en esta comparativa de tamaños y el Índice de Encefalización (IE):",
+            img: "comparativa_cerebros.png"
+        },
+        { 
+            q: "El ejercicio físico mejora las funciones mentales.", 
+            a: "V", 
+            exp: "Esta afirmación es claramente verdadera. Según se menciona en www.intramed.net, los investigadores del Instituto Salk de Estudios Biológicos en La Jolla, California, liderados por Fred Gage y Henriette Van Praag, mostraron en la década de 1990 que correr aumentaba el nacimiento de nuevas neuronas del hipocampo en ratones. Notaron entonces que este proceso parecía estar vinculado a la producción de una proteína llamada factor neurotrófico derivado del cerebro (BDNF). Promueve tanto el crecimiento como la supervivencia de las neuronas nacientes. El ejercicio aeróbico conduce a la producción de BDNF y aumenta el tamaño y la conectividad de las áreas clave del cerebro, incluido el hipocampo." 
+        },
+        { 
+            q: "Escuchar música de Mozart tiene beneficios cognitivos (“efecto Mozart”).", 
+            a: "F", 
+            exp: "Esta afirmación es falsa. Existe un estudio que mostró solo una leve mejora del razonamiento espacial temporal después de escuchar a Mozart. No se puede afirmar que la música aumente el cociente intelectual de forma directa." 
+        },
+        { 
+            q: "Usamos nuestro cerebro las 24 horas del día.", 
+            a: "V", 
+            exp: "Es verdadera. Ya sea que estemos estudiando, jugando o durmiendo, nuestro cerebro se mantiene en actividad permanente.",
+            pensa: "¿Por qué no actuamos lo que soñamos? ¿En qué puede relacionarse esto con el sonambulismo?"
+        },
+        { 
+            q: "Se debe educar a los niños según su predominancia hemisférica.", 
+            a: "F", 
+            exp: "Esta afirmación es falsa. No se debe rotular a los estudiantes. Todo el cerebro trabaja en sinergia interhemisférica. Una práctica educativa multisensorial es más eficaz." 
+        },
+        { 
+            q: "El cerebro funciona de manera semejante a una computadora.", 
+            a: "F", 
+            exp: "Esto es falso. Las computadoras procesan una información por vez a gran velocidad. En el cerebro, cien mil millones de neuronas trabajan en paralelo al mismo tiempo." 
+        },
+        { 
+            q: "Los varones usan más el hemisferio izquierdo; las mujeres, el derecho.", 
+            a: "F", 
+            exp: "Esto es muy falso. El cerebro masculino y femenino sí tienen diferencias estructurales de conexión, pero no implican diferencias en inteligencia. Las diferencias suelen estar asociadas a comportamientos aprendidos y experiencias." 
+        }
+    ];
+
+    const containerP = document.getElementById('contenedor-preguntas');
+    const containerE = document.getElementById('contenedor-explicaciones');
+    let respuestasUsuario = {};
+
+    function renderQuiz() {
+        datos.forEach((item, index) => {
+            containerP.innerHTML += `
+                <div class="pregunta-row" id="p${index}">
+                    <div class="pregunta-text">${index + 1}. ${item.q}</div>
+                    <div class="options">
+                        <button class="btn-op" onclick="seleccionar(${index}, 'V', this)">Verdadero</button>
+                        <button class="btn-op" onclick="seleccionar(${index}, 'F', this)">Falso</button>
+                    </div>
+                </div>`;
+            
+            containerE.innerHTML += `
+                <div class="exp-item" style="display:none" id="exp-${index}">
+                    <span class="exp-title">${index + 1}. ${item.q}</span>
+                    <p class="exp-content">${item.exp}</p>
+                    ${item.img ? `<img src="${item.img}" style="max-width:100%; border-radius:12px; margin-top:15px; display:block; margin: 15px auto;">` : ''}
+                    ${item.pensa ? `<div class="pensa-box"><p class="pensa-text"><strong>Para pensar:</strong> ${item.pensa}</p></div>` : ''}
+                </div>`;
+        });
+    }
+
+    function seleccionar(idx, val, el) {
+        respuestasUsuario[idx] = val;
+        const botones = document.querySelectorAll(`#p${idx} .btn-op`);
+        botones.forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function corregir() {
+        if (Object.keys(respuestasUsuario).length < datos.length) {
+            alert("Por favor, responde todas las preguntas.");
+            return;
+        }
+
+        let correctas = 0;
+        datos.forEach((item, index) => {
+            const botones = document.querySelectorAll(`#p${index} .btn-op`);
+            let userVal = respuestasUsuario[index];
+            if (userVal === item.a) correctas++;
+            
+            botones.forEach(b => {
+                b.disabled = true;
+                if (userVal === (b.innerText === 'Verdadero' ? 'V' : 'F')) {
+                    b.classList.add(userVal === item.a ? 'correct' : 'incorrect');
+                }
+            });
+            document.getElementById(`exp-${index}`).style.display = 'block';
+        });
+
+        document.getElementById('puntuacion').innerText = `Tu puntuación: ${correctas} / ${datos.length}`;
+        document.getElementById('area-explicaciones').classList.add('visible');
+        document.getElementById('btn-corregir').style.display = 'none';
+        window.scrollTo({ top: document.getElementById('area-explicaciones').offsetTop - 30, behavior: 'smooth' });
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>
