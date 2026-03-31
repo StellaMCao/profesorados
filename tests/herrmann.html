@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dominancia Cerebral – Test de Herrmann</title>
+  <meta name="description" content="Test HBDI: Descubre tu dominancia cerebral en 4 cuadrantes (Lógico, Organizador, Emocional, Creativo)."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--bg:#080812;--surface:#121220;--surface2:#1a1a2e;--border:#252540;--text:#e8eaf6;--muted:#8385a8;--radius:14px;--accent:#3b82f6}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    nav{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,8,18,.9);backdrop-filter:blur(12px);z-index:100}
+    .nav-back{text-decoration:none;color:var(--muted);font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s}
+    .nav-back:hover{color:var(--text)}
+    .nav-title{font-weight:700;font-size:.95rem}
+    .nav-tag{margin-left:0;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:#93c5fd;padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em}
+    .nav-print{padding:4px 12px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+    .nav-print:hover{border-color:#3b82f6;color:#93c5fd}
+    header{background:linear-gradient(135deg,#0a0f1a 0%,#0f172a 60%,#1e293b 100%);padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden}
+    header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(59,130,246,.15) 0%,transparent 70%);pointer-events:none}
+    header h1{font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#bfdbfe,#93c5fd,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px}
+    header p{color:var(--muted);font-size:.92rem;max-width:520px;margin:0 auto 22px}
+    .pills{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+    .ip{padding:4px 11px;border-radius:50px;font-size:.72rem;font-weight:600;border:1px solid rgba(59,130,246,.2);background:rgba(59,130,246,.07);color:#93c5fd}
+    
+    .instructions{max-width:700px;margin:28px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px}
+    .instructions h2{font-size:.9rem;font-weight:700;margin-bottom:8px;color:#bfdbfe}
+    .instructions ul{list-style:none}
+    .instructions li{padding:3px 0;font-size:.85rem;color:var(--muted)}
+    .instructions li::before{content:'→ ';color:#3b82f6}
+    
+    .scale-header{max-width:700px;margin:0 auto 4px;padding:0 20px;display:flex;gap:6px;padding-left:calc(20px + 32px + 8px)}
+    .sc-lbl{flex:1;text-align:center;font-size:.65rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+    .progress-wrap{max-width:700px;margin:0 auto 6px;padding:0 20px}
+    .progress-info{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px}
+    .progress-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#93c5fd);border-radius:99px;transition:width .4s}
+    
+    main{max-width:700px;margin:0 auto;padding:0 20px 60px}
+    .q-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:border-color .2s}
+    .q-card:hover{border-color:#1e3a8a}
+    .q-num{flex-shrink:0;width:24px;text-align:right;font-size:.7rem;color:var(--muted);font-weight:600}
+    .q-text{flex:1;font-size:.85rem;color:var(--text)}
+    .likert{display:flex;gap:6px;flex-shrink:0}
+    .lk-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center}
+    .lk-btn:hover{border-color:#3b82f6;color:#93c5fd}
+    .lk-btn.sel{background:rgba(59,130,246,.2);border-color:#3b82f6;color:#93c5fd}
+    
+    #btn-submit{display:block;margin:24px auto 0;padding:13px 44px;font-size:.95rem;font-weight:700;border-radius:50px;border:none;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;cursor:pointer;box-shadow:0 4px 28px rgba(59,130,246,.3);transition:opacity .2s,transform .15s}
+    #btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+    #btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none}
+    #warning{display:none;text-align:center;color:#fca5a5;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px;margin-top:14px;font-size:.85rem}
+
+    /* results */
+    #results{display:none;max-width:820px;margin:0 auto;padding:0 20px 80px}
+    .results-hero{text-align:center;padding:44px 20px 0}
+    .results-hero h2{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#bfdbfe,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+    .results-hero p{color:var(--muted);font-size:.88rem}
+    .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;margin:24px auto 28px;max-width:600px;display:flex;justify-content:center}
+    #quadrantChart{width:100%;max-width:400px}
+    
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;max-width:760px;margin:0 auto 28px}
+    .quad-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}
+    .quad-card.A{border-top:3px solid #3b82f6} /* Azul Lógico */
+    .quad-card.B{border-top:3px solid #10b981} /* Verde Organizador */
+    .quad-card.C{border-top:3px solid #ef4444} /* Rojo Emocional */
+    .quad-card.D{border-top:3px solid #eab308} /* Amarillo Creativo */
+    .qc-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .qc-icon{font-size:1.6rem}
+    .qc-title{flex:1}
+    .qc-title h3{font-size:1.05rem;font-weight:800;line-height:1.2}
+    .qc-score{font-size:1.2rem;font-weight:800}
+    .qc-bar{height:5px;background:var(--surface2);border-radius:99px;margin-bottom:14px}
+    .qc-fill{height:100%;border-radius:99px;transition:width 1s ease}
+    .qc-desc{font-size:.82rem;color:var(--muted);line-height:1.6}
+    
+    .actions-row{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;justify-content:center;max-width:760px;margin:28px auto 0}
+    .btn-action{padding:12px 32px;border-radius:50px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;text-align:center}
+    .btn-next{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;box-shadow:0 4px 20px rgba(59,130,246,.25)}
+    .btn-next:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-restart{background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .btn-restart:hover{border-color:#3b82f6;color:#93c5fd}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-back">← Inicio</a>
+  <span class="nav-title">Test Modelo Herrmann</span>
+  <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+    <button class="nav-print" onclick="window.print()">🖨️ Imprimir</button>
+    <span class="nav-tag">4 de 6</span>
+  </div>
+</nav>
+
+<section id="test-section">
+  <header>
+    <h1>Dominancia Cerebral<br>HBDI - Herrmann</h1>
+    <p>40 afirmaciones · Puntuá del 1 al 4 según cuánto te identifica</p>
+    <div class="pills">
+      <span class="ip" style="background:rgba(59,130,246,.1);color:#60a5fa;border-color:rgba(59,130,246,.3)">A. Cortical Izquierdo (Lógico)</span>
+      <span class="ip" style="background:rgba(16,185,129,.1);color:#34d399;border-color:rgba(16,185,129,.3)">B. Límbico Izquierdo (Secuencial)</span>
+      <span class="ip" style="background:rgba(239,68,68,.1);color:#f87171;border-color:rgba(239,68,68,.3)">C. Límbico Derecho (Emocional)</span>
+      <span class="ip" style="background:rgba(234,179,8,.1);color:#facc15;border-color:rgba(234,179,8,.3)">D. Cortical Derecho (Creativo)</span>
+    </div>
+  </header>
+
+  <div class="instructions">
+    <h2>📋 Instrucciones</h2>
+    <ul>
+      <li>Puntuá cada frase del <strong>1 al 4</strong> según cuánto te describe:</li>
+      <li><strong>1</strong> = Casi nunca me describe &nbsp;·&nbsp; <strong>2</strong> = A veces &nbsp;·&nbsp; <strong>3</strong> = Con frecuencia &nbsp;·&nbsp; <strong>4</strong> = Casi siempre me describe</li>
+    </ul>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="progress-text">0 / 40 respondidas</span>
+      <span id="progress-pct">0 %</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <main>
+    <div class="scale-header">
+      <span class="sc-lbl">1<br>Casi nunca</span>
+      <span class="sc-lbl">2<br>A veces</span>
+      <span class="sc-lbl">3<br>Seguido</span>
+      <span class="sc-lbl">4<br>Siempre</span>
+    </div>
+    <div id="question-list"></div>
+    <div id="warning">⚠️ Por favor respondé <strong id="missing-count"></strong> pregunta(s) antes de continuar.</div>
+    <button id="btn-submit" disabled>Ver resultados →</button>
+  </main>
+</section>
+
+<div id="results">
+  <div class="results-hero">
+    <h2>🧠 Dominancia Cerebral</h2>
+    <p>Tus cuadrantes predominantes según el modelo de Herrmann</p>
+  </div>
+  
+  <div class="chart-wrap">
+    <canvas id="quadrantChart"></canvas>
+  </div>
+  
+  <div class="cards-grid" id="cards-grid"></div>
+  
+  <div class="actions-row">
+    <a href="habitos.html" class="btn-action btn-next">Continuar con Test de Hábitos →</a>
+    <button class="btn-action btn-restart" onclick="restart()">Repetir este test</button>
+    <a href="index.html" class="btn-action" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);text-decoration:none">🏠 Volver al Inicio</a>
+  </div>
+</div>
+
+<script>
+// 10 statements per quadrant (A: Blue/Logic, B: Green/Organized, C: Red/Emotional, D: Yellow/Creative) = 40 total
+const QUADRANTS = {
+  A: {
+    color: '#3b82f6', bg: 'rgba(59,130,246,0.35)', icon: '🔬',
+    name: 'Cortical Izquierdo<br><small style="opacity:0.8;font-weight:500">Lógico y Analítico</small>',
+    desc: 'Tu perfil es lógico, matemático y muy analítico. Basás tus decisiones en hechos reales y comprobables. Preferís la teoría, los números y saber "cómo funcionan" las cosas antes de actuar.'
+  },
+  B: {
+    color: '#10b981', bg: 'rgba(16,185,129,0.35)', icon: '📋',
+    name: 'Límbico Izquierdo<br><small style="opacity:0.8;font-weight:500">Organizador y Secuencial</small>',
+    desc: 'Sos estructurado/a, detallista y planificador/a. Valorás la rutina, el orden y ejecutar las cosas paso a paso. No te gustan las sorpresas ni saltarte las reglas; preferís lo seguro y probado.'
+  },
+  C: {
+    color: '#ef4444', bg: 'rgba(239,68,68,0.35)', icon: '❤️',
+    name: 'Límbico Derecho<br><small style="opacity:0.8;font-weight:500">Emocional e Interpersonal</small>',
+    desc: 'Tu enfoque es hacia las personas, los sentimientos y las interacciones. Sos muy empático/a, disfrutas el trabajo en equipo, valorás la comunicación y solés guiarte por tus emociones y valores.'
+  },
+  D: {
+    color: '#eab308', bg: 'rgba(234,179,8,0.35)', icon: '💡',
+    name: 'Cortical Derecho<br><small style="opacity:0.8;font-weight:500">Creativo y Holístico</small>',
+    desc: 'Sos imaginativo/a, intuitivo/a y tenés facilidad para ver "el panorama principal". Pensás en el futuro, rompés reglas establecidas y preferís aprender conectando conceptos abstractos más que memorizando detalles.'
+  }
+};
+
+const QUESTIONS = [
+  // A (Logic/Analytic)
+  {q:'A', t:'Me gusta analizar los problemas detalladamente antes de tomar una decisión.'},
+  {q:'A', t:'Tengo facilidad para los números, las matemáticas o la lógica.'},
+  {q:'A', t:'Prefiero tomar decisiones basadas en hechos concretos y datos tangibles.'},
+  {q:'A', t:'Me gusta desarmar objetos o ideas para entender cómo funcionan internamente.'},
+  {q:'A', t:'Considero que la racionalidad es más importante que la intuición.'},
+  {q:'A', t:'Disfruto los debates donde puedo argumentar de forma lógica.'},
+  {q:'A', t:'Suelo evaluar críticamente la información antes de darla por cierta.'},
+  {q:'A', t:'Al aprender algo nuevo, me interesa más la teoría científica que lo sustenta.'},
+  {q:'A', t:'Soy muy objetivo/a y evito que mis emociones nublen mi juicio.'},
+  {q:'A', t:'Se me da bien resolver rompecabezas o acertijos lógicos complejos.'},
+  
+  // B (Organized/Sequential)
+  {q:'B', t:'Soy una persona sumamente metódica, ordenada y organizada.'},
+  {q:'B', t:'Llevo una agenda, hago listas y planifico mis días con anticipación.'},
+  {q:'B', t:'Me molesta mucho cuando las cosas no salen como estaban planeadas.'},
+  {q:'B', t:'Sigo las reglas y procedimientos al pie de la letra.'},
+  {q:'B', t:'Soy muy puntual y exijo puntualidad a los demás.'},
+  {q:'B', t:'Prefiero tener un espacio de estudio/trabajo inmaculado y ordenado.'},
+  {q:'B', t:'Aprendo mejor si me enseñan las cosas paso a paso, en secuencia.'},
+  {q:'B', t:'Verifico varias veces mi trabajo para asegurarme de no haber cometido errores.'},
+  {q:'B', t:'Cumplo siempre con las fechas límite y tareas asignadas.'},
+  {q:'B', t:'Suelo almacenar, clasificar y ordenar bien mis apuntes y materiales.'},
+
+  // C (Emotional/Interpersonal)
+  {q:'C', t:'Me resulta fácil percibir y entender los sentimientos de los demás.'},
+  {q:'C', t:'Prefiero aprender trabajando en grupos o hablando con otras personas.'},
+  {q:'C', t:'Las relaciones humanas son más importantes para mí que los logros académicos/laborales.'},
+  {q:'C', t:'Suelo tomar decisiones basándome en cómo afectará a los demás y cómo me siento.'},
+  {q:'C', t:'Soy expresivo/a, comunico fácilmente mis emociones.'},
+  {q:'C', t:'Disfruto mucho ayudando y enseñando a otros compañeros.'},
+  {q:'C', t:'El clima o ambiente emocional es crucial para que yo pueda concentrarme.'},
+  {q:'C', t:'Tengo facilidad para convencer, motivar o empatizar con los demás.'},
+  {q:'C', t:'Las historias personales y experiencias humanas me atrapan mucho más que la teoría.'},
+  {q:'C', t:'Conecto fácilmente con expresiones espirituales, musicales o emocionales.'},
+
+  // D (Creative/Holistic)
+  {q:'D', t:'Tengo muchísima imaginación y estoy constantemente pensando ideas nuevas.'},
+  {q:'D', t:'En lugar de ver los detalles técnicos, veo "el cuadro general" de los problemas.'},
+  {q:'D', t:'Aprendo mejor cuando me dejan libertad para explorar e inventar mis propios métodos.'},
+  {q:'D', t:'Soy intuitivo/a, a veces sé las respuestas sin saber exactamente por qué.'},
+  {q:'D', t:'Disfruto los desafíos visuales, metáforas y analogías creativas.'},
+  {q:'D', t:'Me aburro muy rápidamente con la rutina y prefiero el cambio constante.'},
+  {q:'D', t:'A menudo propongo soluciones poco convencionales o atípicas.'},
+  {q:'D', t:'Tengo tendencia a divagar o soñar despierto/a.'},
+  {q:'D', t:'Armo un proyecto conectando piezas que otros no verían cómo juntar.'},
+  {q:'D', t:'Me atrae el diseño, las artes, y visualizar escenarios futuros.'}
+];
+
+// Shuffle questions so they aren't completely predictable
+const qData = QUESTIONS.map((q,i) => ({...q, idx:i}));
+// Fisher-Yates shuffle
+for (let i = qData.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [qData[i], qData[j]] = [qData[j], qData[i]];
+}
+
+const answers = new Array(40).fill(0);
+let answeredCount = 0;
+
+function buildQuestions() {
+  const list = document.getElementById('question-list');
+  qData.forEach((qObj, index) => {
+    const n = index + 1;
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `qcard-${n}`;
+    let lkHTML='';
+    [1,2,3,4].forEach(v=>{
+      lkHTML+=`<button class="lk-btn" id="lk-${n}-${v}" onclick="setAnswer(${n},${v})">${v}</button>`;
+    });
+    card.innerHTML = `<div class="q-num">${n}</div><div class="q-text">${qObj.t}</div><div class="likert">${lkHTML}</div>`;
+    list.appendChild(card);
+  });
+}
+
+function setAnswer(n, val) {
+  const prev = answers[n-1];
+  if(prev === 0) answeredCount++;
+  answers[n-1] = val;
+  [1,2,3,4].forEach(v=>{
+    const b = document.getElementById(`lk-${n}-${v}`);
+    b.className = 'lk-btn' + (v === val ? ' sel' : '');
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.round(answeredCount / 40 * 100);
+  document.getElementById('progress-text').textContent = `${answeredCount} / 40 respondidas`;
+  document.getElementById('progress-pct').textContent = `${pct} %`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('btn-submit').disabled = answeredCount < 40;
+}
+
+document.getElementById('btn-submit').addEventListener('click', () => {
+  if (answeredCount < 40) {
+    const missing = 40 - answeredCount;
+    document.getElementById('missing-count').textContent = missing;
+    const w = document.getElementById('warning');
+    w.style.display = 'block';
+    w.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  document.getElementById('warning').style.display = 'none';
+  
+  const scores = {A:0, B:0, C:0, D:0};
+  qData.forEach((qObj, index) => {
+    scores[qObj.q] += answers[index];
+  });
+  
+  localStorage.setItem('herrmann_scores', JSON.stringify(scores));
+  localStorage.setItem('herrmann_done', '1');
+  showResults(scores);
+});
+
+let radarChart = null;
+function showResults(scores) {
+  document.getElementById('test-section').style.display = 'none';
+  const rd = document.getElementById('results');
+  rd.style.display = 'block';
+  rd.scrollIntoView({behavior:'smooth'});
+  
+  // Quadrant radar chart (A:Top-Left, B:Bottom-Left, C:Bottom-Right, D:Top-Right)
+  // Or scatter/bubble. A radar is fine.
+  if (radarChart) radarChart.destroy();
+  const ctx = document.getElementById('quadrantChart').getContext('2d');
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['A (Lógico)', 'D (Creativo)', 'C (Emocional)', 'B (Organizador)'],
+      datasets: [{
+        label: 'Puntuación HBDI',
+        data: [scores.A, scores.D, scores.C, scores.B],
+        backgroundColor: 'rgba(59,130,246,0.3)',
+        borderColor: '#3b82f6',
+        pointBackgroundColor: ['#3b82f6','#eab308','#ef4444','#10b981'],
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: ['#3b82f6','#eab308','#ef4444','#10b981'],
+        borderWidth: 2,
+        pointRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          angleLines: { color: 'rgba(255,255,255,0.1)' },
+          grid: { color: 'rgba(255,255,255,0.1)' },
+          pointLabels: { color: '#8385a8', font: { family: 'Inter', size: 12, weight: 600 } },
+          ticks: { display:false, min:10, max:40 }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Cards
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  const sorted = ['A','B','C','D'].sort((a,b) => scores[b] - scores[a]);
+  
+  sorted.forEach(q => {
+    const info = QUADRANTS[q];
+    const s = scores[q];
+    const pct = Math.round(s/40*100);
+    const card = document.createElement('div');
+    card.className = `quad-card ${q}`;
+    card.innerHTML = `
+      <div class="qc-header">
+        <span class="qc-icon">${info.icon}</span>
+        <div class="qc-title"><h3 style="color:${info.color}">${info.name}</h3></div>
+        <div class="qc-score" style="color:${info.color}">${s}/40</div>
+      </div>
+      <div class="qc-bar"><div class="qc-fill" style="width:${pct}%;background:${info.color}"></div></div>
+      <p class="qc-desc">${info.desc}</p>
+    `;
+    grid.appendChild(card);
+  });
+  
+  // Dynamic links if all 6 tests are done
+  const required = ['chaea_done','vark_done','gardner_done','herrmann_done','habitos_done','mindset_done'];
+  const allDone = required.every(key => localStorage.getItem(key));
+  if(allDone) {
+    const nxt = document.querySelector('.btn-next');
+    if(nxt){nxt.href='perfil.html';nxt.innerHTML='Ver Perfil Actualizado →';}
+  }
+}
+
+function restart() {
+  answers.fill(0); answeredCount = 0;
+  document.getElementById('warning').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('test-section').style.display='block';
+  const ls = document.querySelectorAll('.lk-btn.sel');
+  ls.forEach(l => l.classList.remove('sel'));
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuestions();
+updateProgress();
+</script>
+</body>
+</html>

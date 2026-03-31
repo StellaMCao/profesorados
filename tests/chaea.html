@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CHAEA – Cuestionario Honey-Alonso</title>
+  <meta name="description" content="Test CHAEA online: identifica tu estilo de aprendizaje Activo, Reflexivo, Teórico o Pragmático."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--bg:#080812;--surface:#121220;--surface2:#1a1a2e;--border:#252540;--text:#e8eaf6;--muted:#8385a8;--radius:14px;--accent:#6366f1}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+
+    /* nav */
+    nav{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,8,18,.9);backdrop-filter:blur(12px);z-index:100}
+    .nav-back{text-decoration:none;color:var(--muted);font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s}
+    .nav-back:hover{color:var(--text)}
+    .nav-title{font-weight:700;font-size:.95rem;color:var(--text)}
+    .nav-tag{margin-left:auto;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em}
+
+    /* header */
+    header{background:linear-gradient(135deg,#0f0f1a 0%,#16213e 60%,#1a1a40 100%);padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden}
+    header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,.2) 0%,transparent 70%);pointer-events:none}
+    header h1{font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#c7d2fe,#e0e7ff,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px}
+    header p{color:var(--muted);font-size:.92rem;max-width:520px;margin:0 auto 24px}
+    .style-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+    .pill{padding:5px 14px;border-radius:50px;font-size:.78rem;font-weight:600}
+    .pill-a{background:rgba(249,115,22,.12);color:#fb923c;border:1px solid rgba(249,115,22,.25)}
+    .pill-r{background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25)}
+    .pill-t{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25)}
+    .pill-p{background:rgba(14,165,233,.12);color:#38bdf8;border:1px solid rgba(14,165,233,.25)}
+
+    /* instructions */
+    .instructions{max-width:700px;margin:28px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px}
+    .instructions h2{font-size:.9rem;font-weight:700;margin-bottom:8px;color:#c7d2fe}
+    .instructions ul{list-style:none}
+    .instructions li{padding:3px 0;font-size:.85rem;color:var(--muted)}
+    .instructions li::before{content:'→ ';color:#6366f1}
+
+    /* progress */
+    .progress-wrap{max-width:700px;margin:0 auto 6px;padding:0 20px}
+    .progress-info{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px}
+    .progress-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a5b4fc);border-radius:99px;transition:width .4s ease}
+
+    /* questions */
+    main{max-width:700px;margin:0 auto;padding:0 20px 60px}
+    #question-list{display:flex;flex-direction:column;gap:12px}
+    .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;transition:border-color .2s}
+    .q-card:hover{border-color:#3d3f6e}
+    .q-header{display:flex;align-items:flex-start;gap:10px}
+    .q-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+    .q-text{font-size:.88rem;color:var(--text);flex:1;padding-top:3px}
+    .q-options{display:flex;gap:8px;margin-top:12px;padding-left:36px}
+    .q-btn{flex:1;padding:8px 0;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .18s}
+    .q-btn:hover{border-color:#6366f1;color:#a5b4fc}
+    .q-btn.sel-plus{background:rgba(99,102,241,.18);border-color:#6366f1;color:#c7d2fe}
+    .q-btn.sel-minus{background:rgba(239,68,68,.07);border-color:#7f1d1d;color:#fca5a5}
+
+    /* submit */
+    #btn-submit{display:block;margin:24px auto 0;padding:13px 44px;font-size:.95rem;font-weight:700;border-radius:50px;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;cursor:pointer;box-shadow:0 4px 28px rgba(99,102,241,.4);transition:opacity .2s,transform .15s}
+    #btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+    #btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none}
+    #warning{display:none;text-align:center;color:#fca5a5;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px;margin-top:14px;font-size:.85rem}
+
+    /* results */
+    #results{display:none;max-width:820px;margin:0 auto;padding:0 20px 80px}
+    .results-hero{text-align:center;padding:44px 20px 0}
+    .results-hero h2{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#c7d2fe,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+    .results-hero p{color:var(--muted);font-size:.88rem}
+    .scores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;margin:30px 0 28px}
+    .score-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;position:relative;overflow:hidden}
+    .score-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .score-card.activo::before{background:#f97316}
+    .score-card.reflexivo::before{background:#6366f1}
+    .score-card.teorico::before{background:#10b981}
+    .score-card.pragmatico::before{background:#0ea5e9}
+    .score-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px}
+    .score-label.activo{color:#fb923c}
+    .score-label.reflexivo{color:#818cf8}
+    .score-label.teorico{color:#34d399}
+    .score-label.pragmatico{color:#38bdf8}
+    .score-num{font-size:2.4rem;font-weight:800;line-height:1}
+    .score-num.activo{color:#fb923c}
+    .score-num.reflexivo{color:#818cf8}
+    .score-num.teorico{color:#34d399}
+    .score-num.pragmatico{color:#38bdf8}
+    .score-pct{font-size:.8rem;color:var(--muted);margin-top:3px}
+    .score-level{font-size:.7rem;font-weight:600;margin-top:5px;padding:2px 8px;border-radius:50px;display:inline-block}
+    .level-muy-alto{background:rgba(16,185,129,.12);color:#34d399}
+    .level-alto{background:rgba(99,102,241,.12);color:#818cf8}
+    .level-moderado{background:rgba(234,179,8,.12);color:#fde047}
+    .level-bajo{background:rgba(249,115,22,.12);color:#fb923c}
+    .level-muy-bajo{background:rgba(239,68,68,.12);color:#f87171}
+    .mini-bar{height:3px;border-radius:99px;background:var(--border);margin-top:8px}
+    .mini-fill{height:100%;border-radius:99px;transition:width 1s ease}
+    .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:28px;display:flex;justify-content:center}
+    #radarChart{max-width:340px;max-height:340px}
+    .style-cards{display:flex;flex-direction:column;gap:18px;margin-bottom:32px}
+    .style-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    .style-card.dominant{border-color:rgba(99,102,241,.45);box-shadow:0 0 30px rgba(99,102,241,.08)}
+    .style-card-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+    .style-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+    .icon-a{background:rgba(249,115,22,.12)}
+    .icon-r{background:rgba(99,102,241,.12)}
+    .icon-t{background:rgba(16,185,129,.12)}
+    .icon-p{background:rgba(14,165,233,.12)}
+    .style-title{flex:1}
+    .style-title h3{font-size:1rem;font-weight:700}
+    .style-title .subtitle{font-size:.78rem;color:var(--muted);margin-top:1px}
+    .style-score-badge{font-size:1.1rem;font-weight:800;padding:5px 14px;border-radius:8px}
+    .badge-a{background:rgba(249,115,22,.12);color:#fb923c}
+    .badge-r{background:rgba(99,102,241,.12);color:#818cf8}
+    .badge-t{background:rgba(16,185,129,.12);color:#34d399}
+    .badge-p{background:rgba(14,165,233,.12);color:#38bdf8}
+    .crown{font-size:.7rem;padding:2px 7px;border-radius:50px;background:rgba(250,204,21,.08);color:#fde047;border:1px solid rgba(250,204,21,.25);margin-left:6px}
+    .style-card-body{padding:18px 20px}
+    .style-desc{font-size:.86rem;color:#a5a8c8;line-height:1.7;margin-bottom:12px}
+    .style-traits h4{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:7px}
+    .traits-list{display:flex;flex-wrap:wrap;gap:5px}
+    .trait{font-size:.72rem;padding:2px 8px;border-radius:50px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+    .trait.hl{border-color:rgba(99,102,241,.3);color:#a5b4fc;background:rgba(99,102,241,.07)}
+    .actions-row{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;justify-content:center}
+    .btn-action{padding:12px 32px;border-radius:50px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;text-align:center}
+    .btn-next{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;border:none;box-shadow:0 4px 20px rgba(236,72,153,.25)}
+    .btn-next:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-restart{background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .btn-restart:hover{border-color:#6366f1;color:#a5b4fc}
+    .nav-print{padding:4px 12px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+    .nav-print:hover{border-color:#6366f1;color:#a5b4fc}
+    @media(max-width:600px){.scores-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Inicio</a>
+  <span class="nav-title">Test CHAEA</span>
+  <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+    <button class="nav-print" onclick="window.print()">🖨️ Imprimir</button>
+    <span class="nav-tag">4 de 6</span>
+  </div>
+</nav>
+
+<section id="test-section">
+  <header>
+    <h1>Cuestionario CHAEA<br>Honey-Alonso</h1>
+    <p>80 afirmaciones · Respondé con honestidad · Sin respuestas correctas</p>
+    <div class="style-pills">
+      <span class="pill pill-a">🔥 Activo</span>
+      <span class="pill pill-r">🔭 Reflexivo</span>
+      <span class="pill pill-t">🔬 Teórico</span>
+      <span class="pill pill-p">⚙️ Pragmático</span>
+    </div>
+  </header>
+
+  <div class="instructions">
+    <h2>📋 Instrucciones</h2>
+    <ul>
+      <li>No es un test de inteligencia ni de personalidad.</li>
+      <li>No hay límite de tiempo (normalmente lleva ~15 minutos).</li>
+      <li>Seleccioná <strong>+</strong> si estás más de acuerdo que en desacuerdo.</li>
+      <li>Seleccioná <strong>−</strong> si estás más en desacuerdo que de acuerdo.</li>
+      <li>Por favor respondé <strong>todos</strong> los ítems.</li>
+    </ul>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="progress-text">0 / 80 respondidas</span>
+      <span id="progress-pct">0 %</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <main>
+    <div id="question-list"></div>
+    <div id="warning">⚠️ Por favor respondé <strong id="missing-count"></strong> pregunta(s) antes de continuar.</div>
+    <button id="btn-submit" disabled>Ver resultados →</button>
+  </main>
+</section>
+
+<div id="results">
+  <div class="results-hero">
+    <h2>✨ Tus resultados CHAEA</h2>
+    <p>Puntuación sobre 20 puntos por estilo</p>
+  </div>
+  <div class="scores-grid" id="scores-grid"></div>
+  <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+  <div class="style-cards" id="style-cards-container"></div>
+  <div class="actions-row">
+    <a href="gardner.html" class="btn-action btn-next">Continuar con Test Gardner (5/6) →</a>
+    <button class="btn-action btn-restart" onclick="restart()">Repetir este test</button>
+    <a href="index.html" class="btn-action" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);text-decoration:none">🏠 Volver al Inicio</a>
+  </div>
+</div>
+
+<script>
+const KEYS={activo:[3,5,7,9,13,20,26,27,35,37,41,43,46,48,51,61,67,74,75,77],reflexivo:[10,16,18,19,28,31,32,34,36,39,42,44,49,55,58,63,65,69,70,79],teorico:[2,4,6,11,15,17,21,23,25,29,33,45,50,54,60,64,66,71,78,80],pragmatico:[1,8,12,14,22,24,30,38,40,47,52,53,56,57,59,62,68,72,73,76]};
+const QUESTIONS=["Tengo fama de decir lo que pienso claramente y sin rodeos.","Estoy seguro/a de lo que es bueno y lo que es malo, lo que está bien y lo que está mal.","Muchas veces actúo sin mirar las consecuencias.","Normalmente trato de resolver los problemas metódicamente y paso a paso.","Creo que los formalismos coartan y limitan la actuación libre de las personas.","Me interesa saber cuáles son los sistemas de valores de los demás y con qué criterios actúan.","Pienso que el actuar intuitivamente puede ser siempre tan válido como actuar reflexivamente.","Creo que lo más importante es que las cosas funcionen.","Procuro estar al tanto de lo que ocurre aquí y ahora.","Disfruto cuando tengo tiempo para preparar mi trabajo y realizarlo a conciencia.","Estoy a gusto siguiendo un orden, en las comidas, en el estudio, haciendo ejercicio regularmente.","Cuando escucho una nueva idea enseguida comienzo a pensar cómo ponerla en práctica.","Prefiero las ideas originales y novedosas aunque no sean prácticas.","Admito y me ajusto a las normas sólo si me sirven para lograr mis objetivos.","Normalmente encajo bien con personas reflexivas, y me cuesta sintonizar con personas demasiado espontáneas, imprevisibles.","Escucho con más frecuencia que hablo.","Prefiero las cosas estructuradas a las desordenadas.","Cuando poseo cualquier información, trato de interpretarla bien antes de manifestar alguna conclusión.","Antes de hacer algo estudio con cuidado sus ventajas e inconvenientes.","Me entusiasmo con el reto de hacer algo nuevo y diferente.","Casi siempre procuro ser coherente con mis criterios y sistemas de valores. Tengo principios y los sigo.","Cuando hay una discusión no me gusta ir con rodeos.","Me disgusta implicarme afectivamente en mi ambiente de trabajo. Prefiero mantener relaciones distantes.","Me gustan más las personas realistas y concretas que las teóricas.","Me cuesta ser creativo/a, romper estructuras.","Me siento a gusto con personas espontáneas y divertidas.","La mayoría de las veces expreso abiertamente cómo me siento.","Me gusta analizar y dar vueltas a las cosas.","Me molesta que la gente no se tome en serio las cosas.","Me atrae experimentar y practicar las últimas técnicas y novedades.","Soy cauteloso/a a la hora de sacar conclusiones.","Prefiero contar con el mayor número de fuentes de información. Cuantos más datos reúna para reflexionar, mejor.","Tiendo a ser perfeccionista.","Prefiero oír las opiniones de los demás antes de exponer la mía.","Me gusta afrontar la vida espontáneamente y no tener que planificar todo previamente.","En las discusiones me gusta observar cómo actúan los demás participantes.","Me siento incómodo/a con las personas calladas y demasiado analíticas.","Juzgo con frecuencia las ideas de los demás por su valor práctico.","Me agobio si me obligan a acelerar mucho el trabajo para cumplir un plazo.","En las reuniones apoyo las ideas prácticas y realistas.","Es mejor gozar del momento presente que deleitarse pensando en el pasado o en el futuro.","Me molestan las personas que siempre desean apresurar las cosas.","Aporto ideas nuevas y espontáneas en los grupos de discusión.","Pienso que son más consistentes las decisiones fundamentadas en un minucioso análisis que las basadas en la intuición.","Detecto frecuentemente la inconsistencia y puntos débiles en las argumentaciones de los demás.","Creo que es preciso saltarse las normas muchas más veces que cumplirlas.","A menudo caigo en la cuenta de otras formas mejores y más prácticas de hacer las cosas.","En conjunto hablo más que escucho.","Prefiero distanciarme de los hechos y observarlos desde otras perspectivas.","Estoy convencido/a que debe imponerse la lógica y el razonamiento.","Me gusta buscar nuevas experiencias.","Me gusta experimentar y aplicar las cosas.","Pienso que debemos llegar pronto al grano, al meollo de los temas.","Siempre trato de conseguir conclusiones e ideas claras.","Prefiero discutir cuestiones concretas y no perder el tiempo con charlas vacías.","Me impaciento cuando me dan explicaciones irrelevantes e incoherentes.","Compruebo antes si las cosas funcionan realmente.","Hago varios borradores antes de la redacción definitiva de un trabajo.","Soy consciente de que en las discusiones ayudo a mantener a los demás centrados en el tema.","Observo que, con frecuencia, soy uno/a de los/as más objetivos/as y desapasionados/as en las discusiones.","Cuando algo va mal, le quito importancia y trato de hacerlo mejor.","Rechazo ideas originales y espontáneas si no las veo prácticas.","Me gusta sopesar diversas alternativas antes de tomar una decisión.","Con frecuencia miro hacia adelante para prever el futuro.","En los debates y discusiones prefiero desempeñar un papel secundario antes que ser el/la líder o el/la que más participa.","Me molestan las personas que no actúan con lógica.","Me resulta incómodo tener que planificar y prever las cosas.","Creo que el fin justifica los medios en muchos casos.","Suelo reflexionar sobre los asuntos y problemas.","El trabajar a conciencia me llena de satisfacción y orgullo.","Ante los acontecimientos trato de descubrir los principios y teorías en que se basan.","Con tal de conseguir el objetivo que pretendo soy capaz de herir sentimientos ajenos.","No me importa hacer todo lo necesario para que sea efectivo mi trabajo.","Con frecuencia soy una de las personas que más anima las fiestas.","Me aburro enseguida con el trabajo metódico y minucioso.","La gente con frecuencia cree que soy poco sensible a sus sentimientos.","Suelo dejarme llevar por mis intuiciones.","Si trabajo en grupo procuro que se siga un método y un orden.","Con frecuencia me interesa averiguar lo que piensa la gente.","Esquivo los temas subjetivos, ambiguos y poco claros."];
+const STYLES={activo:{name:'Activo',icon:'🔥',iconClass:'icon-a',badgeClass:'badge-a',colorHex:'#f97316',subtitle:'Experiencia directa y entusiasmo por lo nuevo',description:'Las personas con estilo <strong>Activo</strong> se implican plenamente en experiencias nuevas. Son entusiastas, espontáneas y disfrutan los retos. Actúan primero y reflexionan después. Disfrutan trabajar en grupo y centrar a su alrededor todas las actividades.',traits:['Animador','Improvisador','Descubridor','Arriesgado','Espontáneo','Entusiasta','Participativo','Líder']},reflexivo:{name:'Reflexivo',icon:'🔭',iconClass:'icon-r',badgeClass:'badge-r',colorHex:'#6366f1',subtitle:'Observación cuidadosa y análisis profundo',description:'Las personas con estilo <strong>Reflexivo</strong> observan las experiencias desde diferentes perspectivas. Recopilan datos y los analizan antes de concluir. Son prudentes: escuchan antes de hablar y consideran todas las alternativas posibles.',traits:['Ponderado','Concienzudo','Receptivo','Analítico','Exhaustivo','Observador','Paciente','Escucha']},teorico:{name:'Teórico',icon:'🔬',iconClass:'icon-t',badgeClass:'badge-t',colorHex:'#10b981',subtitle:'Pensamiento lógico, sistemático e integrador',description:'Las personas con estilo <strong>Teórico</strong> integran sus observaciones dentro de teorías complejas y bien fundamentadas. Piensan de forma secuencial, son perfeccionistas y huyen de lo subjetivo y ambiguo.',traits:['Metódico','Lógico','Objetivo','Crítico','Estructurado','Perfeccionista','Razonador','Sistemático']},pragmatico:{name:'Pragmático',icon:'⚙️',iconClass:'icon-p',badgeClass:'badge-p',colorHex:'#0ea5e9',subtitle:'Aplicación práctica e innovación funcional',description:'Las personas con estilo <strong>Pragmático</strong> experimentan y aplican ideas. Buscan la solución más práctica ante un problema. Son directas, técnicas y se impacientan con quienes teorizan demasiado.',traits:['Experimentador','Práctico','Directo','Eficaz','Realista','Técnico','Decisivo','Aplicador']}};
+
+function getLevel(s){if(s>=17)return{label:'Muy Alto',cls:'level-muy-alto'};if(s>=14)return{label:'Alto',cls:'level-alto'};if(s>=11)return{label:'Moderado',cls:'level-moderado'};if(s>=8)return{label:'Bajo',cls:'level-bajo'};return{label:'Muy Bajo',cls:'level-muy-bajo'}}
+
+const answers=new Array(81).fill(null);
+let answeredCount=0;
+
+function buildQuestions(){
+  const list=document.getElementById('question-list');
+  QUESTIONS.forEach((text,idx)=>{
+    const n=idx+1;
+    const card=document.createElement('div');
+    card.className='q-card';card.id=`q-card-${n}`;
+    card.innerHTML=`<div class="q-header"><div class="q-num">${n}</div><div class="q-text">${text}</div></div><div class="q-options"><button class="q-btn" id="q${n}-plus" onclick="setAnswer(${n},1)">+ De acuerdo</button><button class="q-btn" id="q${n}-minus" onclick="setAnswer(${n},0)">− En desacuerdo</button></div>`;
+    list.appendChild(card);
+  });
+}
+
+function setAnswer(n,val){
+  const wasNull=answers[n]===null;
+  answers[n]=val;
+  document.getElementById(`q${n}-plus`).className='q-btn'+(val===1?' sel-plus':'');
+  document.getElementById(`q${n}-minus`).className='q-btn'+(val===0?' sel-minus':'');
+  if(wasNull){answeredCount++;updateProgress()}
+}
+
+function updateProgress(){
+  const pct=Math.round(answeredCount/80*100);
+  document.getElementById('progress-text').textContent=`${answeredCount} / 80 respondidas`;
+  document.getElementById('progress-pct').textContent=`${pct} %`;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('btn-submit').disabled=answeredCount<80;
+}
+
+document.getElementById('btn-submit').addEventListener('click',()=>{
+  const missing=answers.slice(1).filter(a=>a===null).length;
+  if(missing>0){document.getElementById('missing-count').textContent=missing;const w=document.getElementById('warning');w.style.display='block';w.scrollIntoView({behavior:'smooth',block:'center'});return}
+  document.getElementById('warning').style.display='none';
+  const scores={};
+  for(const[style,items]of Object.entries(KEYS))scores[style]=items.reduce((sum,n)=>sum+(answers[n]===1?1:0),0);
+  localStorage.setItem('chaea_scores',JSON.stringify(scores));
+  localStorage.setItem('chaea_done','1');
+  showResults(scores);
+});
+
+let radarChart=null;
+function showResults(scores){
+  document.getElementById('test-section').style.display='none';
+  const rd=document.getElementById('results');rd.style.display='block';
+  rd.scrollIntoView({behavior:'smooth'});
+  const maxScore=Math.max(...Object.values(scores));
+  const dominant=Object.keys(scores).filter(s=>scores[s]===maxScore);
+  const styleOrder=['activo','reflexivo','teorico','pragmatico'];
+  const colors={activo:'#f97316',reflexivo:'#6366f1',teorico:'#10b981',pragmatico:'#0ea5e9'};
+  const grid=document.getElementById('scores-grid');grid.innerHTML='';
+  styleOrder.forEach(key=>{
+    const s=scores[key];const pct=Math.round(s/20*100);const lv=getLevel(s);const info=STYLES[key];
+    grid.innerHTML+=`<div class="score-card ${key}"><div class="score-label ${key}">${info.icon} ${info.name}</div><div class="score-num ${key}">${s}</div><div class="score-pct">${pct}% · /20</div><span class="score-level ${lv.cls}">${lv.label}</span><div class="mini-bar"><div class="mini-fill" id="mf-${key}" style="width:0%;background:${colors[key]}"></div></div></div>`;
+  });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>styleOrder.forEach(k=>{document.getElementById(`mf-${k}`).style.width=Math.round(scores[k]/20*100)+'%'})));
+  if(radarChart)radarChart.destroy();
+  const ctx=document.getElementById('radarChart').getContext('2d');
+  radarChart=new Chart(ctx,{type:'radar',data:{labels:['Activo','Reflexivo','Teórico','Pragmático'],datasets:[{label:'Tu puntuación',data:[scores.activo,scores.reflexivo,scores.teorico,scores.pragmatico],backgroundColor:'rgba(99,102,241,.12)',borderColor:'#6366f1',borderWidth:2,pointBackgroundColor:['#f97316','#6366f1','#10b981','#0ea5e9'],pointBorderColor:'#fff',pointRadius:5}]},options:{responsive:true,scales:{r:{suggestedMin:0,suggestedMax:20,ticks:{display:false},grid:{color:'rgba(255,255,255,.07)'},pointLabels:{color:'#8385a8',font:{size:12,weight:'600',family:'Inter'}},angleLines:{color:'rgba(255,255,255,.05)'}}},plugins:{legend:{display:false}}}});
+  const container=document.getElementById('style-cards-container');container.innerHTML='';
+  styleOrder.slice().sort((a,b)=>scores[b]-scores[a]).forEach(key=>{
+    const info=STYLES[key];const s=scores[key];const pct=Math.round(s/20*100);const isDom=dominant.includes(key);
+    const card=document.createElement('div');card.className='style-card'+(isDom?' dominant':'');
+    card.innerHTML=`<div class="style-card-header"><div class="style-icon ${info.iconClass}">${info.icon}</div><div class="style-title"><h3>${info.name}${isDom?'<span class="crown">👑 Predominante</span>':''}</h3><div class="subtitle">${info.subtitle}</div></div><span class="style-score-badge ${info.badgeClass}">${s}/20 <small style="font-size:.65em;opacity:.7">${pct}%</small></span></div><div class="style-card-body"><p class="style-desc">${info.description}</p><div class="style-traits"><h4>Características clave</h4><div class="traits-list">${info.traits.map(t=>`<span class="trait${isDom?' hl':''}">${t}</span>`).join('')}</div></div></div>`;
+    container.appendChild(card);
+  });
+  const required = ['chaea_done','vark_done','gardner_done','herrmann_done','habitos_done','mindset_done'];
+  const allDone = required.every(key => localStorage.getItem(key));
+  if(allDone) {
+    const nxt = document.querySelector('.btn-next');
+    if(nxt){nxt.href='perfil.html';nxt.innerHTML='Ver Perfil Actualizado →';}
+  } else {
+    const nxt = document.querySelector('.btn-next');
+    if(nxt){nxt.href='vark.html';nxt.innerHTML='Continuar con Test VARK (4/6) →';}
+  }
+}
+
+function restart(){
+  answers.fill(null);answeredCount=0;
+  document.getElementById('question-list').innerHTML='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('test-section').style.display='block';
+  buildQuestions();updateProgress();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuestions();updateProgress();
+</script>
+</body>
+</html>

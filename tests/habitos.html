@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hábitos de Estudio – Evaluación</title>
+  <meta name="description" content="Evalúa tus hábitos de estudio en 4 áreas clave: Entorno, Tiempo, Técnicas y Motivación."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#080812;--surface:#121220;--surface2:#1a1a2e;--border:#252540;--text:#e8eaf6;--muted:#8385a8;--radius:14px;--accent:#8b5cf6}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    nav{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,8,18,.9);backdrop-filter:blur(12px);z-index:100}
+    .nav-back{text-decoration:none;color:var(--muted);font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s}
+    .nav-back:hover{color:var(--text)}
+    .nav-title{font-weight:700;font-size:.95rem}
+    .nav-tag{margin-left:0;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);color:#c4b5fd;padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em}
+    .nav-print{padding:4px 12px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+    .nav-print:hover{border-color:#8b5cf6;color:#c4b5fd}
+    
+    header{background:linear-gradient(135deg,#0a0515 0%,#1a0f2e 60%,#2e1a47 100%);padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden}
+    header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,.15) 0%,transparent 70%);pointer-events:none}
+    header h1{font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#ddd6fe,#c4b5fd,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px}
+    header p{color:var(--muted);font-size:.92rem;max-width:520px;margin:0 auto 22px}
+    .pills{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+    .ip{padding:4px 11px;border-radius:50px;font-size:.72rem;font-weight:600;border:1px solid rgba(139,92,246,.2);background:rgba(139,92,246,.07);color:#c4b5fd}
+    
+    .instructions{max-width:700px;margin:28px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px}
+    .instructions h2{font-size:.9rem;font-weight:700;margin-bottom:8px;color:#ddd6fe}
+    .instructions ul{list-style:none}
+    .instructions li{padding:3px 0;font-size:.85rem;color:var(--muted)}
+    .instructions li::before{content:'→ ';color:#8b5cf6}
+    
+    .scale-header{max-width:700px;margin:0 auto 4px;padding:0 20px;display:flex;gap:6px;padding-left:calc(20px + 32px + 8px)}
+    .sc-lbl{flex:1;text-align:center;font-size:.65rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+    .progress-wrap{max-width:700px;margin:0 auto 6px;padding:0 20px}
+    .progress-info{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px}
+    .progress-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#c4b5fd);border-radius:99px;transition:width .4s}
+    
+    main{max-width:700px;margin:0 auto;padding:0 20px 60px}
+    .q-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:border-color .2s}
+    .q-card:hover{border-color:#4c1d95}
+    .q-num{flex-shrink:0;width:24px;text-align:right;font-size:.7rem;color:var(--muted);font-weight:600}
+    .q-text{flex:1;font-size:.85rem;color:var(--text)}
+    .likert{display:flex;gap:6px;flex-shrink:0}
+    .lk-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center}
+    .lk-btn:hover{border-color:#8b5cf6;color:#c4b5fd}
+    .lk-btn.sel{background:rgba(139,92,246,.2);border-color:#8b5cf6;color:#c4b5fd}
+    
+    #btn-submit{display:block;margin:24px auto 0;padding:13px 44px;font-size:.95rem;font-weight:700;border-radius:50px;border:none;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;cursor:pointer;box-shadow:0 4px 28px rgba(139,92,246,.3);transition:opacity .2s,transform .15s}
+    #btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+    #btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none}
+    #warning{display:none;text-align:center;color:#fca5a5;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px;margin-top:14px;font-size:.85rem}
+
+    /* results */
+    #results{display:none;max-width:820px;margin:0 auto;padding:0 20px 80px}
+    .results-hero{text-align:center;padding:44px 20px 0}
+    .results-hero h2{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#ddd6fe,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+    .results-hero p{color:var(--muted);font-size:.88rem;margin-bottom:30px}
+    
+    .habits-container{display:flex;flex-direction:column;gap:18px;max-width:680px;margin:0 auto 30px}
+    .habit-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px}
+    .hr-header{display:flex;align-items:center;gap:12px}
+    .hr-icon{font-size:1.5rem}
+    .hr-title{flex:1;font-size:1.05rem;font-weight:700}
+    .hr-score{font-size:.9rem;font-weight:800;color:#c4b5fd}
+    .hr-track{width:100%;height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
+    .hr-fill{height:100%;transition:width 1s ease, background-color .3s}
+    .hr-desc{font-size:.82rem;color:var(--muted);line-height:1.6}
+    
+    .actions-row{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;justify-content:center;max-width:760px;margin:28px auto 0}
+    .btn-action{padding:12px 32px;border-radius:50px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;text-align:center}
+    .btn-next{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:none;box-shadow:0 4px 20px rgba(139,92,246,.25)}
+    .btn-next:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-restart{background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .btn-restart:hover{border-color:#8b5cf6;color:#c4b5fd}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-back">← Inicio</a>
+  <span class="nav-title">Test de Hábitos</span>
+  <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+    <button class="nav-print" onclick="window.print()">🖨️ Imprimir</button>
+    <span class="nav-tag">5 de 6</span>
+  </div>
+</nav>
+
+<section id="test-section">
+  <header>
+    <h1>Cuestionario de<br>Hábitos de Estudio</h1>
+    <p>36 ítems · Evaluá qué tan frecuentemente realizás estas acciones</p>
+    <div class="pills">
+      <span class="ip" style="background:rgba(234,179,8,.1);color:#facc15;border-color:rgba(234,179,8,.3)">🛋️ Entorno</span>
+      <span class="ip" style="background:rgba(59,130,246,.1);color:#60a5fa;border-color:rgba(59,130,246,.3)">⏳ Tiempo</span>
+      <span class="ip" style="background:rgba(16,185,129,.1);color:#34d399;border-color:rgba(16,185,129,.3)">📝 Técnicas</span>
+      <span class="ip" style="background:rgba(239,68,68,.1);color:#f87171;border-color:rgba(239,68,68,.3)">🔥 Motivación</span>
+    </div>
+  </header>
+
+  <div class="instructions">
+    <h2>📋 Instrucciones</h2>
+    <ul>
+      <li>Puntuá cada frase del <strong>1 al 4</strong> según tu comportamiento real:</li>
+      <li><strong>1</strong> = Casi nunca &nbsp;·&nbsp; <strong>2</strong> = A veces &nbsp;·&nbsp; <strong>3</strong> = Frecuentemente &nbsp;·&nbsp; <strong>4</strong> = Casi siempre</li>
+      <li>Atención: algunas preguntas plantean hábitos <em>negativos</em>. Respondé lo que hagas realmente.</li>
+    </ul>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="progress-text">0 / 36 respondidas</span>
+      <span id="progress-pct">0 %</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <main>
+    <div class="scale-header">
+      <span class="sc-lbl">1<br>Nunca</span>
+      <span class="sc-lbl">2<br>A veces</span>
+      <span class="sc-lbl">3<br>Frecuent.</span>
+      <span class="sc-lbl">4<br>Siempre</span>
+    </div>
+    <div id="question-list"></div>
+    <div id="warning">⚠️ Por favor respondé <strong id="missing-count"></strong> pregunta(s) antes de continuar.</div>
+    <button id="btn-submit" disabled>Ver resultados →</button>
+  </main>
+</section>
+
+<div id="results">
+  <div class="results-hero">
+    <h2>📊 Tu Perfil de Hábitos</h2>
+    <p>Nivel de efectividad de tus hábitos actuales (las puntuaciones más altas indican mejores hábitos de estudio)</p>
+  </div>
+  
+  <div class="habits-container" id="habits-container"></div>
+  
+  <div class="actions-row">
+    <a href="mindset.html" class="btn-action btn-next">Continuar con Test de Mentalidad →</a>
+    <button class="btn-action btn-restart" onclick="restart()">Repetir este test</button>
+    <a href="index.html" class="btn-action" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);text-decoration:none">🏠 Volver al Inicio</a>
+  </div>
+</div>
+
+<script>
+// 4 Dimensions: E (Entorno), T (Tiempo), A (Asimilación/Técnicas), M (Motivación)
+// 9 questions each = 36 total. Total max score per dimension = 36 (9*4).
+// Note: "inv: true" means a high score is bad, so we invert it for the final tally (1->4, 2->3, 3->2, 4->1).
+const DIMENSIONS = {
+  E: {
+    icon: '🛋️', name: 'Entorno de Estudio', color: '#eab308',
+    desc: 'Evalúa tus condiciones físicas y ambientales. Un entorno adecuado (silencio, luz, silla cómoda, sin celular) reduce la fatiga y minimiza las distracciones.'
+  },
+  T: {
+    icon: '⏳', name: 'Planificación del Tiempo', color: '#3b82f6',
+    desc: 'Mide cómo organizás tus sesiones de estudio y descansos. Incluye el uso de agendas, la previsión de fechas de exámenes y evitar dejar todo para la última noche.'
+  },
+  A: {
+    icon: '📝', name: 'Técnicas de Asimilación', color: '#10b981',
+    desc: 'Refleja tus estrategias cognitivas: si hacés lectura comprensiva, toma de apuntes, resúmenes, esquemas y repasos activos.'
+  },
+  M: {
+    icon: '🔥', name: 'Motivación y Actitud', color: '#ef4444',
+    desc: 'Mide el nivel de predisposición, resiliencia ante el fracaso, concentración intrínseca y confianza en tus capacidades como estudiante.'
+  }
+};
+
+const QUESTIONS = [
+  // E (Entorno)
+  {d:'E', t:'Estudio en un lugar con buena iluminación y temperatura agradable.', inv:false},
+  {d:'E', t:'Estudio en la cama o recostado/a en un sillón muy blando.', inv:true}, // inv
+  {d:'E', t:'Mantengo el celular con las notificaciones apagadas o fuera de mi alcance.', inv:false},
+  {d:'E', t:'Tengo todo el material (libros, apuntes, biromes) a mano antes de arrancar.', inv:false},
+  {d:'E', t:'Estudio con la televisión prendida o con música que tiene letra.', inv:true}, // inv
+  {d:'E', t:'El lugar donde estudio suele estar ordenado y despejado.', inv:false},
+  {d:'E', t:'Suelo estudiar en el mismo sitio todos los días.', inv:false},
+  {d:'E', t:'Me interrumpen frecuentemente otras personas durante mis ratos de estudio.', inv:true}, // inv
+  {d:'E', t:'Uso aplicaciones o técnicas (como bloqueadores de webs) para no distraerme.', inv:false},
+
+  // T (Tiempo)
+  {d:'T', t:'Armo un plan u horario semanal de estudio y me esfuerzo en cumplirlo.', inv:false},
+  {d:'T', t:'Dejo el repaso fuerte o la mayor carga de estudio para el día antes del examen.', inv:true}, // inv
+  {d:'T', t:'Hago pausas cortas y regulares (ej. 5-10 minutos por cada hora de estudio).', inv:false},
+  {d:'T', t:'Uso una agenda, planner o calendario para anotar entregas y pruebas.', inv:false},
+  {d:'T', t:'Suelo perder la noción del tiempo navegando en redes sociales cuando debería estudiar.', inv:true}, // inv
+  {d:'T', t:'Dedico más tiempo a las materias que considero más difíciles.', inv:false},
+  {d:'T', t:'Suelo sentir que "jamás voy a llegar a tiempo" con el material.', inv:true}, // inv
+  {d:'T', t:'Estudio un poco todos los días en lugar de largas maratones de fin de semana.', inv:false},
+  {d:'T', t:'Interrumpo mis horas de sueño en época de exámenes para poder llegar a leer todo.', inv:true}, // inv
+
+  // A (Asimilación/Técnicas)
+  {d:'A', t:'Antes de leer en detalle, hago una hojeada rápida (títulos, subtítulos) del texto.', inv:false},
+  {d:'A', t:'Tomo apuntes en las clases usando mis propias palabras en vez de copiar literal.', inv:false},
+  {d:'A', t:'Subrayo o resalto apuntes sin antes haber leído el párrafo completo.', inv:true}, // inv
+  {d:'A', t:'Armo esquemas, mapas conceptuales o cuadros sinópticos de lo que leo.', inv:false},
+  {d:'A', t:'Para estudiar, simplemente leo el texto varias veces hasta memorizarlo.', inv:true}, // inv
+  {d:'A', t:'Intento explicarle en voz alta el tema a otra persona (o a mí mismo) sin mirar el texto.', inv:false},
+  {d:'A', t:'Me esfuerzo en relacionar lo que aprendo hoy con lo que aprendí en meses anteriores.', inv:false},
+  {d:'A', t:'Repaso los apuntes recién tomados el mismo día de la clase.', inv:false},
+  {d:'A', t:'Solo busco palabras que no entiendo en el diccionario si es absolutamente necesario.', inv:true}, // inv
+
+  // M (Motivación y Actitud)
+  {d:'M', t:'Me convenzo a mí mismo/a de que puedo aprobar y aprender los temas complejos.', inv:false},
+  {d:'M', t:'Cuando un tema se pone difícil, abandono rápido y paso a otra cosa.', inv:true}, // inv
+  {d:'M', t:'Siento curiosidad por los temas que estoy aprendiendo, más allá del examen.', inv:false},
+  {d:'M', t:'Dudo mucho de mi capacidad intelectual para la carrera/curso que elegí.', inv:true}, // inv
+  {d:'M', t:'Presto atención en clase y participo si tengo dudas o aportes.', inv:false},
+  {d:'M', t:'Siento que estudio obligado/a y que esto no me sirve para la vida real.', inv:true}, // inv
+  {d:'M', t:'Después de desaprobar un examen o ensayo, analizo los errores para mejorar.', inv:false},
+  {d:'M', t:'Me propongo pequeñas metas diarias o semanales para sentir que avanzo.', inv:false},
+  {d:'M', t:'La ansiedad se apodera de mí y me bloquea antes de las evaluaciones importantes.', inv:true} // inv
+];
+
+// Shuffle
+const qData = QUESTIONS.map((q,i) => ({...q, idx:i}));
+for (let i = qData.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [qData[i], qData[j]] = [qData[j], qData[i]];
+}
+
+const answers = new Array(36).fill(0);
+let answeredCount = 0;
+
+function buildQuestions() {
+  const list = document.getElementById('question-list');
+  qData.forEach((qObj, index) => {
+    const n = index + 1;
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = `qcard-${n}`;
+    let lkHTML='';
+    [1,2,3,4].forEach(v=>{
+      lkHTML+=`<button class="lk-btn" id="lk-${n}-${v}" onclick="setAnswer(${n},${v})">${v}</button>`;
+    });
+    card.innerHTML = `<div class="q-num">${n}</div><div class="q-text">${qObj.t}</div><div class="likert">${lkHTML}</div>`;
+    list.appendChild(card);
+  });
+}
+
+function setAnswer(n, val) {
+  const prev = answers[n-1];
+  if(prev === 0) answeredCount++;
+  answers[n-1] = val; // Store raw 1-4
+  [1,2,3,4].forEach(v=>{
+    const b = document.getElementById(`lk-${n}-${v}`);
+    b.className = 'lk-btn' + (v === val ? ' sel' : '');
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.round(answeredCount / 36 * 100);
+  document.getElementById('progress-text').textContent = `${answeredCount} / 36 respondidas`;
+  document.getElementById('progress-pct').textContent = `${pct} %`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('btn-submit').disabled = answeredCount < 36;
+}
+
+document.getElementById('btn-submit').addEventListener('click', () => {
+  if (answeredCount < 36) {
+    const missing = 36 - answeredCount;
+    document.getElementById('missing-count').textContent = missing;
+    const w = document.getElementById('warning');
+    w.style.display = 'block';
+    w.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  document.getElementById('warning').style.display = 'none';
+  
+  const scores = {E:0, T:0, A:0, M:0};
+  qData.forEach((qObj, index) => {
+    let val = answers[index];
+    if(qObj.inv) {
+      // Invert score: 1->4, 2->3, 3->2, 4->1
+      val = 5 - val;
+    }
+    scores[qObj.d] += val;
+  });
+  
+  localStorage.setItem('habitos_scores', JSON.stringify(scores));
+  localStorage.setItem('habitos_done', '1');
+  showResults(scores);
+});
+
+function getBarColor(pct, color) {
+  if(pct < 50) return '#ef4444'; // Red -> need improvement
+  if(pct < 75) return '#facc15'; // Yellow -> okay, room for growth
+  return color; // Native -> good
+}
+
+function showResults(scores) {
+  document.getElementById('test-section').style.display = 'none';
+  const rd = document.getElementById('results');
+  rd.style.display = 'block';
+  rd.scrollIntoView({behavior:'smooth'});
+  
+  const cont = document.getElementById('habits-container');
+  cont.innerHTML = '';
+  
+  // Max per dimension is 36 (9 questions * 4 max)
+  const MAX = 36;
+  const dims = Object.keys(DIMENSIONS);
+  
+  dims.forEach(d => {
+    const info = DIMENSIONS[d];
+    const s = scores[d];
+    const pct = Math.round((s / MAX) * 100);
+    const renderColor = getBarColor(pct, info.color);
+    
+    // Status text based on pct
+    let statusText = "Excelente";
+    if (pct < 50) statusText = "Requiere atención prioritaria";
+    else if (pct < 75) statusText = "Aceptable, con margen de mejora";
+
+    const card = document.createElement('div');
+    card.className = 'habit-row';
+    card.innerHTML = `
+      <div class="hr-header">
+        <span class="hr-icon">${info.icon}</span>
+        <div class="hr-title">${info.name}</div>
+        <div class="hr-score" style="color:${renderColor}">${pct}%</div>
+      </div>
+      <div class="hr-track"><div class="hr-fill" id="hrf-${d}" style="width:0%;background-color:${renderColor}"></div></div>
+      <div style="font-size:0.75rem; color:${renderColor}; font-weight:700">${statusText}</div>
+      <p class="hr-desc">${info.desc}</p>
+    `;
+    cont.appendChild(card);
+  });
+  
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    dims.forEach(d => {
+      const pct = Math.round((scores[d] / MAX) * 100);
+      document.getElementById(`hrf-${d}`).style.width = pct + '%';
+    });
+  }));
+  
+  // Dynamic links if all 6 tests are done
+  const required = ['chaea_done','vark_done','gardner_done','herrmann_done','habitos_done','mindset_done'];
+  const allDone = required.every(key => localStorage.getItem(key));
+  if(allDone) {
+    const nxt = document.querySelector('.btn-next');
+    if(nxt){nxt.href='perfil.html';nxt.innerHTML='Ver Perfil Actualizado →';}
+  }
+}
+
+function restart() {
+  answers.fill(0); answeredCount = 0;
+  document.getElementById('warning').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('test-section').style.display='block';
+  const ls = document.querySelectorAll('.lk-btn.sel');
+  ls.forEach(l => l.classList.remove('sel'));
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuestions();
+updateProgress();
+</script>
+</body>
+</html>

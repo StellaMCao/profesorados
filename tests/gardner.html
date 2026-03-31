@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inteligencias Múltiples – Test de Howard Gardner</title>
+  <meta name="description" content="Descubrí tus inteligencias múltiples según Howard Gardner: lingüística, lógica, musical, espacial, corporal, interpersonal, intrapersonal y naturalista."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--bg:#080812;--surface:#121220;--surface2:#1a1a2e;--border:#252540;--text:#e8eaf6;--muted:#8385a8;--radius:14px;--accent:#10b981}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    nav{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,8,18,.9);backdrop-filter:blur(12px);z-index:100}
+    .nav-back{text-decoration:none;color:var(--muted);font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s}
+    .nav-back:hover{color:var(--text)}
+    .nav-title{font-weight:700;font-size:.95rem}
+    .nav-tag{margin-left:auto;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em}
+    header{background:linear-gradient(135deg,#080e0a 0%,#0a1a10 60%,#0a2018 100%);padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden}
+    header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(16,185,129,.15) 0%,transparent 70%);pointer-events:none}
+    header h1{font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#d1fae5,#a7f3d0,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px}
+    header p{color:var(--muted);font-size:.92rem;max-width:520px;margin:0 auto 22px}
+    .intel-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+    .ip{padding:4px 11px;border-radius:50px;font-size:.72rem;font-weight:600;border:1px solid rgba(16,185,129,.2);background:rgba(16,185,129,.07);color:#6ee7b7}
+    .instructions{max-width:700px;margin:28px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px}
+    .instructions h2{font-size:.9rem;font-weight:700;margin-bottom:8px;color:#d1fae5}
+    .instructions ul{list-style:none}
+    .instructions li{padding:3px 0;font-size:.85rem;color:var(--muted)}
+    .instructions li::before{content:'→ ';color:#10b981}
+    /* Scale header */
+    .scale-header{max-width:700px;margin:0 auto 4px;padding:0 20px;display:flex;gap:6px;padding-left:calc(20px + 32px + 8px)}
+    .sc-lbl{flex:1;text-align:center;font-size:.65rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+    .progress-wrap{max-width:700px;margin:0 auto 6px;padding:0 20px}
+    .progress-info{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px}
+    .progress-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#10b981,#6ee7b7);border-radius:99px;transition:width .4s}
+    main{max-width:700px;margin:0 auto;padding:0 20px 60px}
+    .section-divider{padding:16px 0 6px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+    .q-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:border-color .2s}
+    .q-card:hover{border-color:#1e4a3a}
+    .q-num{flex-shrink:0;width:24px;text-align:right;font-size:.7rem;color:var(--muted);font-weight:600}
+    .q-text{flex:1;font-size:.85rem;color:var(--text)}
+    .likert{display:flex;gap:6px;flex-shrink:0}
+    .lk-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center}
+    .lk-btn:hover{border-color:#10b981;color:#6ee7b7}
+    .lk-btn.sel{background:rgba(16,185,129,.2);border-color:#10b981;color:#6ee7b7}
+    #btn-submit{display:block;margin:24px auto 0;padding:13px 44px;font-size:.95rem;font-weight:700;border-radius:50px;border:none;background:linear-gradient(135deg,#10b981,#059669);color:#fff;cursor:pointer;box-shadow:0 4px 28px rgba(16,185,129,.3);transition:opacity .2s,transform .15s}
+    #btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+    #btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none}
+    #warning{display:none;text-align:center;color:#fca5a5;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px;margin-top:14px;font-size:.85rem}
+
+    /* results */
+    #results{display:none;max-width:820px;margin:0 auto;padding:0 20px 80px}
+    .results-hero{text-align:center;padding:44px 20px 0}
+    .results-hero h2{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#d1fae5,#6ee7b7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+    .results-hero p{color:var(--muted);font-size:.88rem}
+    .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:24px auto 28px;max-width:760px;display:flex;justify-content:center}
+    #polarChart{max-width:420px;max-height:420px}
+    .intel-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:760px;margin:0 auto 28px}
+    .intel-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
+    .intel-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .ic-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .ic-icon{font-size:1.4rem}
+    .ic-name{font-weight:700;font-size:.92rem;flex:1}
+    .ic-score{font-weight:800;font-size:1rem}
+    .ic-bar{height:4px;border-radius:99px;background:var(--border);margin-bottom:10px}
+    .ic-fill{height:100%;border-radius:99px;transition:width 1s ease}
+    .ic-desc{font-size:.78rem;color:var(--muted);line-height:1.6}
+    .actions-row{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;justify-content:center;max-width:760px;margin:28px auto 0}
+    .btn-action{padding:12px 32px;border-radius:50px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;text-align:center}
+    .btn-next{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;box-shadow:0 4px 20px rgba(99,102,241,.25)}
+    .btn-next:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-restart{background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .btn-restart:hover{border-color:#10b981;color:#6ee7b7}
+    .nav-print{padding:4px 12px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+    .nav-print:hover{border-color:#10b981;color:#6ee7b7}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-back">← Inicio</a>
+  <span class="nav-title">Test Inteligencias Múltiples</span>
+  <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+    <button class="nav-print" onclick="window.print()">🖨️ Imprimir</button>
+    <span class="nav-tag" style="margin-left:0">3 de 3</span>
+  </div>
+</nav>
+
+<section id="test-section">
+  <header>
+    <h1>Inteligencias Múltiples<br>Howard Gardner</h1>
+    <p>56 afirmaciones · Puntuá del 1 al 4 según cuánto te identifica</p>
+    <div class="intel-pills">
+      <span class="ip">💬 Lingüística</span><span class="ip">🔢 Lógico-Matemática</span><span class="ip">🎵 Musical</span>
+      <span class="ip">🌍 Espacial</span><span class="ip">🤸 Corporal-Kinestésica</span>
+      <span class="ip">🤝 Interpersonal</span><span class="ip">🧘 Intrapersonal</span><span class="ip">🌿 Naturalista</span>
+    </div>
+  </header>
+
+  <div class="instructions">
+    <h2>📋 Instrucciones</h2>
+    <ul>
+      <li>Puntuá cada frase del <strong>1 al 4</strong> según cuánto te describe:</li>
+      <li><strong>1</strong> = Casi nunca me describe &nbsp;·&nbsp; <strong>2</strong> = A veces &nbsp;·&nbsp; <strong>3</strong> = Con frecuencia &nbsp;·&nbsp; <strong>4</strong> = Casi siempre me describe</li>
+      <li>Respondé con honestidad, no hay respuestas correctas o erróneas.</li>
+    </ul>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="progress-text">0 / 56 respondidas</span>
+      <span id="progress-pct">0 %</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <main>
+    <div class="scale-header">
+      <span class="sc-lbl">1<br>Casi nunca</span>
+      <span class="sc-lbl">2<br>A veces</span>
+      <span class="sc-lbl">3<br>Seguido</span>
+      <span class="sc-lbl">4<br>Siempre</span>
+    </div>
+    <div id="question-list"></div>
+    <div id="warning">⚠️ Por favor respondé <strong id="missing-count"></strong> pregunta(s) antes de continuar.</div>
+    <button id="btn-submit" disabled>Ver resultados →</button>
+  </main>
+</section>
+
+<div id="results">
+  <div class="results-hero">
+    <h2>✨ Tus Inteligencias Múltiples</h2>
+    <p>Puntuación máxima posible por inteligencia: 28 puntos (7 ítems × 4)</p>
+  </div>
+  <div class="chart-wrap"><canvas id="polarChart"></canvas></div>
+  <div class="intel-cards" id="intel-cards"></div>
+  <div class="actions-row">
+    <a href="herrmann.html" class="btn-action btn-next">Continuar con Test de Dominancia →</a>
+    <button class="btn-action btn-restart" onclick="restart()">Repetir este test</button>
+    <a href="index.html" class="btn-action" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);text-decoration:none">🏠 Volver al Inicio</a>
+  </div>
+</div>
+
+<script>
+// 7 questions per intelligence (56 total), Likert 1-4
+const INTELLIGENCES = [
+  {key:'L', icon:'💬', name:'Lingüística', color:'#6366f1'},
+  {key:'M', icon:'🔢', name:'Lógico-Matemática', color:'#0ea5e9'},
+  {key:'Mu',icon:'🎵', name:'Musical', color:'#ec4899'},
+  {key:'E', icon:'🌍', name:'Espacial', color:'#f97316'},
+  {key:'C', icon:'🤸', name:'Corporal-Kinestésica', color:'#eab308'},
+  {key:'In',icon:'🤝', name:'Interpersonal', color:'#10b981'},
+  {key:'Ip',icon:'🧘', name:'Intrapersonal', color:'#8b5cf6'},
+  {key:'N', icon:'🌿', name:'Naturalista', color:'#84cc16'}
+];
+
+const INTEL_DESC = {
+  L:'Habilidad para usar el lenguaje de manera efectiva, tanto oral como escrita. Incluye la capacidad de leer, escribir, contar historias, aprender idiomas y comprender el significado de las palabras.',
+  M:'Capacidad de usar los números de manera efectiva y razonar correctamente. Incluye el pensamiento lógico, la resolución de problemas, el razonamiento científico y la detección de patrones.',
+  Mu:'Habilidad de percibir, discriminar, transformar y expresar formas musicales. Incluye la sensibilidad al ritmo, tono y timbre, tanto para crear música como para apreciarla.',
+  E:'Capacidad de percibir el mundo visualmente y el espacio con precisión. Incluye la habilidad para visualizar, orientarse en el espacio, hacer diseños y representar ideas gráficamente.',
+  C:'Habilidad de usar el cuerpo de manera expresiva y hábil para resolver problemas o producir objetos. Incluye la coordinación, el equilibrio, la destreza y la sincronización.',
+  In:'Capacidad de entender a otras personas: sus motivaciones, intenciones y deseos. Incluye la empatía, la comunicación interpersonal y el trabajo colaborativo.',
+  Ip:'Conocimiento profundo de uno mismo: emociones, motivaciones, fortalezas y debilidades. Incluye la metacognición, la autodisciplina y la autogestión emocional.',
+  N:'Capacidad de reconocer y clasificar objetos del entorno natural y también urbano. Incluye la facilidad para observar, identificar y comprender el mundo vivo y los fenómenos naturales.'
+};
+
+// 7 items per intelligence
+const QUESTIONS = [
+  // Lingüística (1-7)
+  {i:'L', t:'Disfruto leer libros, revistas o artículos con frecuencia.'},
+  {i:'L', t:'Me resulta fácil expresar mis ideas con palabras, oralmente o por escrito.'},
+  {i:'L', t:'Me gustan los juegos de palabras, trabalenguas o crucigramas.'},
+  {i:'L', t:'Cuento historias o chistes bien y me expreso con fluidez.'},
+  {i:'L', t:'Aprendo idiomas con relativa facilidad.'},
+  {i:'L', t:'Recuerdo citas, frases o fragmentos de textos que leí.'},
+  {i:'L', t:'Disfruto escribir: cartas, diarios, cuentos u otros textos.'},
+  // Lógico-Matemática (8-14)
+  {i:'M', t:'Me gustan las matemáticas o la lógica y las encuentro atractivas.'},
+  {i:'M', t:'Disfruto resolver acertijos, puzzles o problemas de lógica.'},
+  {i:'M', t:'Pienso de manera estructurada, secuencial y ordenada.'},
+  {i:'M', t:'Me gusta hacer experimentos y poner a prueba hipótesis.'},
+  {i:'M', t:'Encuentro patrones y regularidades en situaciones cotidianas.'},
+  {i:'M', t:'Me atraen la ciencia, la tecnología o el razonamiento abstracto.'},
+  {i:'M', t:'Prefiero tener una razón lógica antes de aceptar algo como verdadero.'},
+  // Musical (15-21)
+  {i:'Mu', t:'Reconozco fácilmente cuando una nota está desafinada o fuera de ritmo.'},
+  {i:'Mu', t:'Suelo tener una melodía o canción "pegada" en la cabeza con frecuencia.'},
+  {i:'Mu', t:'Toco un instrumento musical o me gustaría aprender a hacerlo.'},
+  {i:'Mu', t:'Me resulta fácil seguir el ritmo de una canción.'},
+  {i:'Mu', t:'La música juega un papel importante en mi vida cotidiana.'},
+  {i:'Mu', t:'Puedo escuchar un breve fragmento musical y reconocer la canción.'},
+  {i:'Mu', t:'Me gusta cantar, aunque sea solo o en la ducha.'},
+  // Espacial (22-28)
+  {i:'E', t:'Me oriento bien en lugares nuevos sin perderme.'},
+  {i:'E', t:'Disfruto dibujar, hacer diseños, fotografía o artes visuales.'},
+  {i:'E', t:'Pienso mejor con imágenes, diagramas o representaciones visuales.'},
+  {i:'E', t:'Recuerdo mejor las cosas cuando las veo en un mapa u organizador visual.'},
+  {i:'E', t:'Puedo visualizar mentalmente cómo quedará algo antes de hacerlo.'},
+  {i:'E', t:'Me gustan los rompecabezas o armados tipo LEGO/3D.'},
+  {i:'E', t:'Noto detalles visuales que otros suelen pasar por alto.'},
+  // Corporal-Kinestésica (29-35)
+  {i:'C', t:'Aprendo mejor haciendo cosas que escuchando o leyendo.'},
+  {i:'C', t:'Practico o me gustaría practicar algún deporte o actividad física.'},
+  {i:'C', t:'Me resulta difícil estar sentado/a mucho tiempo sin moverme.'},
+  {i:'C', t:'Tengo buena coordinación motriz y equilibrio.'},
+  {i:'C', t:'Disfruto trabajar con las manos: cocinar, reparar cosas, hacer manualidades.'},
+  {i:'C', t:'Expreso mis emociones con el cuerpo: gestos, posturas, movimientos.'},
+  {i:'C', t:'Para aprender algo nuevo prefiero imitar o ver una demostración práctica.'},
+  // Interpersonal (36-42)
+  {i:'In', t:'Me resulta fácil hacer amigos y mantener relaciones sociales.'},
+  {i:'In', t:'Entiendo cómo se sienten los demás incluso cuando no lo expresan.'},
+  {i:'In', t:'Disfruto trabajar en equipo más que individualmente.'},
+  {i:'In', t:'La gente suele pedirme consejo o apoyo emocional.'},
+  {i:'In', t:'Reconozco rápidamente los estados de ánimo de quienes me rodean.'},
+  {i:'In', t:'Me gusta participar en actividades sociales, grupos o clubes.'},
+  {i:'In', t:'Mediar o resolver conflictos entre personas me resulta natural.'},
+  // Intrapersonal (43-49)
+  {i:'Ip', t:'Me conozco bien: sé cuáles son mis fortalezas y mis debilidades.'},
+  {i:'Ip', t:'Dedico tiempo a reflexionar sobre mis ideas, emociones y decisiones.'},
+  {i:'Ip', t:'Prefiero trabajar solo/a en tareas que requieren concentración.'},
+  {i:'Ip', t:'Tengo metas personales claras y trato de cumplirlas.'},
+  {i:'Ip', t:'Llevo o me gustaría llevar un diario o registro personal.'},
+  {i:'Ip', t:'Comprendo mis propias emociones y sé cómo regularlas.'},
+  {i:'Ip', t:'Me interesa el autoconocimiento y el aprendizaje personal.'},
+  // Naturalista (50-56)
+  {i:'N', t:'Disfruto estar en la naturaleza: parques, bosques, playas o montañas.'},
+  {i:'N', t:'Me resulta fácil reconocer e identificar plantas, animales o minerales.'},
+  {i:'N', t:'Me preocupo por el cuidado del medio ambiente.'},
+  {i:'N', t:'Observo detalles del entorno natural que otros no notarían.'},
+  {i:'N', t:'Tengo o me gustaría tener mascotas o plantas en casa.'},
+  {i:'N', t:'Me interesa la biología, ecología, astronomía u otras ciencias naturales.'},
+  {i:'N', t:'Clasifico y organizo cosas del entorno (colecciones, categorías, etc.).'}
+];
+
+const answers = new Array(56).fill(0);
+let answeredCount = 0;
+
+function buildQuestions(){
+  const list = document.getElementById('question-list');
+  let lastIntel = '';
+  QUESTIONS.forEach((q,idx)=>{
+    if(q.i !== lastIntel){
+      lastIntel = q.i;
+      const info = INTELLIGENCES.find(x=>x.key===q.i);
+      const div = document.createElement('div');
+      div.className='section-divider';
+      div.textContent=`${info.icon} ${info.name}`;
+      list.appendChild(div);
+    }
+    const n=idx+1;
+    const card=document.createElement('div');card.className='q-card';card.id=`qcard-${n}`;
+    let lkHTML='';
+    [1,2,3,4].forEach(v=>{lkHTML+=`<button class="lk-btn" id="lk-${n}-${v}" onclick="setAnswer(${n},${v})">${v}</button>`});
+    card.innerHTML=`<div class="q-num">${n}</div><div class="q-text">${q.t}</div><div class="likert">${lkHTML}</div>`;
+    list.appendChild(card);
+  });
+}
+
+function setAnswer(n,val){
+  const prev=answers[n-1];
+  if(prev===0)answeredCount++;
+  answers[n-1]=val;
+  [1,2,3,4].forEach(v=>{const b=document.getElementById(`lk-${n}-${v}`);b.className='lk-btn'+(v===val?' sel':'')});
+  updateProgress();
+}
+
+function updateProgress(){
+  const pct=Math.round(answeredCount/56*100);
+  document.getElementById('progress-text').textContent=`${answeredCount} / 56 respondidas`;
+  document.getElementById('progress-pct').textContent=`${pct} %`;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('btn-submit').disabled=answeredCount<56;
+}
+
+document.getElementById('btn-submit').addEventListener('click',()=>{
+  const missing=answers.filter(v=>v===0).length;
+  if(missing>0){document.getElementById('missing-count').textContent=missing;const w=document.getElementById('warning');w.style.display='block';w.scrollIntoView({behavior:'smooth',block:'center'});return}
+  document.getElementById('warning').style.display='none';
+  const scores={};
+  INTELLIGENCES.forEach(info=>{scores[info.key]=0});
+  QUESTIONS.forEach((q,i)=>{scores[q.i]+=answers[i]});
+  localStorage.setItem('gardner_scores',JSON.stringify(scores));
+  localStorage.setItem('gardner_done','1');
+  showResults(scores);
+});
+
+let polarChart=null;
+function showResults(scores){
+  document.getElementById('test-section').style.display='none';
+  const rd=document.getElementById('results');rd.style.display='block';rd.scrollIntoView({behavior:'smooth'});
+  // Sort descending
+  const sorted=[...INTELLIGENCES].sort((a,b)=>scores[b.key]-scores[a.key]);
+  // chart
+  if(polarChart)polarChart.destroy();
+  const ctx=document.getElementById('polarChart').getContext('2d');
+  polarChart=new Chart(ctx,{type:'polarArea',data:{labels:INTELLIGENCES.map(i=>i.name),datasets:[{data:INTELLIGENCES.map(i=>scores[i.key]),backgroundColor:INTELLIGENCES.map(i=>i.color+'33'),borderColor:INTELLIGENCES.map(i=>i.color),borderWidth:2}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#8385a8',font:{family:'Inter',size:11}}}},scales:{r:{ticks:{display:false},grid:{color:'rgba(255,255,255,.06)'}}}}});
+  // cards
+  const container=document.getElementById('intel-cards');container.innerHTML='';
+  sorted.forEach((info,rank)=>{
+    const s=scores[info.key];const pct=Math.round(s/28*100);
+    const card=document.createElement('div');card.className='intel-card';
+    card.style.cssText+=`--cc:${info.color}`;
+    card.innerHTML=`<style>#ic-${info.key}::before{background:${info.color}}</style><div class="ic-header"><span class="ic-icon">${info.icon}</span><span class="ic-name" style="color:${info.color}">${info.name}</span><span class="ic-score" style="color:${info.color}">${s}/28</span></div><div class="ic-bar"><div class="ic-fill" id="icf-${info.key}" style="width:0%;background:${info.color}"></div></div><p class="ic-desc">${INTEL_DESC[info.key]}</p>`;
+    card.querySelector('.intel-card::before') // noop—handled via separate style tag
+    card.style.setProperty('--border-color',info.color);
+    if(rank===0)card.style.borderColor=info.color+'80';
+    container.appendChild(card);
+  });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>sorted.forEach(info=>{
+    const pct=Math.round(scores[info.key]/28*100);
+    const el=document.getElementById(`icf-${info.key}`);if(el)el.style.width=pct+'%';
+  })));
+  // Dynamic links if all tests are done
+  const required = ['chaea_done','vark_done','gardner_done','herrmann_done','habitos_done','mindset_done'];
+  const allDone = required.every(key => localStorage.getItem(key));
+  if(allDone) {
+    const nxt = document.querySelector('.btn-next');
+    nxt.href='perfil.html'; nxt.innerHTML='Ver Perfil Actualizado →';
+  }
+}
+
+function restart(){
+  answers.fill(0);answeredCount=0;
+  document.getElementById('question-list').innerHTML='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('test-section').style.display='block';
+  buildQuestions();updateProgress();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuestions();updateProgress();
+</script>
+</body>
+</html>

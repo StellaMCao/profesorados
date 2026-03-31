@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VARK – Test de Modalidades de Aprendizaje</title>
+  <meta name="description" content="Test VARK online: descubre si eres Visual, Auditivo, Lector/Escritor o Kinestésico."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--bg:#080812;--surface:#121220;--surface2:#1a1a2e;--border:#252540;--text:#e8eaf6;--muted:#8385a8;--radius:14px;--accent:#ec4899}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    nav{display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(8,8,18,.9);backdrop-filter:blur(12px);z-index:100}
+    .nav-back{text-decoration:none;color:var(--muted);font-size:.85rem;display:flex;align-items:center;gap:6px;transition:color .2s}
+    .nav-back:hover{color:var(--text)}
+    .nav-title{font-weight:700;font-size:.95rem}
+    .nav-tag{margin-left:auto;background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.3);color:#f9a8d4;padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em}
+    header{background:linear-gradient(135deg,#0a080e 0%,#1a0a1a 60%,#2a0a2a 100%);padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden}
+    header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(236,72,153,.18) 0%,transparent 70%);pointer-events:none}
+    header h1{font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:800;background:linear-gradient(135deg,#fce7f3,#fbcfe8,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px}
+    header p{color:var(--muted);font-size:.92rem;max-width:520px;margin:0 auto 22px}
+    .style-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+    .pill{padding:5px 14px;border-radius:50px;font-size:.78rem;font-weight:600}
+    .pill-v{background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25)}
+    .pill-a{background:rgba(234,179,8,.12);color:#fde047;border:1px solid rgba(234,179,8,.25)}
+    .pill-r{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.25)}
+    .pill-k{background:rgba(249,115,22,.12);color:#fb923c;border:1px solid rgba(249,115,22,.25)}
+    .instructions{max-width:700px;margin:28px auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px}
+    .instructions h2{font-size:.9rem;font-weight:700;margin-bottom:8px;color:#fce7f3}
+    .instructions ul{list-style:none}
+    .instructions li{padding:3px 0;font-size:.85rem;color:var(--muted)}
+    .instructions li::before{content:'→ ';color:#ec4899}
+    .progress-wrap{max-width:700px;margin:0 auto 6px;padding:0 20px}
+    .progress-info{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);margin-bottom:5px}
+    .progress-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#ec4899,#f9a8d4);border-radius:99px;transition:width .4s}
+    main{max-width:700px;margin:0 auto;padding:0 20px 60px}
+    .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+    .q-card:hover{border-color:#4a2040}
+    .q-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+    .q-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.25);color:#f9a8d4;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+    .q-scenario{font-size:.88rem;color:var(--text);flex:1;padding-top:4px;line-height:1.6}
+    .q-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-left:38px}
+    .q-opt{padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:.82rem;cursor:pointer;transition:all .18s;text-align:left;line-height:1.4}
+    .q-opt:hover{border-color:#ec4899;color:#fce7f3}
+    .q-opt.selected{background:rgba(236,72,153,.12);border-color:#ec4899;color:#fce7f3}
+    .q-opt .opt-letter{display:inline-block;width:18px;height:18px;border-radius:50%;background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.3);color:#f9a8d4;font-size:.65rem;font-weight:700;text-align:center;line-height:18px;margin-right:8px;flex-shrink:0}
+    .hint{font-size:.72rem;color:var(--muted);opacity:.7;margin-left:38px;margin-top:-6px;margin-bottom:8px}
+    #btn-submit{display:block;margin:24px auto 0;padding:13px 44px;font-size:.95rem;font-weight:700;border-radius:50px;border:none;background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;cursor:pointer;box-shadow:0 4px 28px rgba(236,72,153,.35);transition:opacity .2s,transform .15s}
+    #btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+    #btn-submit:disabled{opacity:.35;cursor:not-allowed;transform:none}
+    #warning{display:none;text-align:center;color:#fca5a5;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:10px;margin-top:14px;font-size:.85rem}
+
+    /* results */
+    #results{display:none;max-width:820px;margin:0 auto;padding:0 20px 80px}
+    .results-hero{text-align:center;padding:44px 20px 0}
+    .results-hero h2{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#fce7f3,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+    .results-hero p{color:var(--muted);font-size:.88rem}
+    .scores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;margin:30px 0 28px}
+    .score-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;position:relative;overflow:hidden}
+    .score-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .sc-v::before{background:#6366f1}.sc-a::before{background:#eab308}.sc-r::before{background:#10b981}.sc-k::before{background:#f97316}
+    .sl-v{color:#818cf8}.sl-a{color:#fde047}.sl-r{color:#34d399}.sl-k{color:#fb923c}
+    .score-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px;min-height:2.4em;display:flex;align-items:center;justify-content:center;gap:4px}
+    .score-num{font-size:2.4rem;font-weight:800;line-height:1}
+    .score-pct{font-size:.8rem;color:var(--muted);margin-top:3px}
+    .score-level{font-size:.7rem;font-weight:600;margin-top:5px;padding:2px 8px;border-radius:50px;display:inline-block}
+    .mini-bar{height:3px;border-radius:99px;background:var(--border);margin-top:8px}
+    .mini-fill{height:100%;border-radius:99px;transition:width 1s ease}
+    .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:28px;display:flex;justify-content:center}
+    #barChart{max-width:500px;width:100%}
+    .style-cards{display:flex;flex-direction:column;gap:18px;margin-bottom:32px}
+    .style-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    .style-card.dominant{border-color:rgba(236,72,153,.4);box-shadow:0 0 30px rgba(236,72,153,.07)}
+    .style-card-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+    .style-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+    .icon-v{background:rgba(99,102,241,.12)}.icon-a{background:rgba(234,179,8,.12)}.icon-r{background:rgba(16,185,129,.12)}.icon-k{background:rgba(249,115,22,.12)}
+    .style-title{flex:1}
+    .style-title h3{font-size:1rem;font-weight:700}
+    .style-title .subtitle{font-size:.78rem;color:var(--muted);margin-top:1px}
+    .style-score-badge{font-size:1.1rem;font-weight:800;padding:5px 14px;border-radius:8px}
+    .badge-v{background:rgba(99,102,241,.12);color:#818cf8}
+    .badge-a{background:rgba(234,179,8,.12);color:#fde047}
+    .badge-r{background:rgba(16,185,129,.12);color:#34d399}
+    .badge-k{background:rgba(249,115,22,.12);color:#fb923c}
+    .crown{font-size:.7rem;padding:2px 7px;border-radius:50px;background:rgba(250,204,21,.08);color:#fde047;border:1px solid rgba(250,204,21,.25);margin-left:6px}
+    .style-card-body{padding:18px 20px}
+    .style-desc{font-size:.86rem;color:#a5a8c8;line-height:1.7;margin-bottom:12px}
+    .style-traits h4{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:7px}
+    .traits-list{display:flex;flex-wrap:wrap;gap:5px}
+    .trait{font-size:.72rem;padding:2px 8px;border-radius:50px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+    .trait.hl{border-color:rgba(236,72,153,.3);color:#f9a8d4;background:rgba(236,72,153,.07)}
+    .multimodal-note{background:rgba(236,72,153,.06);border:1px solid rgba(236,72,153,.2);border-radius:var(--radius);padding:16px 20px;margin-bottom:28px}
+    .multimodal-note p{font-size:.85rem;color:#f9a8d4;line-height:1.6}
+    .multimodal-note strong{color:#fce7f3}
+    .actions-row{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;justify-content:center}
+    .btn-action{padding:12px 32px;border-radius:50px;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;text-align:center}
+    .btn-next{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 4px 20px rgba(16,185,129,.25)}
+    .btn-next:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-restart{background:transparent;border:1px solid var(--border);color:var(--muted)}
+    .btn-restart:hover{border-color:#ec4899;color:#f9a8d4}
+    .nav-print{padding:4px 12px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+    .nav-print:hover{border-color:#ec4899;color:#f9a8d4}
+    @media(max-width:600px){.q-options{grid-template-columns:1fr}.scores-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-back">← Inicio</a>
+  <span class="nav-title">Test VARK</span>
+  <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+    <button class="nav-print" onclick="window.print()">🖨️ Imprimir</button>
+    <span class="nav-tag" style="margin-left:0">2 de 3</span>
+  </div>
+</nav>
+
+<section id="test-section">
+  <header>
+    <h1>Test VARK<br>Modalidades de Aprendizaje</h1>
+    <p>16 escenarios · Seleccioná la opción que mejor describe tu preferencia · Podés elegir más de una</p>
+    <div class="style-pills">
+      <span class="pill pill-v">👁️ Visual</span>
+      <span class="pill pill-a">👂 Auditivo/Aural</span>
+      <span class="pill pill-r">📖 Lectura/Escritura</span>
+      <span class="pill pill-k">🤸 Kinestésico</span>
+    </div>
+  </header>
+
+  <div class="instructions">
+    <h2>📋 Instrucciones</h2>
+    <ul>
+      <li>Para cada pregunta, seleccioná la(s) opción(es) que mejor describe(n) tu preferencia.</li>
+      <li>Podés seleccionar <strong>más de una respuesta</strong> si ninguna sola te representa completamente.</li>
+      <li>No hay respuestas correctas o erróneas. Respondé con honestidad.</li>
+      <li>Respondé según lo que realmente hacés, no lo que crees que deberías hacer.</li>
+    </ul>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="progress-text">0 / 16 respondidas</span>
+      <span id="progress-pct">0 %</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <main>
+    <div id="question-list"></div>
+    <div id="warning">⚠️ Por favor respondé <strong id="missing-count"></strong> pregunta(s) antes de continuar.</div>
+    <button id="btn-submit" disabled>Ver resultados →</button>
+  </main>
+</section>
+
+<div id="results">
+  <div class="results-hero">
+    <h2>🌈 Tus resultados VARK</h2>
+    <p>Puntuación indicativa de preferencia por cada modalidad sensorial</p>
+  </div>
+  <div id="multimodal-note" class="multimodal-note" style="display:none;max-width:760px;margin:20px auto 0"></div>
+  <div class="scores-grid" id="scores-grid" style="max-width:760px;margin:20px auto"></div>
+  <div class="chart-wrap" style="max-width:760px;margin:20px auto 28px"><canvas id="barChart"></canvas></div>
+  <div class="style-cards" id="style-cards-container" style="max-width:760px;margin:0 auto"></div>
+  <div class="actions-row">
+    <a href="gardner.html" class="btn-action btn-next">Continuar con Gardner →</a>
+    <button class="btn-action btn-restart" onclick="restart()">Repetir este test</button>
+    <a href="index.html" class="btn-action" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);text-decoration:none">🏠 Volver al Inicio</a>
+  </div>
+</div>
+
+<script>
+// VARK questions: each option maps to V, A, R, K
+const VARK_Q = [
+  {
+    scenario: "Estás a punto de indicarle a alguien cómo llegar a un lugar. Preferís...",
+    opts: [
+      {t:"Dibujar un mapa o darle un mapa impreso.", m:"V"},
+      {t:"Decirle las instrucciones verbalmente paso a paso.", m:"A"},
+      {t:"Escribir las instrucciones en un papel.", m:"R"},
+      {t:"Ir con esa persona o darle un punto de referencia concreto del lugar.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Un sitio web nuevo tiene un video de introducción, texto explicativo, diagramas interactivos y una demostración práctica. Primero irías a...",
+    opts: [
+      {t:"Los diagramas, mapas o gráficos del sitio.", m:"V"},
+      {t:"El canal de YouTube o versión en video/audio.", m:"A"},
+      {t:"El texto escrito con la descripción del sitio.", m:"R"},
+      {t:"La demostración práctica o los ejemplos.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Tenés que tomar una decisión importante. Para hacerlo, preferís...",
+    opts: [
+      {t:"Hacer un diagrama comparativo o tabla visual.", m:"V"},
+      {t:"Hablar del tema con personas de confianza.", m:"A"},
+      {t:"Leer sobre el tema y hacer listas de pros y contras.", m:"R"},
+      {t:"Basarte en experiencias previas similares.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Cuando recordás algo importante que alguien te dijo, lo hacés...",
+    opts: [
+      {t:"Veo imágenes mentales de lo que describió.", m:"V"},
+      {t:"Escucho las palabras exactas o el tono de voz.", m:"A"},
+      {t:"Recuerdo lo que escribí o anoté sobre eso.", m:"R"},
+      {t:"Recuerdo lo que hacía o sentía cuando me lo dijeron.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Preferís que los profesores o capacitadores usen...",
+    opts: [
+      {t:"Diagramas, diapositivas y organizadores gráficos.", m:"V"},
+      {t:"Debate, discusión grupal, conferencias en vivo.", m:"A"},
+      {t:"Apuntes para tomar nota, lecturas, bibliografía.", m:"R"},
+      {t:"Casos reales, demostraciones, ejercicios prácticos.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Cuando aprendés a usar un software nuevo, preferís...",
+    opts: [
+      {t:"Ver un diagrama o mapa del programa.", m:"V"},
+      {t:"Que alguien te lo explique mientras lo mirás.", m:"A"},
+      {t:"Leer el manual o la guía paso a paso.", m:"R"},
+      {t:"Probarlo directamente, ensayo y error.", m:"K"}
+    ]
+  },
+  {
+    scenario: "¿Cuál de estas opciones te parece más útil para estudiar para un examen?",
+    opts: [
+      {t:"Diagramas, esquemas, mapas conceptuales.", m:"V"},
+      {t:"Escuchar grabaciones o repetir en voz alta.", m:"A"},
+      {t:"Releer apuntes o resumir con tus palabras.", m:"R"},
+      {t:"Resolver ejercicios prácticos o casos reales.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Tenés tiempo libre y elegís leer. Preferís libros que...",
+    opts: [
+      {t:"Tengan muchos gráficos, fotos y mapas.", m:"V"},
+      {t:"Tengan diálogos y situaciones entre personas.", m:"A"},
+      {t:"Sean descriptivos y estén llenos de palabras e ideas.", m:"R"},
+      {t:"Cuenten historias reales, de hechos o aventuras.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Tenés que aprender sobre un proceso complejo. Preferís que te lo expliquen con...",
+    opts: [
+      {t:"Un flujograma o diagrama de etapas.", m:"V"},
+      {t:"Una explicación oral con ejemplos.", m:"A"},
+      {t:"Un documento escrito detallado.", m:"R"},
+      {t:"Una práctica guiada paso a paso.", m:"K"}
+    ]
+  },
+  {
+    scenario: "En una exposición o presentación, vos...",
+    opts: [
+      {t:"Usás muchas imágenes y gráficos.", m:"V"},
+      {t:"Preferís hablar libremente sin apoyarte en texto.", m:"A"},
+      {t:"Escribís los puntos clave para apoyarte.", m:"R"},
+      {t:"Incluís ejemplos y demostraciones.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Cuando algo sale mal con tu celular o una app, lo que primero hacés es...",
+    opts: [
+      {t:"Buscar un tutorial en video o imagen explicativa.", m:"V"},
+      {t:"Llamar a alguien que sepa y pedirle que te explique.", m:"A"},
+      {t:"Buscar en Google y leer las instrucciones escritas.", m:"R"},
+      {t:"Probar diferentes opciones hasta que funcione.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Cuando querés comunicar una idea a tu clase o equipo, preferís...",
+    opts: [
+      {t:"Mostrar un gráfico o presentación visual.", m:"V"},
+      {t:"Explicarlo con tus palabras o discutirlo.", m:"A"},
+      {t:"Repartir un texto resumen o hacer una lista.", m:"R"},
+      {t:"Mostrar ejemplos reales o hacer una demostración.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Si pudieras elegir, el trabajo de clase que preferís es...",
+    opts: [
+      {t:"Un poster, mapa mental o presentación visual.", m:"V"},
+      {t:"Una presentación oral, debate o podcast.", m:"A"},
+      {t:"Un informe escrito, ensayo o resumen.", m:"R"},
+      {t:"Un proyecto práctico, maqueta o experiencia de campo.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Cuando explicás una dirección por mensaje, usás...",
+    opts: [
+      {t:"Compartís una captura o imagen del mapa.", m:"V"},
+      {t:"Le mandás un mensaje de voz describiendo el camino.", m:"A"},
+      {t:"Escribís las instrucciones detalladas paso a paso.", m:"R"},
+      {t:"Le indicás referencias concretas: 'al lado de...', 'frente a...'.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Lo que más te ayuda a recordar lo estudiado es...",
+    opts: [
+      {t:"Haber visto un esquema visual o diagrama.", m:"V"},
+      {t:"Haber escuchado o hablado sobre el tema.", m:"A"},
+      {t:"Haber leído y tomado notas detalladas.", m:"R"},
+      {t:"Haberlo aplicado de alguna forma práctica.", m:"K"}
+    ]
+  },
+  {
+    scenario: "Cuando visitás un museo o exposición, preferís...",
+    opts: [
+      {t:"Las representaciones visuales, gráficas e infografías.", m:"V"},
+      {t:"Los tours guiados, audioguías o charlas.", m:"A"},
+      {t:"Leer los carteles y la información escrita.", m:"R"},
+      {t:"Las simulaciones interactivas, réplicas para tocar.", m:"K"}
+    ]
+  }
+];
+
+const VARK_INFO = {
+  V:{name:'Visual',icon:'👁️',iconClass:'icon-v',badgeClass:'badge-v',colorHex:'#6366f1',subtitle:'Aprendizaje a través de gráficos, esquemas y diagramas',description:'Las personas con preferencia <strong>Visual</strong> aprenden mejor cuando la información se presenta en formatos visuales como gráficos, diagramas, mapas conceptuales y esquemas. No se trata de fotografías o videos en sí, sino de representaciones simbólicas del conocimiento. Tienen buena memoria visual y se orientan bien en el espacio.',traits:['Mapas conceptuales','Diagramas de flujo','Infografías','Líneas de tiempo','Organigramas','Código de colores']},
+  A:{name:'Auditivo/Aural',icon:'👂',iconClass:'icon-a',badgeClass:'badge-a',colorHex:'#eab308',subtitle:'Aprendizaje a través de la escucha y el habla',description:'Las personas con preferencia <strong>Auditiva/Aural</strong> aprenden mejor escuchando y hablando sobre la información. Disfrutan de debates, conferencias, discusiones grupales y explicaciones orales. Recuerdan bien lo que escuchan y se benefician de estudiar verbalizando el contenido.',traits:['Debates grupales','Explicaciones orales','Grabaciones','Leer en voz alta','Discusiones','Tutorías']},
+  R:{name:'Lectura/Escritura',icon:'📖',iconClass:'icon-r',badgeClass:'badge-r',colorHex:'#10b981',subtitle:'Aprendizaje a través del texto escrito',description:'Las personas con preferencia <strong>Lectura/Escritura</strong> aprenden mejor mediante la lectura y la escritura. Disfrutan de los textos detallados, de tomar notas, hacer resúmenes y listas. Son buenas lectoras y escritoras, y valoran la bibliografía, los manuales y los informes escritos.',traits:['Tomar apuntes','Leer bibliografía','Hacer resúmenes','Listas y esquemas','Ensayos','Manuales']},
+  K:{name:'Kinestésico',icon:'🤸',iconClass:'icon-k',badgeClass:'badge-k',colorHex:'#f97316',subtitle:'Aprendizaje a través de la experiencia y la práctica',description:'Las personas con preferencia <strong>Kinestésica</strong> aprenden mejor mediante la experiencia directa, la práctica y los ejemplos concretos. Disfrutan de proyectos, laboratorios, visitas de campo y demostraciones. La teoría sola no les alcanza: necesitan aplicarla para comprenderla.',traits:['Laboratorios','Casos reales','Proyectos','Trabajo de campo','Demostraciones','Práctica repetida']}
+};
+
+const answers = new Array(16).fill(null).map(()=>new Set());
+let answeredCount = 0;
+
+function buildQuestions(){
+  const list = document.getElementById('question-list');
+  VARK_Q.forEach((q, idx)=>{
+    const n = idx+1;
+    const card = document.createElement('div');
+    card.className='q-card';card.id=`qc-${n}`;
+    let optsHTML='';
+    q.opts.forEach((opt,oi)=>{
+      const letters=['A','B','C','D'];
+      optsHTML+=`<button class="q-opt" id="opt-${n}-${oi}" onclick="toggleOpt(${n},${oi},'${opt.m}')"><span class="opt-letter">${letters[oi]}</span>${opt.t}</button>`;
+    });
+    card.innerHTML=`<div class="q-header"><div class="q-num">${n}</div><div class="q-scenario">${q.scenario}</div></div><p class="hint">Podés seleccionar más de una opción</p><div class="q-options">${optsHTML}</div>`;
+    list.appendChild(card);
+  });
+}
+
+function toggleOpt(n, oi, modality){
+  const optEl = document.getElementById(`opt-${n}-${oi}`);
+  const set = answers[n-1];
+  const key = `${oi}:${modality}`;
+  const wasEmpty = set.size===0;
+  if(set.has(key)){set.delete(key);optEl.classList.remove('selected')}
+  else{set.add(key);optEl.classList.add('selected')}
+  if(wasEmpty&&set.size>0){answeredCount++;updateProgress()}
+  else if(!wasEmpty&&set.size===0){answeredCount--;updateProgress()}
+}
+
+function updateProgress(){
+  const pct=Math.round(answeredCount/16*100);
+  document.getElementById('progress-text').textContent=`${answeredCount} / 16 respondidas`;
+  document.getElementById('progress-pct').textContent=`${pct} %`;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('btn-submit').disabled=answeredCount<16;
+}
+
+document.getElementById('btn-submit').addEventListener('click',()=>{
+  const missing=answers.filter(s=>s.size===0).length;
+  if(missing>0){document.getElementById('missing-count').textContent=missing;const w=document.getElementById('warning');w.style.display='block';w.scrollIntoView({behavior:'smooth',block:'center'});return}
+  document.getElementById('warning').style.display='none';
+  const scores={V:0,A:0,R:0,K:0};
+  answers.forEach(set=>{set.forEach(key=>{const m=key.split(':')[1];scores[m]++;})});
+  localStorage.setItem('vark_scores',JSON.stringify(scores));
+  localStorage.setItem('vark_done','1');
+  showResults(scores);
+});
+
+let barChart=null;
+function showResults(scores){
+  document.getElementById('test-section').style.display='none';
+  const rd=document.getElementById('results');rd.style.display='block';rd.scrollIntoView({behavior:'smooth'});
+  const total=Object.values(scores).reduce((a,b)=>a+b,0);
+  const maxScore=Math.max(...Object.values(scores));
+  const dominant=Object.keys(scores).filter(k=>scores[k]===maxScore);
+  const styleOrder=['V','A','R','K'];
+  const classes={V:'sc-v',A:'sc-a',R:'sc-r',K:'sc-k'};
+  const labelCls={V:'sl-v',A:'sl-a',R:'sl-r',K:'sl-k'};
+  const colors={V:'#6366f1',A:'#eab308',R:'#10b981',K:'#f97316'};
+
+  // Multimodal note
+  const mm=document.getElementById('multimodal-note');
+  if(dominant.length>1){mm.style.display='block';mm.innerHTML=`<p>🌟 <strong>Perfil Multimodal:</strong> Tu puntuación más alta la comparten varias modalidades (${dominant.map(d=>VARK_INFO[d].name).join(' y ')}). Esto significa que sos flexible y podés aprender de múltiples maneras, lo cual es una fortaleza.</p>`}
+
+  // Score cards
+  const grid=document.getElementById('scores-grid');grid.innerHTML='';
+  styleOrder.forEach(k=>{
+    const s=scores[k];const pct=total>0?Math.round(s/total*100):0;const info=VARK_INFO[k];
+    grid.innerHTML+=`<div class="score-card ${classes[k]}"><div class="score-label ${labelCls[k]}">${info.icon} ${info.name}</div><div class="score-num ${labelCls[k]}">${s}</div><div class="score-pct">${pct}% del total</div><div class="mini-bar"><div class="mini-fill" id="mfv-${k}" style="width:0%;background:${colors[k]}"></div></div></div>`;
+  });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>styleOrder.forEach(k=>{const pct=total>0?Math.round(scores[k]/total*100):0;document.getElementById(`mfv-${k}`).style.width=pct+'%'})));
+
+  // Bar chart
+  if(barChart)barChart.destroy();
+  const ctx=document.getElementById('barChart').getContext('2d');
+  barChart=new Chart(ctx,{type:'bar',data:{labels:['Visual','Auditivo','Lectura/Escritura','Kinestésico'],datasets:[{label:'Puntuación',data:[scores.V,scores.A,scores.R,scores.K],backgroundColor:['rgba(99,102,241,.35)','rgba(234,179,8,.35)','rgba(16,185,129,.35)','rgba(249,115,22,.35)'],borderColor:['#6366f1','#eab308','#10b981','#f97316'],borderWidth:2,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#8385a8',font:{family:'Inter'}}},x:{grid:{display:false},ticks:{color:'#8385a8',font:{family:'Inter',size:11}}}}}});
+
+  // Style cards
+  const container=document.getElementById('style-cards-container');container.innerHTML='';
+  styleOrder.slice().sort((a,b)=>scores[b]-scores[a]).forEach(k=>{
+    const info=VARK_INFO[k];const s=scores[k];const pct=total>0?Math.round(s/total*100):0;const isDom=dominant.includes(k);
+    const card=document.createElement('div');card.className='style-card'+(isDom?' dominant':'');
+    card.innerHTML=`<div class="style-card-header"><div class="style-icon ${info.iconClass}">${info.icon}</div><div class="style-title"><h3>${info.name}${isDom?'<span class="crown">👑 Predominante</span>':''}</h3><div class="subtitle">${info.subtitle}</div></div><span class="style-score-badge ${info.badgeClass}">${s} pts <small style="font-size:.65em;opacity:.7">${pct}%</small></span></div><div class="style-card-body"><p class="style-desc">${info.description}</p><div class="style-traits"><h4>Estrategias recomendadas</h4><div class="traits-list">${info.traits.map(t=>`<span class="trait${isDom?' hl':''}">${t}</span>`).join('')}</div></div></div>`;
+    container.appendChild(card);
+  });
+  if(localStorage.getItem('chaea_done')&&localStorage.getItem('vark_done')&&localStorage.getItem('gardner_done')){
+    const nxt=document.querySelector('.btn-next');
+    if(nxt){nxt.href='perfil.html';nxt.innerHTML='Ver Perfil Actualizado →';}
+  }
+}
+
+function restart(){
+  answers.forEach(s=>s.clear());answeredCount=0;
+  document.getElementById('question-list').innerHTML='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('test-section').style.display='block';
+  buildQuestions();updateProgress();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuestions();updateProgress();
+</script>
+</body>
+</html>
