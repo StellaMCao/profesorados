@@ -508,9 +508,10 @@ document.getElementById('app-container').addEventListener('click', (e) => {
             const targetId = currentScene.clickAdvanceTarget ||
                 (idx < SCENARIO_DATA.scenes.length - 1 ? SCENARIO_DATA.scenes[idx + 1].id : null);
             if (targetId) goToScene(targetId);
-        }
     }
-}function makeBtnEl(cfg) {
+});
+
+function makeBtnEl(cfg) {
     const el = document.createElement('div');
     el.className = 'interactive-btn ' + (cfg.useGlassmorphism !== false ? 'glass-mode' : 'plain-mode');
     el.style.cssText = [
