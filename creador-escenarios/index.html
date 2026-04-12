@@ -381,6 +381,15 @@ function goToScene(sceneId) {
             loopLayer.className = 'btn-loop-layer';
             transitionLayer.appendChild(loopLayer);
 
+            // Propagate text alignment to inner layers (overrides CSS class defaults)
+            const hAlign = btn.textAlign === 'left' ? 'flex-start' : btn.textAlign === 'right' ? 'flex-end' : 'center';
+            const vAlign = btn.textVAlign === 'top' ? 'flex-start' : btn.textVAlign === 'bottom' ? 'flex-end' : 'center';
+            transitionLayer.style.justifyContent = hAlign;
+            transitionLayer.style.alignItems = vAlign;
+            loopLayer.style.justifyContent = hAlign;
+            loopLayer.style.alignItems = vAlign;
+            loopLayer.style.textAlign = btn.textAlign || 'center';
+
             if(btn.imgSrc) {
                 const img = document.createElement('img');
                 img.src = btn.imgSrc;
@@ -393,6 +402,7 @@ function goToScene(sceneId) {
                 loopLayer.innerText = btn.text || '';
                 loopLayer.style.padding = '10px';
             }
+
 
             const entryKey = ENTRY_MAP[btn.entryAnim];
             const entryDelay = parseFloat(btn.entryDelay) || 0;
