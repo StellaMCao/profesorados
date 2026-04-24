@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LES, LEN y UniCABA: marco normativo y disputas de sentido</title>
+  <style>
+    :root {
+      --azul: #25364f;
+      --azul-2: #355c7d;
+      --verde: #2f855a;
+      --violeta: #7b3fa1;
+      --rojo: #b83232;
+      --ambar: #b7791f;
+      --fondo: #f3f6f8;
+      --papel: #ffffff;
+      --texto: #263238;
+      --muted: #667085;
+      --borde: #d9e2ec;
+      --sombra: 0 12px 30px rgba(37, 54, 79, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      color: var(--texto);
+      background:
+        radial-gradient(circle at top left, rgba(53, 92, 125, .15), transparent 35%),
+        linear-gradient(180deg, #f8fbfc 0%, var(--fondo) 100%);
+    }
+
+    header {
+      color: white;
+      background:
+        linear-gradient(135deg, rgba(37, 54, 79, .96), rgba(53, 92, 125, .96)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='%23ffffff' fill-opacity='.07'%3E%3Ccircle cx='40' cy='40' r='6'/%3E%3Ccircle cx='120' cy='70' r='5'/%3E%3Ccircle cx='80' cy='130' r='4'/%3E%3Cpath d='M40 40 L120 70 L80 130 Z' stroke='%23fff' stroke-opacity='.18' fill='none'/%3E%3C/g%3E%3C/svg%3E");
+      padding: 56px 20px 42px;
+      text-align: center;
+    }
+
+    header .etiqueta {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      font-size: .85rem;
+      letter-spacing: .02em;
+      margin-bottom: 16px;
+      background: rgba(255,255,255,.08);
+    }
+
+    h1 {
+      margin: 0 auto;
+      max-width: 920px;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.08;
+    }
+
+    header p {
+      max-width: 760px;
+      margin: 18px auto 0;
+      font-size: 1.08rem;
+      opacity: .92;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--borde);
+    }
+
+    nav .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--azul);
+      font-weight: 700;
+      font-size: .92rem;
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
+
+    nav a:hover { background: #e7eef5; }
+
+    main {
+      max-width: 1120px;
+      margin: 32px auto 48px;
+      padding: 0 18px;
+    }
+
+    section, .bloque {
+      background: var(--papel);
+      border: 1px solid var(--borde);
+      border-radius: 22px;
+      padding: clamp(20px, 4vw, 34px);
+      margin-bottom: 24px;
+      box-shadow: var(--sombra);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      line-height: 1.2;
+      color: var(--azul);
+    }
+
+    h3 { margin: 22px 0 8px; color: var(--azul-2); }
+
+    .bajada {
+      font-size: 1.08rem;
+      color: #344054;
+      margin-top: 0;
+    }
+
+    .grilla {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .tarjeta {
+      border: 1px solid var(--borde);
+      border-radius: 18px;
+      padding: 18px;
+      background: #fbfdff;
+    }
+
+    .tarjeta strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--azul);
+    }
+
+    .ley-len { border-top: 6px solid var(--verde); }
+    .ley-les { border-top: 6px solid var(--azul-2); }
+    .ley-unicaba { border-top: 6px solid var(--violeta); }
+
+    .dato {
+      display: inline-block;
+      font-size: .8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: white;
+      background: var(--azul);
+      border-radius: 999px;
+      padding: 4px 9px;
+      margin-bottom: 8px;
+    }
+
+    .quote-box {
+      margin: 18px 0;
+      padding: 18px 20px;
+      border-left: 6px solid var(--azul-2);
+      background: #f7fafc;
+      border-radius: 14px;
+      color: #3d4a5c;
+      font-style: italic;
+    }
+
+    .quote-box small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .advertencia {
+      border-left: 6px solid var(--ambar);
+      background: #fffaf0;
+    }
+
+    .tension {
+      border-left: 6px solid var(--rojo);
+      background: #fff5f5;
+    }
+
+    .comparativa {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      overflow: hidden;
+      border-radius: 16px;
+      font-size: .98rem;
+    }
+
+    .comparativa th,
+    .comparativa td {
+      padding: 14px;
+      border: 1px solid var(--borde);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .comparativa th {
+      background: var(--azul);
+      color: white;
+    }
+
+    .comparativa tr:nth-child(even) td { background: #f8fbfd; }
+
+    details {
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fbfdff;
+      margin: 12px 0;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--azul);
+    }
+
+    .actividad {
+      background: linear-gradient(135deg, #25364f, #355c7d);
+      color: white;
+      border: none;
+    }
+
+    .actividad h2 { color: white; }
+    .actividad .paso {
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 16px;
+      padding: 15px;
+      margin: 12px 0;
+    }
+
+    .actividad strong { color: #ffd166; }
+
+    .preguntas li { margin-bottom: 12px; }
+
+    .cierre {
+      text-align: center;
+      color: var(--muted);
+      font-size: .92rem;
+      margin-top: 30px;
+      padding-bottom: 30px;
+    }
+
+    @media (max-width: 820px) {
+      .grilla { grid-template-columns: 1fr; }
+      nav { position: static; }
+      .comparativa { font-size: .92rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="etiqueta">Problemáticas de la enseñanza en el nivel superior</div>
+    <h1>LES, LEN y UniCABA: leyes, instituciones y disputas por el sentido de la educación</h1>
+    <p>Una guía de clase para leer el marco normativo como territorio político: no solo qué dice cada ley, sino qué modelo de Estado, de formación docente y de participación institucional deja ver.</p>
+  </header>
+
+  <nav aria-label="Navegación principal">
+    <div class="nav-inner">
+      <a href="#inicio">Inicio</a>
+      <a href="#mapa">Mapa normativo</a>
+      <a href="#contexto">Contexto</a>
+      <a href="#tensiones">Tensiones</a>
+      <a href="#actividad">Actividad</a>
+      <a href="#cierre">Preguntas</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="inicio">
+      <h2>Para empezar: las leyes no flotan en el aire</h2>
+      <p class="bajada">Una ley puede parecer un texto frío, administrativo, escrito en idioma de expediente. Pero también es una fotografía de época: muestra qué problemas se consideraban urgentes, qué actores tenían fuerza y qué proyecto educativo se intentaba consolidar.</p>
+      <div class="quote-box advertencia">
+        La pregunta de clase no es solamente “¿qué dice la norma?”, sino también “¿qué hace posible, qué limita y qué silencios deja abiertos?”.
+      </div>
+    </section>
+
+    <section id="mapa">
+      <h2>Mapa normativo mínimo</h2>
+      <p>Podemos ordenar el recorrido en tres capas: el marco nacional general, el régimen de la educación superior y la política jurisdiccional de la Ciudad de Buenos Aires.</p>
+
+      <div class="grilla">
+        <article class="tarjeta ley-len">
+          <span class="dato">2006</span>
+          <strong>Ley de Educación Nacional N.º 26.206</strong>
+          <p>Define a la educación como bien público y derecho personal y social. Reubica al Estado como garante principal y le da centralidad a la igualdad, la inclusión y la responsabilidad pública.</p><div class="quote-box">“El Estado nacional, las provincias y la Ciudad Autónoma de Buenos Aires tienen la responsabilidad principal e indelegable de proveer una educación integral, permanente y de calidad para todos.”<small>Ley de Educación Nacional N.º 26.206, art. 4.</small></div>
+        </article>
+
+        <article class="tarjeta ley-les">
+          <span class="dato">1995 / mod. 2015</span>
+          <strong>Ley de Educación Superior N.º 24.521</strong>
+          <p>Regula universidades e institutos de educación superior. En su versión original nace en los años noventa; luego es modificada por la Ley 27.204, que refuerza la idea de educación superior como derecho.</p><div class="quote-box">“La educación superior es un bien público y un derecho humano personal y social.”<small>Ley de Educación Superior N.º 24.521, texto según Ley 27.204.</small></div>
+        </article>
+
+        <article class="tarjeta ley-unicaba">
+          <span class="dato">2018</span>
+          <strong>Ley UniCABA N.º 6.053</strong>
+          <p>Crea una universidad pública en la Ciudad con fuerte incidencia en formación docente. Su discusión puso en escena tensiones entre centralización, tradición institucional de los profesorados y participación democrática.</p><div class="quote-box">“Créase la Universidad de la Ciudad Autónoma de Buenos Aires (UniCABA), que funcionará como persona jurídica pública estatal en la órbita del Ministerio de Educación e Innovación de la Ciudad Autónoma de Buenos Aires.”<small>Ley CABA N.º 6.053, art. 19.</small></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="contexto">
+      <h2>Contextualizar: de qué clima histórico viene cada norma</h2>
+
+      <details open>
+        <summary>LEN: educación como derecho y responsabilidad estatal</summary>
+        <p>La LEN puede leerse como parte de un movimiento de recomposición posterior a la crisis de las políticas educativas de los años noventa. Su énfasis está puesto en la educación común, la inclusión, la obligatoriedad y la responsabilidad indelegable del Estado.</p>
+        <div class="quote-box">
+          “La educación y el conocimiento son un bien público y un derecho personal y social, garantizados por el Estado.”
+          <small>Ley de Educación Nacional N.º 26.206, art. 2.</small>
+        </div>
+      </details>
+
+      <details>
+        <summary>LES: autonomía, sistema superior y tensiones entre nación y jurisdicciones</summary>
+        <p>La LES organiza el nivel superior, pero arrastra tensiones propias de su origen histórico. En el caso de los institutos superiores no universitarios, la responsabilidad directa queda en las jurisdicciones, lo que abre una zona delicada: hay principios nacionales, pero también regulación local. La propia ley reconoce atribuciones institucionales para estos establecimientos y promueve su articulación dentro del sistema federal, aunque siempre enmarcados por las políticas jurisdiccionales.</p>
+        <div class="quote-box">
+          “Corresponde a las provincias y a la Municipalidad de la Ciudad de Buenos Aires el gobierno y organización de la educación superior no universitaria en sus respectivos ámbitos de competencia...”<small>Ley de Educación Superior N.º 24.521, art. 15.</small>
+        </div>
+      </details>
+
+      <div class="quote-box">“Corresponde al Ministerio de Cultura y Educación promover acciones tendientes a favorecer la articulación entre instituciones del nivel superior universitario y no universitario. Dichas acciones contemplarán el respeto de los ámbitos jurisdiccionales, la autonomía de las instituciones universitarias y las atribuciones de las instituciones de nivel superior no universitario.”<small>Ley de Educación Superior N.º 24.521, art. 8.</small></div><div class="quote-box advertencia">“Tender a ampliar gradualmente el margen de autonomía de gestión de las instituciones respectivas, dentro de los lineamientos de la política educativa jurisdiccional y federal.”<small>Ley de Educación Superior N.º 24.521, art. 15 inc. d.</small></div>
+
+      <div class="quote-box advertencia">“Las provincias y la Ciudad Autónoma de Buenos Aires son responsables de la planificación, organización, administración y financiamiento del sistema educativo en sus jurisdicciones.”<small>Ley de Educación Nacional N.º 26.206, art. 121.</small></div>
+
+      <div class="quote-box">“Estructurar los estudios en base a una organización curricular flexible...”<small>Ley de Educación Superior N.º 24.521, art. 15 inc. a.</small></div>
+
+      <details>
+        <summary>UniCABA: centralización, reforma y conflicto institucional</summary>
+        <p>La Ley UniCABA se inscribe en un escenario de disputa por la formación docente en la Ciudad. Aunque los institutos históricos continúan existiendo, el debate abrió una pregunta que sigue viva: ¿qué modelo de formación docente se privilegia, uno más centralizado o uno apoyado en la historia, los márgenes de autonomía de gestión y las tradiciones participativas de los institutos?</p><div class="quote-box">“La UniCABA gozará de autonomía académica e institucional y autarquía económica, financiera y administrativa...”<small>Ley CABA N.º 6.053, art. 20.</small></div><div class="quote-box advertencia">“Los Institutos de Formación Docente (IFD) son instituciones educativas de Nivel Superior... Disponen de autonomía de gestión dentro de los lineamientos y disposiciones de la política educativa del Gobierno de la Ciudad Autónoma de Buenos Aires...”<small>Ley CABA N.º 6.053, art. 14.</small></div>
+      </details>
+    </section>
+
+    <section id="tensiones">
+      <h2>Tensiones para leer en clase</h2>
+      <p>Estas leyes no se contradicen de manera simple, como si una dijera “blanco” y otra “negro”. Más bien producen una trama: principios generales, competencias jurisdiccionales, modelos de gestión y disputas por la democracia institucional.</p>
+
+      <table class="comparativa">
+        <thead>
+          <tr>
+            <th>Eje de análisis</th>
+            <th>LEN</th>
+            <th>LES</th>
+            <th>UniCABA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Idea de educación</strong></td>
+            <td>Derecho personal y social; bien público.</td>
+            <td>Nivel superior como parte de un sistema regulado.</td>
+            <td>Nueva universidad local con autonomía institucional y capacidad de redefinir la oferta formativa.</td>
+          </tr>
+          <tr>
+            <td><strong>Papel del Estado</strong></td>
+            <td>Garante principal de igualdad e inclusión.</td>
+            <td>Distribuye competencias entre Nación y jurisdicciones.</td>
+            <td>El Gobierno de la Ciudad crea una nueva institución y conserva conducción estratégica del sistema.</td>
+          </tr>
+          <tr>
+            <td><strong>Riesgo político</strong></td>
+            <td>Que el derecho quede como declaración si no hay políticas efectivas.</td>
+            <td>Fragmentación y desigualdad entre jurisdicciones.</td>
+            <td>Centralización decisional y asimetría entre autonomía universitaria y autonomía de gestión de los IFD.</td>
+          </tr>
+          <tr>
+            <td><strong>Pregunta clave</strong></td>
+            <td>¿Cómo se garantiza realmente el derecho?</td>
+            <td>¿Qué atribuciones y márgenes de autonomía conservan los institutos dentro del marco jurisdiccional?</td>
+            <td>¿Qué se gana y qué se pierde al reorganizar la formación docente?</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="quote-box tension">Una hipótesis para discutir: el conflicto no es solo jurídico ni solamente político. Es pedagógico e institucional. Se discute quién decide, desde dónde se decide y con qué idea de formación docente.</div>
+
+      <details>
+        <summary>Reflexión guiada: por qué el conflicto es pedagógico</summary>
+        <p>Decir que un conflicto es pedagógico no significa negar su dimensión política. Significa advertir que las decisiones normativas llegan hasta el corazón de la enseñanza: modifican trayectorias, formas de evaluar, diseños curriculares, condiciones de trabajo docente, vínculos institucionales y modos de acompañar a los estudiantes.</p>
+        <p>Cuando cambia la estructura de gobierno de una institución, también puede cambiar <strong>qué saberes se priorizan</strong>, <strong>cómo se forman los futuros docentes</strong>, <strong>qué lugar tiene la investigación</strong>, <strong>qué margen existe para innovar</strong> y <strong>cómo participa la comunidad educativa</strong>.</p>
+        <p>Por eso, una reforma no impacta solo en organigramas: impacta en aulas concretas, prácticas docentes concretas y estudiantes concretos.</p>
+        <div class="quote-box advertencia">Preguntas orientadoras: ¿quién define el currículum?, ¿cómo se concibe al futuro docente?, ¿se privilegia la estandarización o la diversidad institucional?, ¿hay más acompañamiento pedagógico o más control administrativo?</div>
+      </details>
+    </section>
+
+    <section id="actividad" class="actividad">
+      <h2>Actividad para el aula: cartografía normativa y política</h2>
+      <p>La propuesta es trabajar con celulares o en grupos, sin necesidad de grandes recursos. Cada grupo toma una ley y arma una lectura situada.</p>
+
+      <div class="paso">
+        <strong>Paso 1. Leer como detective:</strong> buscar una frase de la ley que exprese un principio fuerte: derecho, autonomía, jurisdicción, participación, evaluación, gobierno institucional.
+      </div>
+
+      <div class="paso">
+        <strong>Paso 2. Leer como historiador:</strong> ubicar la norma en su contexto. ¿De qué época viene? ¿Qué problema parecía querer resolver? ¿Qué palabras de época aparecen?
+      </div>
+
+      <div class="paso">
+        <strong>Paso 3. Leer como docente:</strong> traducir la norma a la vida institucional. ¿Qué cambia en una carrera, en una clase, en un consejo directivo, en el ingreso o en la permanencia de los estudiantes?</div>
+
+      <div class="paso">
+        <strong>Paso 4. Leer como comunidad:</strong> marcar en un afiche o pizarra tres zonas: “derechos que se afirman”, “autonomías que se tensionan” y “silencios peligrosos”.
+      </div>
+    </section>
+
+    <section id="cierre">
+      <h2>Preguntas para cerrar sin cerrar</h2>
+      <ul class="preguntas">
+        <li>¿Qué diferencia hay entre que la educación sea nombrada como servicio y que sea nombrada como derecho?</li>
+        <li>¿Los márgenes de autonomía de los ISFD son un privilegio corporativo o una condición para enseñar mejor?</li>
+        <li>¿Qué aspectos de la vida de un instituto no aparecen cuando una reforma se piensa solo desde la gestión?</li>
+        <li>¿Cómo se defiende una tradición institucional sin convertirla en museo?</li>
+        <li>¿Qué indicadores necesitaríamos mirar para saber si una política fortalece o debilita la formación docente?</li>
+      </ul>
+    </section>
+
+    <p class="cierre">I.E.S. N.º 1 “Dra. Alicia Moreau de Justo” · Prof. Stella Maris Cao · Año lectivo 2026</p>
+  </main>
+</body>
+</html>
