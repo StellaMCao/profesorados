@@ -104,13 +104,66 @@
       padding: 0 18px;
     }
 
-    section, .bloque {
+    section, .bloque, .seccion-desplegable {
       background: var(--papel);
       border: 1px solid var(--borde);
       border-radius: 22px;
-      padding: clamp(20px, 4vw, 34px);
+      padding: clamp(18px, 3vw, 28px);
       margin-bottom: 24px;
       box-shadow: var(--sombra);
+    }
+
+    .seccion-desplegable > summary {
+      list-style: none;
+    }
+
+    .seccion-desplegable > summary::-webkit-details-marker,
+    .subseccion > summary::-webkit-details-marker,
+    .tarjeta > summary::-webkit-details-marker,
+    .paso > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-principal {
+      cursor: pointer;
+      font-weight: 850;
+      color: var(--azul);
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .summary-principal::before,
+    .subseccion > summary::before,
+    .tarjeta > summary::before,
+    .paso > summary::before {
+      content: "▸";
+      display: inline-block;
+      transition: transform .18s ease;
+      color: var(--ambar);
+    }
+
+    .seccion-desplegable[open] > .summary-principal::before,
+    .subseccion[open] > summary::before,
+    .tarjeta[open] > summary::before,
+    .paso[open] > summary::before {
+      transform: rotate(90deg);
+    }
+
+    .contenido-desplegable {
+      margin-top: 18px;
+      border-top: 1px solid var(--borde);
+      padding-top: 18px;
+    }
+
+    .subseccion {
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fbfdff;
+      margin: 12px 0;
     }
 
     h2 {
@@ -140,6 +193,17 @@
       border-radius: 18px;
       padding: 18px;
       background: #fbfdff;
+      margin: 0;
+    }
+
+    .tarjeta > summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--azul);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .tarjeta strong {
@@ -218,10 +282,6 @@
     .comparativa tr:nth-child(even) td { background: #f8fbfd; }
 
     details {
-      border: 1px solid var(--borde);
-      border-radius: 16px;
-      padding: 14px 16px;
-      background: #fbfdff;
       margin: 12px 0;
     }
 
@@ -244,6 +304,14 @@
       border-radius: 16px;
       padding: 15px;
       margin: 12px 0;
+      color: white;
+    }
+
+    .actividad .paso summary {
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .actividad strong { color: #ffd166; }
@@ -284,155 +352,176 @@
   </nav>
 
   <main>
-    <section id="inicio">
-      <h2>Para empezar: las leyes no flotan en el aire</h2>
-      <p class="bajada">Una ley puede parecer un texto frío, administrativo, escrito en idioma de expediente. Pero también es una fotografía de época: muestra qué problemas se consideraban urgentes, qué actores tenían fuerza y qué proyecto educativo se intentaba consolidar.</p>
-      <div class="quote-box advertencia">
-        La pregunta de clase no es solamente “¿qué dice la norma?”, sino también “¿qué hace posible, qué limita y qué silencios deja abiertos?”.
-      </div>
-    </section>
-
-    <section id="mapa">
-      <h2>Mapa normativo mínimo</h2>
-      <p>Podemos ordenar el recorrido en tres capas: el marco nacional general, el régimen de la educación superior y la política jurisdiccional de la Ciudad de Buenos Aires.</p>
-
-      <div class="grilla">
-        <article class="tarjeta ley-len">
-          <span class="dato">2006</span>
-          <strong>Ley de Educación Nacional N.º 26.206</strong>
-          <p>Define a la educación como bien público y derecho personal y social. Reubica al Estado como garante principal y le da centralidad a la igualdad, la inclusión y la responsabilidad pública.</p><div class="quote-box">“El Estado nacional, las provincias y la Ciudad Autónoma de Buenos Aires tienen la responsabilidad principal e indelegable de proveer una educación integral, permanente y de calidad para todos.”<small>Ley de Educación Nacional N.º 26.206, art. 4.</small></div>
-        </article>
-
-        <article class="tarjeta ley-les">
-          <span class="dato">1995 / mod. 2015</span>
-          <strong>Ley de Educación Superior N.º 24.521</strong>
-          <p>Regula universidades e institutos de educación superior. En su versión original nace en los años noventa; luego es modificada por la Ley 27.204, que refuerza la idea de educación superior como derecho.</p><div class="quote-box">“La educación superior es un bien público y un derecho humano personal y social.”<small>Ley de Educación Superior N.º 24.521, texto según Ley 27.204.</small></div>
-        </article>
-
-        <article class="tarjeta ley-unicaba">
-          <span class="dato">2018</span>
-          <strong>Ley UniCABA N.º 6.053</strong>
-          <p>Crea una universidad pública en la Ciudad con fuerte incidencia en formación docente. Su discusión puso en escena tensiones entre centralización, tradición institucional de los profesorados y participación democrática.</p><div class="quote-box">“Créase la Universidad de la Ciudad Autónoma de Buenos Aires (UniCABA), que funcionará como persona jurídica pública estatal en la órbita del Ministerio de Educación e Innovación de la Ciudad Autónoma de Buenos Aires.”<small>Ley CABA N.º 6.053, art. 19.</small></div>
-        </article>
-      </div>
-    </section>
-
-    <section id="contexto">
-      <h2>Contextualizar: de qué clima histórico viene cada norma</h2>
-
-      <details open>
-        <summary>LEN: educación como derecho y responsabilidad estatal</summary>
-        <p>La LEN puede leerse como parte de un movimiento de recomposición posterior a la crisis de las políticas educativas de los años noventa. Su énfasis está puesto en la educación común, la inclusión, la obligatoriedad y la responsabilidad indelegable del Estado.</p>
-        <div class="quote-box">
-          “La educación y el conocimiento son un bien público y un derecho personal y social, garantizados por el Estado.”
-          <small>Ley de Educación Nacional N.º 26.206, art. 2.</small>
+    <details id="inicio" class="seccion-desplegable" open>
+      <summary class="summary-principal">Para empezar: las leyes no flotan en el aire</summary>
+      <div class="contenido-desplegable">
+        <p class="bajada">Una ley puede parecer un texto frío, administrativo, escrito en idioma de expediente. Pero también es una fotografía de época: muestra qué problemas se consideraban urgentes, qué actores tenían fuerza y qué proyecto educativo se intentaba consolidar.</p>
+        <div class="quote-box advertencia">
+          La pregunta de clase no es solamente “¿qué dice la norma?”, sino también “¿qué hace posible, qué limita y qué silencios deja abiertos?”.
         </div>
-      </details>
+      </div>
+    </details>
 
-      <details>
-        <summary>LES: autonomía, sistema superior y tensiones entre nación y jurisdicciones</summary>
-        <p>La LES organiza el nivel superior, pero arrastra tensiones propias de su origen histórico. En el caso de los institutos superiores no universitarios, la responsabilidad directa queda en las jurisdicciones, lo que abre una zona delicada: hay principios nacionales, pero también regulación local. La propia ley reconoce atribuciones institucionales para estos establecimientos y promueve su articulación dentro del sistema federal, aunque siempre enmarcados por las políticas jurisdiccionales.</p>
-        <div class="quote-box">
-          “Corresponde a las provincias y a la Municipalidad de la Ciudad de Buenos Aires el gobierno y organización de la educación superior no universitaria en sus respectivos ámbitos de competencia...”<small>Ley de Educación Superior N.º 24.521, art. 15.</small>
+    <details id="mapa" class="seccion-desplegable">
+      <summary class="summary-principal">Mapa normativo mínimo</summary>
+      <div class="contenido-desplegable">
+        <p>Podemos ordenar el recorrido en tres capas: el marco nacional general, el régimen de la educación superior y la política jurisdiccional de la Ciudad de Buenos Aires.</p>
+
+        <div class="grilla">
+          <details class="tarjeta ley-len" open>
+            <summary>Ley de Educación Nacional N.º 26.206</summary>
+            <span class="dato">2006</span>
+            <p>Define a la educación como bien público y derecho personal y social. Reubica al Estado como garante principal y le da centralidad a la igualdad, la inclusión y la responsabilidad pública.</p>
+            <div class="quote-box">“El Estado nacional, las provincias y la Ciudad Autónoma de Buenos Aires tienen la responsabilidad principal e indelegable de proveer una educación integral, permanente y de calidad para todos.”<small>Ley de Educación Nacional N.º 26.206, art. 4.</small></div>
+          </details>
+
+          <details class="tarjeta ley-les" open>
+            <summary>Ley de Educación Superior N.º 24.521</summary>
+            <span class="dato">1995 / mod. 2015</span>
+            <p>Regula universidades e institutos de educación superior. En su versión original nace en los años noventa; luego es modificada por la Ley 27.204, que refuerza la idea de educación superior como derecho.</p>
+            <div class="quote-box">“La educación superior es un bien público y un derecho humano personal y social.”<small>Ley de Educación Superior N.º 24.521, texto según Ley 27.204.</small></div>
+          </details>
+
+          <details class="tarjeta ley-unicaba" open>
+            <summary>Ley UniCABA N.º 6.053</summary>
+            <span class="dato">2018</span>
+            <p>Crea una universidad pública en la Ciudad con fuerte incidencia en formación docente. Su discusión puso en escena tensiones entre centralización, tradición institucional de los profesorados y participación democrática.</p>
+            <div class="quote-box">“Créase la Universidad de la Ciudad Autónoma de Buenos Aires (UniCABA), que funcionará como persona jurídica pública estatal en la órbita del Ministerio de Educación e Innovación de la Ciudad Autónoma de Buenos Aires.”<small>Ley CABA N.º 6.053, art. 19.</small></div>
+          </details>
         </div>
-      </details>
-
-      <div class="quote-box">“Corresponde al Ministerio de Cultura y Educación promover acciones tendientes a favorecer la articulación entre instituciones del nivel superior universitario y no universitario. Dichas acciones contemplarán el respeto de los ámbitos jurisdiccionales, la autonomía de las instituciones universitarias y las atribuciones de las instituciones de nivel superior no universitario.”<small>Ley de Educación Superior N.º 24.521, art. 8.</small></div><div class="quote-box advertencia">“Tender a ampliar gradualmente el margen de autonomía de gestión de las instituciones respectivas, dentro de los lineamientos de la política educativa jurisdiccional y federal.”<small>Ley de Educación Superior N.º 24.521, art. 15 inc. d.</small></div>
-
-      <div class="quote-box advertencia">“Las provincias y la Ciudad Autónoma de Buenos Aires son responsables de la planificación, organización, administración y financiamiento del sistema educativo en sus jurisdicciones.”<small>Ley de Educación Nacional N.º 26.206, art. 121.</small></div>
-
-      <div class="quote-box">“Estructurar los estudios en base a una organización curricular flexible...”<small>Ley de Educación Superior N.º 24.521, art. 15 inc. a.</small></div>
-
-      <details>
-        <summary>UniCABA: centralización, reforma y conflicto institucional</summary>
-        <p>La Ley UniCABA se inscribe en un escenario de disputa por la formación docente en la Ciudad. Aunque los institutos históricos continúan existiendo, el debate abrió una pregunta que sigue viva: ¿qué modelo de formación docente se privilegia, uno más centralizado o uno apoyado en la historia, los márgenes de autonomía de gestión y las tradiciones participativas de los institutos?</p><div class="quote-box">“La UniCABA gozará de autonomía académica e institucional y autarquía económica, financiera y administrativa...”<small>Ley CABA N.º 6.053, art. 20.</small></div><div class="quote-box advertencia">“Los Institutos de Formación Docente (IFD) son instituciones educativas de Nivel Superior... Disponen de autonomía de gestión dentro de los lineamientos y disposiciones de la política educativa del Gobierno de la Ciudad Autónoma de Buenos Aires...”<small>Ley CABA N.º 6.053, art. 14.</small></div>
-      </details>
-    </section>
-
-    <section id="tensiones">
-      <h2>Tensiones para leer en clase</h2>
-      <p>Estas leyes no se contradicen de manera simple, como si una dijera “blanco” y otra “negro”. Más bien producen una trama: principios generales, competencias jurisdiccionales, modelos de gestión y disputas por la democracia institucional.</p>
-
-      <table class="comparativa">
-        <thead>
-          <tr>
-            <th>Eje de análisis</th>
-            <th>LEN</th>
-            <th>LES</th>
-            <th>UniCABA</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Idea de educación</strong></td>
-            <td>Derecho personal y social; bien público.</td>
-            <td>Nivel superior como parte de un sistema regulado.</td>
-            <td>Nueva universidad local con autonomía institucional y capacidad de redefinir la oferta formativa.</td>
-          </tr>
-          <tr>
-            <td><strong>Papel del Estado</strong></td>
-            <td>Garante principal de igualdad e inclusión.</td>
-            <td>Distribuye competencias entre Nación y jurisdicciones.</td>
-            <td>El Gobierno de la Ciudad crea una nueva institución y conserva conducción estratégica del sistema.</td>
-          </tr>
-          <tr>
-            <td><strong>Riesgo político</strong></td>
-            <td>Que el derecho quede como declaración si no hay políticas efectivas.</td>
-            <td>Fragmentación y desigualdad entre jurisdicciones.</td>
-            <td>Centralización decisional y asimetría entre autonomía universitaria y autonomía de gestión de los IFD.</td>
-          </tr>
-          <tr>
-            <td><strong>Pregunta clave</strong></td>
-            <td>¿Cómo se garantiza realmente el derecho?</td>
-            <td>¿Qué atribuciones y márgenes de autonomía conservan los institutos dentro del marco jurisdiccional?</td>
-            <td>¿Qué se gana y qué se pierde al reorganizar la formación docente?</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="quote-box tension">Una hipótesis para discutir: el conflicto no es solo jurídico ni solamente político. Es pedagógico e institucional. Se discute quién decide, desde dónde se decide y con qué idea de formación docente.</div>
-
-      <details>
-        <summary>Reflexión guiada: por qué el conflicto es pedagógico</summary>
-        <p>Decir que un conflicto es pedagógico no significa negar su dimensión política. Significa advertir que las decisiones normativas llegan hasta el corazón de la enseñanza: modifican trayectorias, formas de evaluar, diseños curriculares, condiciones de trabajo docente, vínculos institucionales y modos de acompañar a los estudiantes.</p>
-        <p>Cuando cambia la estructura de gobierno de una institución, también puede cambiar <strong>qué saberes se priorizan</strong>, <strong>cómo se forman los futuros docentes</strong>, <strong>qué lugar tiene la investigación</strong>, <strong>qué margen existe para innovar</strong> y <strong>cómo participa la comunidad educativa</strong>.</p>
-        <p>Por eso, una reforma no impacta solo en organigramas: impacta en aulas concretas, prácticas docentes concretas y estudiantes concretos.</p>
-        <div class="quote-box advertencia">Preguntas orientadoras: ¿quién define el currículum?, ¿cómo se concibe al futuro docente?, ¿se privilegia la estandarización o la diversidad institucional?, ¿hay más acompañamiento pedagógico o más control administrativo?</div>
-      </details>
-    </section>
-
-    <section id="actividad" class="actividad">
-      <h2>Actividad para el aula: cartografía normativa y política</h2>
-      <p>La propuesta es trabajar con celulares o en grupos, sin necesidad de grandes recursos. Cada grupo toma una ley y arma una lectura situada.</p>
-
-      <div class="paso">
-        <strong>Paso 1. Leer como detective:</strong> buscar una frase de la ley que exprese un principio fuerte: derecho, autonomía, jurisdicción, participación, evaluación, gobierno institucional.
       </div>
+    </details>
 
-      <div class="paso">
-        <strong>Paso 2. Leer como historiador:</strong> ubicar la norma en su contexto. ¿De qué época viene? ¿Qué problema parecía querer resolver? ¿Qué palabras de época aparecen?
+    <details id="contexto" class="seccion-desplegable">
+      <summary class="summary-principal">Contextualizar: de qué clima histórico viene cada norma</summary>
+      <div class="contenido-desplegable">
+        <details class="subseccion" open>
+          <summary>LEN: educación como derecho y responsabilidad estatal</summary>
+          <p>La LEN puede leerse como parte de un movimiento de recomposición posterior a la crisis de las políticas educativas de los años noventa. Su énfasis está puesto en la educación común, la inclusión, la obligatoriedad y la responsabilidad indelegable del Estado.</p>
+          <div class="quote-box">“La educación y el conocimiento son un bien público y un derecho personal y social, garantizados por el Estado.”<small>Ley de Educación Nacional N.º 26.206, art. 2.</small></div>
+          <div class="quote-box advertencia">“Las provincias y la Ciudad Autónoma de Buenos Aires son responsables de la planificación, organización, administración y financiamiento del sistema educativo en sus jurisdicciones.”<small>Ley de Educación Nacional N.º 26.206, art. 121.</small></div>
+        </details>
+
+        <details class="subseccion">
+          <summary>LES: nivel superior no universitario y autonomía de gestión</summary>
+          <p>La LES organiza el nivel superior, pero arrastra tensiones propias de su origen histórico. En el caso de los institutos superiores no universitarios, la responsabilidad directa queda en las jurisdicciones. La ley reconoce márgenes de gestión, pero dentro de lineamientos jurisdiccionales y federales.</p>
+          <div class="quote-box">“Corresponde a las provincias y a la Municipalidad de la Ciudad de Buenos Aires el gobierno y organización de la educación superior no universitaria en sus respectivos ámbitos de competencia...”<small>Ley de Educación Superior N.º 24.521, art. 15.</small></div>
+          <div class="quote-box advertencia">“Tender a ampliar gradualmente el margen de autonomía de gestión de las instituciones respectivas, dentro de los lineamientos de la política educativa jurisdiccional y federal.”<small>Ley de Educación Superior N.º 24.521, art. 15 inc. d.</small></div>
+          <div class="quote-box">“Estructurar los estudios en base a una organización curricular flexible...”<small>Ley de Educación Superior N.º 24.521, art. 15 inc. a.</small></div>
+          <div class="quote-box">“Corresponde al Ministerio de Cultura y Educación promover acciones tendientes a favorecer la articulación entre instituciones del nivel superior universitario y no universitario. Dichas acciones contemplarán el respeto de los ámbitos jurisdiccionales, la autonomía de las instituciones universitarias y las atribuciones de las instituciones de nivel superior no universitario.”<small>Ley de Educación Superior N.º 24.521, art. 8.</small></div>
+        </details>
+
+        <details class="subseccion">
+          <summary>UniCABA: universidad nueva e institutos existentes</summary>
+          <p>La Ley UniCABA se inscribe en un escenario de disputa por la formación docente en la Ciudad. Aunque los institutos históricos continúan existiendo, el debate abrió una pregunta que sigue viva: ¿qué modelo de formación docente se privilegia?</p>
+          <div class="quote-box">“La UniCABA gozará de autonomía académica e institucional y autarquía económica, financiera y administrativa...”<small>Ley CABA N.º 6.053, art. 20.</small></div>
+          <div class="quote-box advertencia">“Los Institutos de Formación Docente (IFD) son instituciones educativas de Nivel Superior... Disponen de autonomía de gestión dentro de los lineamientos y disposiciones de la política educativa del Gobierno de la Ciudad Autónoma de Buenos Aires...”<small>Ley CABA N.º 6.053, art. 14.</small></div>
+        </details>
       </div>
+    </details>
 
-      <div class="paso">
-        <strong>Paso 3. Leer como docente:</strong> traducir la norma a la vida institucional. ¿Qué cambia en una carrera, en una clase, en un consejo directivo, en el ingreso o en la permanencia de los estudiantes?</div>
+    <details id="tensiones" class="seccion-desplegable">
+      <summary class="summary-principal">Tensiones para leer en clase</summary>
+      <div class="contenido-desplegable">
+        <p>Estas leyes no se contradicen de manera simple, como si una dijera “blanco” y otra “negro”. Más bien producen una trama: principios generales, competencias jurisdiccionales, modelos de gestión y disputas por la democracia institucional.</p>
 
-      <div class="paso">
-        <strong>Paso 4. Leer como comunidad:</strong> marcar en un afiche o pizarra tres zonas: “derechos que se afirman”, “autonomías que se tensionan” y “silencios peligrosos”.
+        <details class="subseccion" open>
+          <summary>Tabla comparativa</summary>
+          <table class="comparativa">
+            <thead>
+              <tr>
+                <th>Eje de análisis</th>
+                <th>LEN</th>
+                <th>LES</th>
+                <th>UniCABA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Idea de educación</strong></td>
+                <td>Derecho personal y social; bien público.</td>
+                <td>Nivel superior como parte de un sistema regulado.</td>
+                <td>Nueva universidad local con autonomía institucional y capacidad de redefinir la oferta formativa.</td>
+              </tr>
+              <tr>
+                <td><strong>Papel del Estado</strong></td>
+                <td>Garante principal de igualdad e inclusión.</td>
+                <td>Distribuye competencias entre Nación y jurisdicciones.</td>
+                <td>El Gobierno de la Ciudad crea una nueva institución y conserva conducción estratégica del sistema.</td>
+              </tr>
+              <tr>
+                <td><strong>Riesgo político</strong></td>
+                <td>Que el derecho quede como declaración si no hay políticas efectivas.</td>
+                <td>Fragmentación y desigualdad entre jurisdicciones.</td>
+                <td>Centralización decisional y asimetría entre autonomía universitaria y autonomía de gestión de los IFD.</td>
+              </tr>
+              <tr>
+                <td><strong>Pregunta clave</strong></td>
+                <td>¿Cómo se garantiza realmente el derecho?</td>
+                <td>¿Qué atribuciones y márgenes de autonomía conservan los institutos dentro del marco jurisdiccional?</td>
+                <td>¿Qué se gana y qué se pierde al reorganizar la formación docente?</td>
+              </tr>
+            </tbody>
+          </table>
+        </details>
+
+        <details class="subseccion">
+          <summary>Hipótesis de lectura</summary>
+          <div class="quote-box tension">Una hipótesis para discutir: el conflicto no es solo jurídico ni solamente político. Es pedagógico e institucional. Se discute quién decide, desde dónde se decide y con qué idea de formación docente.</div>
+        </details>
+
+        <details class="subseccion">
+          <summary>Reflexión guiada: por qué el conflicto es pedagógico</summary>
+          <p>Decir que un conflicto es pedagógico no significa negar su dimensión política. Significa advertir que las decisiones normativas llegan hasta el corazón de la enseñanza: modifican trayectorias, formas de evaluar, diseños curriculares, condiciones de trabajo docente, vínculos institucionales y modos de acompañar a los estudiantes.</p>
+          <p>Cuando cambia la estructura de gobierno de una institución, también puede cambiar <strong>qué saberes se priorizan</strong>, <strong>cómo se forman los futuros docentes</strong>, <strong>qué lugar tiene la investigación</strong>, <strong>qué margen existe para innovar</strong> y <strong>cómo participa la comunidad educativa</strong>.</p>
+          <p>Por eso, una reforma no impacta solo en organigramas: impacta en aulas concretas, prácticas docentes concretas y estudiantes concretos.</p>
+          <div class="quote-box advertencia">Preguntas orientadoras: ¿quién define el currículum?, ¿cómo se concibe al futuro docente?, ¿se privilegia la estandarización o la diversidad institucional?, ¿hay más acompañamiento pedagógico o más control administrativo?</div>
+        </details>
       </div>
-    </section>
+    </details>
 
-    <section id="cierre">
-      <h2>Preguntas para cerrar sin cerrar</h2>
-      <ul class="preguntas">
-        <li>¿Qué diferencia hay entre que la educación sea nombrada como servicio y que sea nombrada como derecho?</li>
-        <li>¿Los márgenes de autonomía de los ISFD son un privilegio corporativo o una condición para enseñar mejor?</li>
-        <li>¿Qué aspectos de la vida de un instituto no aparecen cuando una reforma se piensa solo desde la gestión?</li>
-        <li>¿Cómo se defiende una tradición institucional sin convertirla en museo?</li>
-        <li>¿Qué indicadores necesitaríamos mirar para saber si una política fortalece o debilita la formación docente?</li>
-      </ul>
-    </section>
+    <details id="actividad" class="seccion-desplegable actividad">
+      <summary class="summary-principal">Actividad para el aula: cartografía normativa y política</summary>
+      <div class="contenido-desplegable">
+        <p>La propuesta es trabajar con celulares o en grupos, sin necesidad de grandes recursos. Cada grupo toma una ley y arma una lectura situada.</p>
+
+        <details class="paso" open>
+          <summary>Paso 1. Leer como detective</summary>
+          <p>Buscar una frase de la ley que exprese un principio fuerte: derecho, autonomía, jurisdicción, participación, evaluación, gobierno institucional.</p>
+        </details>
+
+        <details class="paso">
+          <summary>Paso 2. Leer como historiador</summary>
+          <p>Ubicar la norma en su contexto. ¿De qué época viene? ¿Qué problema parecía querer resolver? ¿Qué palabras de época aparecen?</p>
+        </details>
+
+        <details class="paso">
+          <summary>Paso 3. Leer como docente</summary>
+          <p>Traducir la norma a la vida institucional. ¿Qué cambia en una carrera, en una clase, en un consejo directivo, en el ingreso o en la permanencia de los estudiantes?</p>
+        </details>
+
+        <details class="paso">
+          <summary>Paso 4. Leer como comunidad</summary>
+          <p>Marcar en un afiche o pizarra tres zonas: “derechos que se afirman”, “autonomías que se tensionan” y “silencios peligrosos”.</p>
+        </details>
+      </div>
+    </details>
+
+    <details id="cierre" class="seccion-desplegable">
+      <summary class="summary-principal">Preguntas para cerrar sin cerrar</summary>
+      <div class="contenido-desplegable">
+        <ul class="preguntas">
+          <li>¿Qué diferencia hay entre que la educación sea nombrada como servicio y que sea nombrada como derecho?</li>
+          <li>¿Los márgenes de autonomía de los ISFD son un privilegio corporativo o una condición para enseñar mejor?</li>
+          <li>¿Qué aspectos de la vida de un instituto no aparecen cuando una reforma se piensa solo desde la gestión?</li>
+          <li>¿Cómo se defiende una tradición institucional sin convertirla en museo?</li>
+          <li>¿Qué indicadores necesitaríamos mirar para saber si una política fortalece o debilita la formación docente?</li>
+        </ul>
+      </div>
+    </details>
 
     <p class="cierre">I.E.S. N.º 1 “Dra. Alicia Moreau de Justo” · Prof. Stella Maris Cao · Año lectivo 2026</p>
   </main>
 </body>
 </html>
+
