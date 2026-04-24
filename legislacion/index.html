@@ -115,6 +115,8 @@
 
     .seccion-desplegable > summary {
       list-style: none;
+      display: block;
+      width: 100%;
     }
 
     .seccion-desplegable > summary::-webkit-details-marker,
@@ -125,6 +127,7 @@
     }
 
     .summary-principal {
+      user-select: none;
       cursor: pointer;
       font-weight: 850;
       color: var(--azul);
@@ -360,7 +363,7 @@
   </nav>
 
   <main>
-    <details id="inicio" class="seccion-desplegable" open>
+    <details id="inicio" class="seccion-desplegable">
       <summary class="summary-principal">Para empezar: las leyes no flotan en el aire</summary>
       <div class="contenido-desplegable">
         <p class="bajada">Una ley puede parecer un texto frío, administrativo, escrito en idioma de expediente. Pero también es una fotografía de época: muestra qué problemas se consideraban urgentes, qué actores tenían fuerza y qué proyecto educativo se intentaba consolidar.</p>
@@ -532,5 +535,3 @@
   </main>
 </body>
 </html>
-
-
