@@ -298,6 +298,14 @@
     }
 
     .actividad h2 { color: white; }
+    .actividad > .summary-principal,
+    .actividad > summary.summary-principal {
+      color: white;
+    }
+    .actividad > .summary-principal::before,
+    .actividad > summary.summary-principal::before {
+      color: #ffd166;
+    }
     .actividad .paso {
       background: rgba(255,255,255,.10);
       border: 1px solid rgba(255,255,255,.18);
@@ -485,7 +493,7 @@
       <div class="contenido-desplegable">
         <p>La propuesta es trabajar con celulares o en grupos, sin necesidad de grandes recursos. Cada grupo toma una ley y arma una lectura situada.</p>
 
-        <details class="paso" open>
+        <details class="paso">
           <summary>Paso 1. Leer como detective</summary>
           <p>Buscar una frase de la ley que exprese un principio fuerte: derecho, autonomía, jurisdicción, participación, evaluación, gobierno institucional.</p>
         </details>
@@ -524,4 +532,5 @@
   </main>
 </body>
 </html>
+
 
