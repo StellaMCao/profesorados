@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación formativa, retroalimentación y metacognición — Taller de Evaluación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --azul-oscuro: #1a2a4a;
+            --azul-medio: #2c5f8a;
+            --azul-claro: #4a90c4;
+            --celeste: #a8d4e6;
+            --verde: #27ae60;
+            --verde-oscuro: #1e8449;
+            --verde-claro: #a9dfbf;
+            --naranja: #e67e22;
+            --naranja-claro: #f5cba7;
+            --violeta: #6c3483;
+            --violeta-claro: #e8daef;
+            --rojo: #c0392b;
+            --rojo-claro: #f2d7d5;
+            --gris-claro: #f4f6f9;
+            --gris: #7f8c8d;
+            --blanco: #ffffff;
+            --sombra: 0 4px 15px rgba(0,0,0,0.1);
+            --sombra-hover: 0 8px 25px rgba(0,0,0,0.15);
+            --radio: 14px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 50%, #6c3483 100%);
+            color: white;
+            text-align: center;
+            padding: 55px 20px 45px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -60%; left: -60%;
+            width: 220%; height: 220%;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(168,212,230,0.08) 0%, transparent 40%);
+            animation: rotar 25s linear infinite;
+        }
+
+        @keyframes rotar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        header h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.1em;
+            margin-bottom: 10px;
+            position: relative; z-index: 1;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+            max-width: 950px;
+            margin-left: auto; margin-right: auto;
+        }
+
+        header .subtitle {
+            font-size: 1.08em;
+            opacity: 0.92;
+            position: relative; z-index: 1;
+            max-width: 750px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 0.85em;
+            margin-top: 14px;
+            position: relative; z-index: 1;
+        }
+
+        /* ========== NAV ========== */
+        nav {
+            background: rgba(26, 42, 74, 0.97);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.3);
+            border-bottom: 2px solid var(--celeste);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav ul li a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            font-size: 0.84em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 50%;
+            width: 0; height: 3px;
+            background: var(--celeste);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        nav ul li a:hover { background: rgba(255,255,255,0.1); }
+        nav ul li a:hover::after { width: 70%; }
+
+        /* ========== CONTAINER ========== */
+        .container {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* ========== SECTIONS ========== */
+        section {
+            background: var(--blanco);
+            border-radius: var(--radio);
+            margin-bottom: 35px;
+            padding: 40px;
+            box-shadow: var(--sombra);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra-hover);
+        }
+
+        section h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.75em;
+            color: var(--azul-oscuro);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 4px solid var(--azul-claro);
+            display: inline-block;
+        }
+
+        section h3 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.35em;
+            color: var(--azul-medio);
+            margin: 28px 0 12px;
+        }
+
+        section h4 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.15em;
+            color: var(--violeta);
+            margin: 20px 0 8px;
+        }
+
+        section p, .actividad-instruccion p {
+            margin-bottom: 12px;
+            text-align: left;
+            font-size: 0.98em;
+        }
+
+        section ul, .actividad-instruccion ul {
+            margin-left: 20px;
+        }
+
+        section ul li {
+            margin-bottom: 6px;
+            font-size: 0.98em;
+            text-align: left;
+        }
+
+        /* ========== TRIADA DIDACTICA ========== */
+        .triada-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0;
+            margin: 30px auto;
+            max-width: 700px;
+        }
+
+        .triada-node {
+            background: white;
+            border-radius: 50%;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+            padding: 12px;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .triada-node:hover { transform: scale(1.08); }
+
+        .triada-node .t-icon { font-size: 2.2em; margin-bottom: 4px; }
+        .triada-node .t-title { font-weight: 700; font-size: 0.85em; color: var(--azul-oscuro); }
+        .triada-node .t-sub { font-size: 0.7em; color: var(--gris); }
+
+        .triada-node.docente { border: 3px solid var(--azul-claro); }
+        .triada-node.alumno { border: 3px solid var(--verde); }
+        .triada-node.contenido { border: 3px solid var(--violeta); }
+
+        .triada-connector {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--azul-claro), var(--verde));
+            position: relative;
+        }
+
+        .triada-connector.v {
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--violeta), var(--naranja));
+        }
+
+        .triada-center {
+            background: var(--naranja);
+            color: white;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 0.75em;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 3px 10px rgba(230,126,34,0.3);
+        }
+
+        .triada-label {
+            text-align: center;
+            font-size: 0.82em;
+            color: var(--gris);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .triada-diagram-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .triada-svg-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* ========== DIAGRAM ========== */
+        .relationship-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 25px 0;
+            padding: 22px;
+            background: linear-gradient(135deg, #f0f4f8 0%, var(--violeta-claro) 100%);
+            border-radius: 12px;
+        }
+
+        .diagram-node {
+            background: white;
+            border-radius: 50%;
+            width: 135px;
+            height: 135px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .diagram-node:hover { transform: scale(1.08); }
+        .diagram-node .node-icon { font-size: 1.8em; margin-bottom: 4px; }
+        .diagram-node .node-title { font-weight: 700; font-size: 0.8em; color: var(--azul-oscuro); }
+
+        .diagram-arrow {
+            font-size: 1.6em;
+            color: var(--azul-claro);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* ========== CARDS ========== */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+            margin: 22px 0;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 12px;
+            padding: 24px;
+            border-left: 5px solid var(--azul-claro);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover { transform: translateY(-3px); }
+        .info-card.violet { border-left-color: var(--violeta); }
+        .info-card.green { border-left-color: var(--verde); }
+        .info-card.orange { border-left-color: var(--naranja); }
+        .info-card.blue { border-left-color: var(--azul-claro); }
+
+        .info-card h4 { color: var(--azul-oscuro); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; font-size: 1.05em; }
+        .info-card p { font-size: 0.93em; color: #555; }
+        .info-card ul { margin-left: 18px; margin-top: 6px; }
+        .info-card ul li { margin-bottom: 4px; font-size: 0.93em; }
+
+        /* ========== FEEDBACK MODES ========== */
+        .feedback-mode {
+            background: white;
+            border-radius: 12px;
+            padding: 26px;
+            margin: 18px 0;
+            border: 2px solid #e0e4e8;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-mode:hover {
+            border-color: var(--azul-claro);
+            box-shadow: 0 4px 15px rgba(74,144,196,0.15);
+        }
+
+        .feedback-mode .mode-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .feedback-mode .mode-icon { font-size: 1.8em; flex-shrink: 0; }
+        .feedback-mode h4 { color: var(--azul-oscuro); margin: 0; font-size: 1.2em; }
+        .feedback-mode .mode-desc { font-size: 0.96em; color: #555; margin-bottom: 10px; }
+
+        .example-box {
+            background: var(--gris-claro);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 10px 0;
+            border-left: 4px solid var(--verde);
+        }
+
+        .example-box.bad { border-left-color: var(--rojo); background: var(--rojo-claro); }
+        .example-box.good { border-left-color: var(--verde); background: var(--verde-claro); }
+        .example-box.neutral { border-left-color: var(--naranja); background: var(--naranja-claro); }
+
+        .example-box h5 {
+            font-size: 0.92em;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .example-box p { font-size: 0.91em; font-style: italic; }
+
+        /* ========== TABLES ========== */
+        .table-container { overflow-x: auto; margin: 18px 0; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            font-size: 0.93em;
+        }
+
+        thead { background: var(--azul-oscuro); color: white; }
+        th { padding: 12px 15px; text-align: left; font-weight: 600; }
+        td { padding: 11px 15px; border-bottom: 1px solid #eee; }
+        tbody tr:nth-child(even) { background: var(--gris-claro); }
+        tbody tr:hover { background: #e8f4fd; }
+
+        /* ========== BOXES ========== */
+        .info-box {
+            background: #ebf5fb;
+            border-left: 4px solid var(--azul-claro);
+            padding: 18px;
+            border-radius: 0 10px 10px 0;
+            margin: 18px 0;
+        }
+        .info-box strong { color: var(--azul-medio); }
+
+        .warning-box {
+            background: #fef9e7;
+            border-left: 4px solid var(--naranja);
+            padding: 18px;
+            border-radius: 0 10px 10px 0;
+            margin: 18px 0;
+        }
+
+        .success-box {
+            background: #eafaf1;
+            border-left: 4px solid var(--verde);
+            padding: 18px;
+            border-radius: 0 10px 10px 0;
+            margin: 18px 0;
+        }
+
+        .purple-box {
+            background: var(--violeta-claro);
+            border-left: 4px solid var(--violeta);
+            padding: 18px;
+            border-radius: 0 10px 10px 0;
+            margin: 18px 0;
+        }
+
+        /* ========== ACCORDION ========== */
+        .accordion { margin: 18px 0; }
+        .accordion-item { border: 1px solid #ddd; border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+
+        .accordion-header {
+            background: var(--gris-claro);
+            padding: 14px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--azul-oscuro);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+            font-size: 1em;
+        }
+
+        .accordion-header:hover { background: #e0e4e8; }
+        .accordion-header .arrow { transition: transform 0.3s ease; }
+        .accordion-header.active .arrow { transform: rotate(180deg); }
+        .accordion-content { display: none; padding: 20px; background: white; }
+        .accordion-content.active { display: block; }
+
+        /* ========== TIMELINE ========== */
+        .timeline { position: relative; padding: 18px 0; }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 26px; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--azul-claro), var(--violeta), var(--verde));
+        }
+
+        .timeline-item { position: relative; padding-left: 62px; margin-bottom: 24px; }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 18px; top: 5px;
+            width: 17px; height: 17px;
+            border-radius: 50%;
+            background: var(--azul-claro);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--azul-claro);
+        }
+
+        .timeline-item:nth-child(2)::before { background: var(--violeta); box-shadow: 0 0 0 3px var(--violeta); }
+        .timeline-item:nth-child(3)::before { background: var(--verde); box-shadow: 0 0 0 3px var(--verde); }
+
+        .timeline-item h4 { color: var(--azul-oscuro); margin-bottom: 5px; font-size: 1.05em; }
+        .timeline-item p { font-size: 0.93em; color: #555; }
+
+        /* ========== PILLARS ========== */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .pillar-card {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--azul-claro);
+        }
+
+        .pillar-card:nth-child(2) { border-top-color: var(--violeta); }
+        .pillar-card:nth-child(3) { border-top-color: var(--verde); }
+        .pillar-card:nth-child(4) { border-top-color: var(--naranja); }
+
+        .pillar-card:hover { transform: translateY(-5px); }
+        .pillar-card .pillar-icon { font-size: 2.2em; margin-bottom: 6px; }
+        .pillar-card h4 { color: var(--azul-oscuro); margin-bottom: 6px; font-size: 1em; }
+        .pillar-card p { font-size: 0.88em; color: #555; }
+
+        /* ========== BENEFITS ========== */
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .benefit-item:last-child { border-bottom: none; }
+        .benefit-item .check { color: var(--verde); font-size: 1.2em; flex-shrink: 0; margin-top: 2px; }
+        .benefit-item strong { color: var(--azul-oscuro); }
+
+        /* ========== FORM ========== */
+        .form-group { margin: 14px 0; }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--azul-oscuro);
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.96em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--azul-claro);
+            box-shadow: 0 0 0 4px rgba(74, 144, 196, 0.15);
+        }
+
+        .form-group textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(44, 95, 138, 0.4); }
+        .btn-success { background: linear-gradient(135deg, var(--verde) 0%, var(--verde-oscuro) 100%); color: white; }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4); }
+        .btn-warning { background: linear-gradient(135deg, var(--naranja) 0%, #d35400 100%); color: white; }
+        .btn-warning:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4); }
+        .btn-purple { background: linear-gradient(135deg, var(--violeta) 0%, #4a235a 100%); color: white; }
+        .btn-purple:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108, 52, 131, 0.4); }
+
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+
+        /* ========== QUIZ ========== */
+        .quiz-question {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin: 15px 0;
+            border: 2px solid #eee;
+            transition: border-color 0.3s ease;
+        }
+
+        .quiz-question.correct { border-color: var(--verde); background: #eafaf1; }
+        .quiz-question.incorrect { border-color: var(--rojo); background: var(--rojo-claro); }
+        .quiz-question h4 { color: var(--azul-oscuro); margin-bottom: 12px; font-size: 1em; }
+
+        .radio-group { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 9px 14px;
+            background: var(--gris-claro);
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
+            font-size: 0.93em;
+        }
+
+        .radio-group label:hover { background: #e8f4fd; border-color: var(--azul-claro); }
+
+        .quiz-feedback {
+            display: none;
+            padding: 10px 14px;
+            margin-top: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.92em;
+        }
+
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: var(--verde-claro); color: var(--verde-oscuro); }
+        .quiz-feedback.incorrect { background: var(--rojo-claro); color: var(--rojo); }
+
+        .score-display {
+            text-align: center;
+            padding: 22px;
+            background: linear-gradient(135deg, #eafaf1 0%, var(--violeta-claro) 100%);
+            border-radius: 12px;
+            margin: 18px 0;
+            display: none;
+        }
+
+        .score-display .score-number { font-size: 2.8em; font-weight: 700; color: var(--verde); font-family: 'Merriweather', serif; }
+        .score-display .score-label { font-size: 1.05em; color: #555; margin-top: 6px; }
+
+        .progress-container { background: #e0e0e0; border-radius: 12px; height: 26px; margin: 15px 0; overflow: hidden; }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--verde), var(--azul-claro));
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.82em;
+            font-weight: 700;
+            min-width: 35px;
+        }
+
+        /* ========== ACTIVIDAD ========== */
+        .actividad {
+            background: linear-gradient(135deg, #fef9e7 0%, #fdebd0 100%);
+            border: 3px solid var(--naranja);
+            border-radius: var(--radio);
+            padding: 30px;
+            margin: 24px 0;
+        }
+
+        .actividad h3 {
+            color: var(--naranja);
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actividad-instruccion {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid var(--naranja);
+        }
+
+        .actividad-instruccion h4 { color: var(--azul-oscuro); margin-bottom: 8px; }
+        .actividad-instruccion ul { margin-left: 18px; }
+        .actividad-instruccion ul li { margin-bottom: 5px; }
+
+        .act-sep {
+            border: none;
+            border-top: 2px dashed var(--naranja-claro);
+            margin: 25px 0;
+        }
+
+        /* ========== UPLOAD ========== */
+        .upload-zone {
+            border: 3px dashed var(--azul-claro);
+            border-radius: 14px;
+            padding: 35px;
+            text-align: center;
+            background: var(--gris-claro);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 18px 0;
+        }
+
+        .upload-zone:hover { background: #e8f4fd; border-color: var(--azul-medio); }
+        .upload-zone .upload-icon { font-size: 2.5em; margin-bottom: 8px; }
+        .upload-zone p { color: var(--gris); margin: 3px 0; }
+
+        .reflection-area {
+            background: linear-gradient(135deg, #f0e6f6 0%, var(--violeta-claro) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 18px 0;
+        }
+
+        .reflection-area h4 { color: var(--violeta); margin-bottom: 8px; }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: var(--azul-oscuro);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 40px;
+        }
+
+        footer p { opacity: 0.8; font-size: 0.92em; }
+
+        /* ========== PRINT ========== */
+        @media print {
+            body { background: white; color: black; }
+            nav, .btn, .upload-zone, .no-print, .btn-group { display: none !important; }
+            header { background: white; color: black; padding: 15px; }
+            header::before { display: none; }
+            .badge { border: 1px solid #ccc; color: #333; }
+            section { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; padding: 20px; margin-bottom: 20px; }
+            .container { padding: 0; max-width: 100%; }
+            .actividad { box-shadow: none; border: 2px solid var(--naranja); }
+            .feedback-mode { box-shadow: none; }
+            .diagram-node { box-shadow: none; border: 1px solid #ccc; }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.5em; }
+            header .subtitle { font-size: 0.95em; }
+            section { padding: 24px 18px; }
+            nav ul li a { padding: 9px 10px; font-size: 0.78em; }
+            .btn { padding: 10px 16px; font-size: 0.88em; }
+            .diagram-node, .triada-node { width: 110px; height: 110px; }
+            .info-cards { grid-template-columns: 1fr; }
+            .pillars-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .pillars-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in { animation: fadeInUp 0.6s ease forwards; }
+
+        kbd {
+            background: #eee;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 0.88em;
+            font-family: monospace;
+        }
+
+        /* ========== PRINT INDIVIDUAL ========== */
+        @media print {
+            .print-only { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HEADER ==================== -->
+    <header>
+        <h1>🔄 Evaluación formativa, retroalimentación y metacognición</h1>
+        <p class="subtitle">Tres pilares interconectados que transforman la enseñanza y potencian el aprendizaje profundo en la formación docente</p>
+        <span class="badge">🎓 Taller de Evaluación — Profesorado en Psicología</span>
+    </header>
+
+    <!-- ==================== NAV ==================== -->
+    <nav class="no-print">
+        <ul>
+            <li><a href="#triada">🔺 Tríada didáctica</a></li>
+            <li><a href="#relacion">🔗 La relación</a></li>
+            <li><a href="#ev-formativa">📋 Eval. formativa</a></li>
+            <li><a href="#retroalimentacion">💬 Retroalimentación</a></li>
+            <li><a href="#modos-feedback">🎯 Modos</a></li>
+            <li><a href="#metacognicion">🧠 Metacognición</a></li>
+            <li><a href="#quiz">📝 Quiz</a></li>
+            <li><a href="#datos-estudiante">👤 Datos</a></li>
+            <li><a href="#actividades">✏️ Actividades</a></li>
+            <li><a href="#reflexion">💭 Reflexión</a></li>
+            <li><a href="#guardar">💾 Guardar</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- ========== SECCIÓN 0: TRÍADA DIDÁCTICA ========== -->
+        <section id="triada" class="fade-in">
+            <h2>🔺 La tríada didáctica</h2>
+
+            <p>Antes de profundizar en evaluación formativa, retroalimentación y metacognición, es necesario ubicar estos conceptos dentro del marco fundamental de toda situación de enseñanza y aprendizaje: la <strong>tríada didáctica</strong>.</p>
+
+            <div class="triada-diagram-wrap">
+                <svg viewBox="0 0 600 420" width="600" height="420" style="display:block; margin: 0 auto; max-width: 100%;">
+                    <!-- Triangle lines -->
+                    <line x1="300" y1="60" x2="100" y2="340" stroke="#4a90c4" stroke-width="3" stroke-dasharray="8,4"/>
+                    <line x1="300" y1="60" x2="500" y2="340" stroke="#27ae60" stroke-width="3" stroke-dasharray="8,4"/>
+                    <line x1="100" y1="340" x2="500" y2="340" stroke="#6c3483" stroke-width="3" stroke-dasharray="8,4"/>
+
+                    <!-- Docente node -->
+                    <circle cx="300" cy="60" r="60" fill="white" stroke="#4a90c4" stroke-width="3"/>
+                    <text x="300" y="48" text-anchor="middle" font-size="28">👨‍🏫</text>
+                    <text x="300" y="72" text-anchor="middle" font-family="Merriweather,serif" font-weight="700" font-size="14" fill="#1a2a4a">Docente</text>
+
+                    <!-- Alumno node -->
+                    <circle cx="100" cy="340" r="60" fill="white" stroke="#27ae60" stroke-width="3"/>
+                    <text x="100" y="328" text-anchor="middle" font-size="28">🧑‍🎓</text>
+                    <text x="100" y="352" text-anchor="middle" font-family="Merriweather,serif" font-weight="700" font-size="14" fill="#1a2a4a">Estudiante</text>
+
+                    <!-- Contenido node -->
+                    <circle cx="500" cy="340" r="60" fill="white" stroke="#6c3483" stroke-width="3"/>
+                    <text x="500" y="328" text-anchor="middle" font-size="28">📖</text>
+                    <text x="500" y="352" text-anchor="middle" font-family="Merriweather,serif" font-weight="700" font-size="14" fill="#1a2a4a">Contenido</text>
+
+                    <!-- Labels on sides -->
+                    <rect x="140" y="170" width="120" height="30" rx="6" fill="#e67e22" opacity="0.9"/>
+                    <text x="200" y="190" text-anchor="middle" fill="white" font-size="11" font-weight="600">Relación pedagógica</text>
+
+                    <rect x="350" y="170" width="110" height="30" rx="6" fill="#e67e22" opacity="0.9"/>
+                    <text x="405" y="190" text-anchor="middle" fill="white" font-size="11" font-weight="600">Transposición</text>
+
+                    <rect x="230" y="365" width="140" height="30" rx="6" fill="#e67e22" opacity="0.9"/>
+                    <text x="300" y="385" text-anchor="middle" fill="white" font-size="11" font-weight="600">Aprendizaje</text>
+
+                    <!-- Center: evaluation -->
+                    <circle cx="300" cy="230" r="42" fill="#1a2a4a" opacity="0.9"/>
+                    <text x="300" y="224" text-anchor="middle" fill="white" font-size="11" font-weight="700">Evaluación</text>
+                    <text x="300" y="242" text-anchor="middle" fill="#a8d4e6" font-size="9">formativa</text>
+
+                    <!-- Arrows from center -->
+                    <line x1="300" y1="188" x2="300" y2="120" stroke="#e67e22" stroke-width="2" marker-end="url(#arrowOrange)"/>
+                    <line x1="270" y1="260" x2="150" y2="310" stroke="#e67e22" stroke-width="2" marker-end="url(#arrowOrange)"/>
+                    <line x1="330" y1="260" x2="450" y2="310" stroke="#e67e22" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+                    <defs>
+                        <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#e67e22"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <p>La tríada didáctica —compuesta por el <strong>docente</strong>, el <strong>estudiante</strong> y el <strong>contenido</strong>— constituye el núcleo de toda situación de enseñanza. Las relaciones que se establecen entre estos tres polos definen la calidad del proceso educativo:</p>
+
+            <div class="info-cards">
+                <div class="info-card blue">
+                    <h4>👨‍🏫 ↔ 🧑‍🎓 Relación pedagógica</h4>
+                    <p>Es el vínculo entre docente y estudiante. La evaluación formativa y la retroalimentación ocurren fundamentalmente en esta relación: el docente observa, pregunta, comenta y orienta al estudiante.</p>
+                </div>
+                <div class="info-card violet">
+                    <h4>👨‍🏫 ↔ 📖 Transposición didáctica</h4>
+                    <p>Es la transformación que el docente realiza del saber científico para hacerlo enseñable. La evaluación formativa informa si esa transposición fue exitosa o necesita ajustes.</p>
+                </div>
+                <div class="info-card green">
+                    <h4>🧑‍🎓 ↔ 📖 Aprendizaje</h4>
+                    <p>Es la relación del estudiante con el contenido. La metacognición opera aquí: el estudiante reflexiona sobre cómo se apropia del saber, qué estrategias le funcionan y qué necesita modificar.</p>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong>🎯 La evaluación formativa en la tríada:</strong> La evaluación formativa no es un elemento externo a la tríada didáctica. Se ubica en el centro, atravesando las tres relaciones. El docente evalúa (relación pedagógica), ajusta su transposición (relación con el contenido) y acompaña al estudiante en la construcción de su aprendizaje (relación estudiante-contenido). La retroalimentación es el vehículo de esta evaluación, y la metacognición es lo que permite al estudiante internalizarla.
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 1: LA RELACIÓN ========== -->
+        <section id="relacion" class="fade-in">
+            <h2>🔗 La relación entre evaluación formativa, retroalimentación y metacognición</h2>
+
+            <p>Estos tres conceptos no son independientes. Constituyen un <strong>triángulo dinámico</strong> que sostiene el aprendizaje profundo. Comprender cómo se relacionan es esencial para quienes se forman para enseñar psicología.</p>
+
+            <div class="relationship-diagram">
+                <div class="diagram-node">
+                    <span class="node-icon">📋</span>
+                    <span class="node-title">Evaluación<br>formativa</span>
+                </div>
+                <span class="diagram-arrow">⟷</span>
+                <div class="diagram-node">
+                    <span class="node-icon">💬</span>
+                    <span class="node-title">Retroalimentación</span>
+                </div>
+                <span class="diagram-arrow">⟷</span>
+                <div class="diagram-node">
+                    <span class="node-icon">🧠</span>
+                    <span class="node-title">Metacognición</span>
+                </div>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card blue">
+                    <h4>📋 La evaluación formativa es el marco</h4>
+                    <p>Proporciona el <strong>proceso</strong> dentro del cual se recopila información sobre el aprendizaje del estudiante. Sin ella, la retroalimentación carece de fundamento.</p>
+                </div>
+                <div class="info-card violet">
+                    <h4>💬 La retroalimentación es el puente</h4>
+                    <p>Es el <strong>vehículo</strong> que transporta la información hacia el estudiante. Sin retroalimentación efectiva, los datos de la evaluación formativa quedan sin efecto.</p>
+                </div>
+                <div class="info-card green">
+                    <h4>🧠 La metacognición es el motor</h4>
+                    <p>Es la <strong>capacidad interna</strong> del estudiante para procesar la retroalimentación y tomar decisiones autónomas. Sin metacognición, la retroalimentación se recibe pasivamente.</p>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong>🎯 Síntesis:</strong> La evaluación formativa genera información → La retroalimentación la comunica al estudiante → La metacognición permite al estudiante internalizarla y actuar para mejorar. Las tres se necesitan mutuamente.
+            </div>
+
+            <p>Investigaciones de <strong>Black y Wiliam (1998)</strong>, <strong>Hattie (2009)</strong> y <strong>Hattie y Timperley (2007)</strong> demostraron que cuando estos tres elementos funcionan integrados, el impacto en el aprendizaje es significativamente mayor que cuando se aplican de forma aislada.</p>
+        </section>
+
+        <!-- ========== SECCIÓN 2: EVALUACIÓN FORMATIVA ========== -->
+        <section id="ev-formativa" class="fade-in">
+            <h2>📋 La evaluación formativa</h2>
+
+            <p>La <strong>evaluación formativa</strong> es el proceso sistemático y continuo que el docente implementa <strong>durante</strong> el proceso de enseñanza-aprendizaje con el propósito de <strong>monitorear el progreso</strong> de los estudiantes, identificar dificultades y ajustar la enseñanza.</p>
+
+            <div class="info-box">
+                <strong>📖 Cowie y Bell (1999):</strong> "El proceso que utilizan los docentes y los estudiantes para reconocer y responder al aprendizaje con el fin de mejorarlo." No es algo que el docente hace <em>sobre</em> el estudiante, sino <em>con</em> el estudiante.
+            </div>
+
+            <h3>Características esenciales</h3>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">🔄</div>
+                    <h4>Continua</h4>
+                    <p>Se integra en la práctica diaria del aula, en cada interacción.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🎯</div>
+                    <h4>Intencional</h4>
+                    <p>Requiere planificación deliberada de momentos para recoger evidencia.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🤝</div>
+                    <h4>Colaborativa</h4>
+                    <p>El estudiante participa como agente activo en la identificación de sus avances.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">⚡</div>
+                    <h4>Oportuna</h4>
+                    <p>La información se usa cuando todavía hay oportunidad de intervenir.</p>
+                </div>
+            </div>
+
+            <h3>Funciones de la evaluación formativa</h3>
+
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🔍 Función diagnóstica continua</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Detectar <strong>en tiempo real</strong> qué están comprendiendo los estudiantes y dónde tienen dificultades. No ocurre una sola vez, sino de manera constante.</p>
+                        <div class="example-box good">
+                            <h5>✅ Ejemplo — Clase de Psicología del Aprendizaje:</h5>
+                            <p>"Mientras explico el condicionamiento operante de Skinner, pido a los estudiantes que identifiquen ejemplos de reforzamiento positivo y negativo en situaciones cotidianas. Camino entre los bancos y noto que varios confunden 'negativo' con 'castigo'. Decido detenerme y aclarar esa diferencia antes de continuar."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>📐 Función reguladora de la enseñanza</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>La información obtenida permite <strong>ajustar la enseñanza</strong>: cambiar el ritmo, modificar la estrategia, ofrecer ejemplos adicionales.</p>
+                        <div class="example-box good">
+                            <h5>✅ Ejemplo — Clase de Psicología Evolutiva:</h5>
+                            <p>"Planifiqué una clase sobre las etapas de Piaget con una exposición de 40 minutos. Pero al hacer una pregunta de control a los 15 minutos, me doy cuenta de que los estudiantes no diferencian asimilación de acomodación. Cambio la estrategia: los pongo que trabajen en parejas con situaciones concretas para clasificar. El aprendizaje mejora notablemente."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🌱 Función promotora del aprendizaje</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>La evaluación formativa <strong>genera aprendizaje en sí misma</strong>. Cuando un estudiante recibe retroalimentación y tiene oportunidad de mejorar, aprende más y de manera más profunda.</p>
+                        <div class="example-box good">
+                            <h5>✅ Ejemplo — Taller de Prácticas Docentes:</h5>
+                            <p>"Los estudiantes entregan un borrador de su planificación de clase. Les devuelvo comentarios específicos sobre la coherencia entre objetivos, actividades y evaluación (no sobre formato). Les doy una semana para reescribirlo. En la versión final, la mayoría muestra una mejora sustancial en la articulación didáctica."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🪞 Función metacognitiva</span>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>La evaluación formativa bien implementada <strong>despierta la metacognición</strong>: al recibir retroalimentación y reflexionar sobre su propio trabajo, el estudiante comienza a pensar sobre cómo aprende.</p>
+                        <div class="example-box good">
+                            <h5>✅ Ejemplo — Clase de Neurociencia y Aprendizaje:</h5>
+                            <p>"Después de cada clase, pido a los estudiantes que completen una ficha: '¿Qué concepto de neurociencia me resultó más difícil de vincular con la práctica educativa? ¿Qué estrategia usé para comprenderlo?' Estas preguntas activan la reflexión metacognitiva."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Estrategias de evaluación formativa en Psicología y Educación</h3>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Estrategia</th>
+                            <th>Descripción</th>
+                            <th>Ejemplo en psicología y educación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Preguntas disparadoras</strong></td>
+                            <td>Interrogantes que revelan el nivel de comprensión</td>
+                            <td>"¿En qué se diferencia la zona de desarrollo próximo de Vygotsky del concepto de estadio de Piaget?"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Exit tickets</strong></td>
+                            <td>Respuesta breve al final de la clase</td>
+                            <td>"Escribí en una línea: ¿qué aporta la psicología cognitiva a la comprensión del aula?"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Portafolios</strong></td>
+                            <td>Recopilación progresiva de trabajos</td>
+                            <td>Carpeta con observaciones de clase, análisis de casos y reflexiones progresivas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Análisis de situaciones educativas</strong></td>
+                            <td>Lectura de escenas escolares o institucionales</td>
+                            <td>Analizar una escena de aula y proponer orientaciones pedagógicas posibles, sin convertirla en diagnóstico clínico</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Diarios de práctica</strong></td>
+                            <td>Registro reflexivo del proceso</td>
+                            <td>"Hoy en la observación del aula noté que el docente usaba refuerzo positivo cuando..."</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mapas conceptuales</strong></td>
+                            <td>Organización visual de relaciones</td>
+                            <td>Conectar psicoanálisis, conductismo, cognitivismo y constructivismo en un mapa</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 3: RETROALIMENTACIÓN ========== -->
+        <section id="retroalimentacion" class="fade-in">
+            <h2>💬 La retroalimentación (feedback)</h2>
+
+            <p>La <strong>retroalimentación</strong> es la información que el docente proporciona al estudiante sobre su desempeño en relación con los objetivos de aprendizaje. Es el elemento que <strong>conecta</strong> la evaluación formativa con la metacognición.</p>
+
+            <div class="purple-box">
+                <strong>📖 Hattie y Timperley (2007):</strong> "Información proporcionada por un agente acerca del desempeño o la comprensión de una persona en relación con un objetivo." La retroalimentación no es cualquier comentario; es información <strong>referida a un objetivo</strong>.
+            </div>
+
+            <h3>Las tres preguntas fundamentales</h3>
+
+            <div class="info-cards">
+                <div class="info-card blue">
+                    <h4>1️⃣ ¿Hacia dónde voy? (Feed up)</h4>
+                    <p>El estudiante necesita conocer claramente el objetivo. ¿Qué se espera que aprenda? ¿Cómo se ve un trabajo de calidad?</p>
+                </div>
+                <div class="info-card violet">
+                    <h4>2️⃣ ¿Cómo voy? (Feedback)</h4>
+                    <p>Información sobre el desempeño actual: ¿qué está haciendo bien? ¿qué necesita mejorar?</p>
+                </div>
+                <div class="info-card green">
+                    <h4>3️⃣ ¿Hacia dónde sigo? (Feed forward)</h4>
+                    <p>Orientación sobre los próximos pasos: ¿qué puede hacer para mejorar?</p>
+                </div>
+            </div>
+
+            <h3>Niveles de retroalimentación</h3>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nivel</th>
+                            <th>Se enfoca en...</th>
+                            <th>Ejemplo en Psicología</th>
+                            <th>Efectividad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sobre la tarea</strong></td>
+                            <td>Precisión y calidad del trabajo</td>
+                            <td>"Tu análisis del caso no identifica claramente el mecanismo de defensa. Revisá la definición de proyección."</td>
+                            <td>⭐⭐⭐ Alta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sobre el proceso</strong></td>
+                            <td>Estrategia utilizada</td>
+                            <td>"Intentaste memorizar los autores. ¿Probarías armar un cuadro comparativo de corrientes psicológicas?"</td>
+                            <td>⭐⭐⭐⭐ Muy alta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sobre la autorregulación</strong></td>
+                            <td>Capacidad de monitorear el propio aprendizaje</td>
+                            <td>"Notaste que no estabas entendiendo a Winnicott y buscaste un video explicativo. Excelente estrategia."</td>
+                            <td>⭐⭐⭐⭐⭐ Máxima</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sobre la persona</strong></td>
+                            <td>Elogios o críticas a la persona</td>
+                            <td>"¡Sos muy inteligente!" / "No te esforzás lo suficiente"</td>
+                            <td>⭐ Baja</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Atención:</strong> La retroalimentación centrada en la persona ("¡Qué inteligente sos!", "No ponés esfuerzo") es la menos efectiva. Puede generar dependencia de la aprobación externa o dañar la motivación. La retroalimentación efectiva se centra en la <strong>tarea</strong>, el <strong>proceso</strong> y la <strong>autorregulación</strong>.
+            </div>
+
+            <h3>Principios de retroalimentación efectiva</h3>
+
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Específica y descriptiva:</strong> No dice "está bien" o "está mal". Describe exactamente qué está bien, qué está mal y por qué.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Oportuna:</strong> Se entrega cuando el estudiante todavía puede actuar sobre ella.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Comprensible:</strong> Usa lenguaje accesible, adaptado al nivel del estudiante.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Accionable:</strong> Ofrece indicaciones claras sobre qué hacer para mejorar.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Dosificada:</strong> No abruma. Selecciona los 2-3 aspectos más importantes.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Respetuosa:</strong> Reconoce el esfuerzo. El error es oportunidad de aprendizaje.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Genera diálogo:</strong> Invita al estudiante a responder y participar.</div>
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 4: MODOS DE RETROALIMENTACIÓN ========== -->
+        <section id="modos-feedback" class="fade-in">
+            <h2>🎯 Modos de dar retroalimentación con ejemplos</h2>
+
+            <!-- MODO 1 -->
+            <div class="feedback-mode">
+                <div class="mode-header">
+                    <span class="mode-icon">✍️</span>
+                    <h4>1. Retroalimentación escrita</h4>
+                </div>
+                <p class="mode-desc">Comentarios escritos en el trabajo del estudiante. Permite releer los comentarios tantas veces como sea necesario.</p>
+
+                <div class="example-box bad">
+                    <h5>❌ No efectiva:</h5>
+                    <p>"Confuso. Releé a Piaget. C"</p>
+                </div>
+
+                <div class="example-box good">
+                    <h5>✅ Efectiva:</h5>
+                    <p>"Identificaste correctamente las etapas del desarrollo cognitivo de Piaget, pero la descripción de la etapa de operaciones concretas no diferencia claramente el pensamiento lógico del pensamiento preoperatorio. Te sugiero: 1) Revisar el concepto de 'conservación' como indicador clave del pasaje de una etapa a otra. 2) Agregar un ejemplo concreto de cómo un niño de 7 años resuelve una tarea de conservación diferente a uno de 4 años. Consultá el capítulo 5 de Carretero (2014)."</p>
+                </div>
+
+                <div class="example-box neutral">
+                    <h5>💡 Con preguntas metacognitivas:</h5>
+                    <p>"Noté que en tu análisis de la escena escolar usaste el enfoque conductista. ¿Qué te llevó a elegir ese enfoque y no el sociocultural? ¿Qué aspectos de la situación podrían analizarse desde otra corriente?"</p>
+                </div>
+            </div>
+
+            <!-- MODO 2 -->
+            <div class="feedback-mode">
+                <div class="mode-header">
+                    <span class="mode-icon">🗣️</span>
+                    <h4>2. Retroalimentación oral individual</h4>
+                </div>
+                <p class="mode-desc">Conversación directa entre docente y estudiante. Permite intercambio dinámico y aclarar dudas en el momento.</p>
+
+                <div class="example-box bad">
+                    <h5>❌ No efectiva:</h5>
+                    <p>"Esto está todo mal. No entendiste nada de psicología evolutiva. Vas a tener que estudiar más."</p>
+                </div>
+
+                <div class="example-box good">
+                    <h5>✅ Efectiva:</h5>
+                    <p>"Laura, veo que en tu trabajo identificaste bien los períodos de Piaget, pero hay un error en la aplicación al caso: estás atribuyendo pensamiento abstracto a un niño de 8 años, y eso corresponde a la etapa de operaciones formales, que comienza alrededor de los 12. ¿Podés revisar esa parte? ... Exacto, ese es el error. Recordá que el pensamiento abstracto-hipotético es propio de la adolescencia. ¿Querés volver a analizar el caso con esa distinción en mente?"</p>
+                </div>
+
+                <div class="example-box neutral">
+                    <h5>💡 Con enfoque metacognitivo:</h5>
+                    <p>"Antes de decirte si tu interpretación del caso es correcta, contame: ¿qué indicadores observaste que te llevaron a esa conclusión? ¿Qué otra interpretación podría hacerse con los mismos datos? ... Bien, eso me ayuda a entender tu razonamiento. Ahora, ¿te parece si juntos miramos ese indicador donde dudaste?"</p>
+                </div>
+            </div>
+
+            <!-- MODO 3 -->
+            <div class="feedback-mode">
+                <div class="mode-header">
+                    <span class="mode-icon">👥</span>
+                    <h4>3. Retroalimentación grupal</h4>
+                </div>
+                <p class="mode-desc">Observaciones compartidas con todo el grupo, identificando patrones comunes de aciertos y errores.</p>
+
+                <div class="example-box bad">
+                    <h5>❌ No efectiva:</h5>
+                    <p>"La mayoría no entendió las teorías del aprendizaje. Solo tres aprobaron. Voy a tener que volver a explicar todo."</p>
+                </div>
+
+                <div class="example-box good">
+                    <h5>✅ Efectiva:</h5>
+                    <p>"Revisé sus trabajos sobre teorías del aprendizaje y noté algo positivo: casi todos diferenciaron correctamente condicionamiento clásico de operante. El aspecto a mejorar es la aplicación al aula: muchos describieron las teorías pero no explicaron cómo se traducen en estrategias pedagógicas. Vamos a ver juntos cómo el reforzamiento intermitente de Skinner se aplica, por ejemplo, al sistema de evaluación escolar..."</p>
+                </div>
+            </div>
+
+            <!-- MODO 4 -->
+            <div class="feedback-mode">
+                <div class="mode-header">
+                    <span class="mode-icon">🤝</span>
+                    <h4>4. Retroalimentación entre pares</h4>
+                </div>
+                <p class="mode-desc">Los estudiantes evalúan el trabajo de sus compañeros con criterios acordados. Desarrolla pensamiento crítico y metacognición.</p>
+
+                <div class="example-box good">
+                    <h5>✅ Efectiva (con guía de revisión):</h5>
+                    <p><strong>Guía para revisar un informe de observación de aula:</strong><br>
+                    1. ¿El informe describe la situación observada con datos concretos? → "Sí, registraste tiempos y intervenciones docentes."<br>
+                    2. ¿Se vincula lo observado con al menos un marco teórico? → "Mencionaste a Vygotsky pero no desarrollaste el concepto de andamiaje. Podrías explicitar cómo el docente actuó como mediador."<br>
+                    3. ¿Las conclusiones se desprenden de los datos? → "La conclusión sobre 'buen clima áulico' es muy general. ¿Qué datos específicos la sostienen?"<br>
+                    4. ¿Qué es lo mejor del informe? → "La descripción de la interacción entre pares fue muy detallada."<br>
+                    5. ¿Qué sugerencia de mejora podés dar? → "Te sugiero incorporar al menos dos conceptos teóricos con citas para fundamentar tus interpretaciones."</p>
+                </div>
+            </div>
+
+            <!-- MODO 5 -->
+            <div class="feedback-mode">
+                <div class="mode-header">
+                    <span class="mode-icon">❓</span>
+                    <h4>5. Retroalimentación mediante preguntas (feedback socrático)</h4>
+                </div>
+                <p class="mode-desc">En lugar de dar correcciones directas, el docente formula preguntas que guían al estudiante a descubrir por sí mismo. Es el modo más poderoso para desarrollar metacognición.</p>
+
+                <h4>Preguntas de retroalimentación en Psicología y Educación:</h4>
+
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🔎 Preguntas de aclaración</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>"¿Qué quisiste decir con 'el niño tiene un problema de conducta'?"</li>
+                                <li>"¿Podés darme un ejemplo de esa conducta en el aula?"</li>
+                                <li>"¿Cómo se relaciona esto con la teoría del apego que vimos?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🧩 Preguntas de razonamiento</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>"¿Cómo llegaste a esa interpretación de la situación?"</li>
+                                <li>"¿Qué datos de la escena te llevaron a pensar en una dificultad de atención y no en un problema de consigna o de clima de aula?"</li>
+                                <li>"¿Hay otra forma de interpretar los datos de esa investigación?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🔄 Preguntas de reflexión metacognitiva</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>"¿Qué parte del análisis de caso te resultó más difícil? ¿Por qué?"</li>
+                                <li>"Si tuvieras que analizar otro caso, ¿qué cambiarías en tu procedimiento?"</li>
+                                <li>"¿Qué estrategia usaste para estudiar a los autores? ¿Te funcionó? ¿Qué otra podrías probar?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🎯 Preguntas de extensión</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>"¿Cómo se aplicaría el concepto de 'andamiaje' en una clase de matemáticas de primaria?"</li>
+                                <li>"¿Qué pasaría si en lugar de un enfoque conductista aplicáramos uno humanista a esta situación?"</li>
+                                <li>"¿Podés conectar esto con lo que observaste en tu práctica docente?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box bad">
+                    <h5>❌ Sin preguntas:</h5>
+                    <p>"La interpretación es incorrecta. No alcanza con describir la conducta; tienen que mirar también la consigna, el contexto y las mediaciones docentes."</p>
+                </div>
+
+                <div class="example-box good">
+                    <h5>✅ Con preguntas:</h5>
+                    <p>"Propusiste que el problema era únicamente del estudiante. ¿Qué datos de la escena te llevaron a esa conclusión? ... Bien, observaste distracción e inquietud. Ahora bien, ¿eso aparece durante toda la clase o especialmente cuando la consigna no queda clara? ... Exacto: hay un dato contextual. ¿Qué intervención docente podrías pensar antes de convertir esa conducta en una etiqueta?"</p>
+                </div>
+            </div>
+
+            <!-- RESUMEN -->
+            <h3>Resumen comparativo de modos de retroalimentación</h3>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Modo</th>
+                            <th>Ventaja principal</th>
+                            <th>Mejor momento</th>
+                            <th>Conexión metacognitiva</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Escrita</strong></td>
+                            <td>Permanente, relectura posible</td>
+                            <td>Informes, trabajos escritos</td>
+                            <td>Alta (con preguntas reflexivas)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Oral individual</strong></td>
+                            <td>Diálogo en tiempo real</td>
+                            <td>Durante actividades, tutorías</td>
+                            <td>Muy alta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Grupal</strong></td>
+                            <td>Eficiente, todos aprenden</td>
+                            <td>Después de entregas</td>
+                            <td>Moderada</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Entre pares</strong></td>
+                            <td>Pensamiento crítico</td>
+                            <td>Borradores, trabajos en proceso</td>
+                            <td>Muy alta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Preguntas</strong></td>
+                            <td>Autonomía y profundidad</td>
+                            <td>En cualquier interacción</td>
+                            <td>Máxima</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 5: METACOGNICIÓN ========== -->
+        <section id="metacognicion" class="fade-in">
+            <h2>🧠 La metacognición</h2>
+
+            <p>La <strong>metacognición</strong> (Flavell, 1970s) es la capacidad de <strong>reflexionar sobre el propio pensamiento</strong>: pensar sobre cómo pensamos, aprender sobre cómo aprendemos, y conocer nuestros procesos cognitivos para regularlos.</p>
+
+            <div class="info-box">
+                <strong>📖 En el contexto de la tríada didáctica:</strong> La metacognición es lo que permite al estudiante (polo de la tríada) procesar la retroalimentación que recibe del docente, comprender qué significa para su relación con el contenido, y actuar en consecuencia.
+            </div>
+
+            <h3>Componentes</h3>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">📚</div>
+                    <h4>Conocimiento metacognitivo</h4>
+                    <p>Lo que el estudiante sabe sobre cómo aprende: fortalezas, debilidades, estrategias.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">⚙️</div>
+                    <h4>Regulación metacognitiva</h4>
+                    <p>Acciones para controlar el aprendizaje: planificar, monitorear, evaluar.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">💬</div>
+                    <h4>Experiencias metacognitivas</h4>
+                    <p>Sensaciones conscientes: "esto me resulta fácil", "aquí me perdí".</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🎯</div>
+                    <h4>Conocimiento condicional</h4>
+                    <p>Saber cuándo y por qué usar cada estrategia.</p>
+                </div>
+            </div>
+
+            <h3>El ciclo metacognitivo y la retroalimentación</h3>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>🔹 Antes — Planificación</h4>
+                    <p><em>"¿Qué tengo que hacer? ¿Qué sé sobre este tema? ¿Qué estrategia voy a usar?"</em><br>
+                    <strong>Vínculo:</strong> La retroalimentación previa (feed up) comunica los criterios de calidad para planificar con un destino claro.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>🔹 Durante — Monitoreo</h4>
+                    <p><em>"¿Voy por buen camino? ¿Estoy entendiendo? ¿Necesito cambiar de estrategia?"</em><br>
+                    <strong>Vínculo:</strong> La retroalimentación durante el proceso (feedback) alimenta la capacidad de monitoreo. El docente hace preguntas que el estudiante internaliza.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>🔹 Después — Evaluación</h4>
+                    <p><em>"¿Logré mi objetivo? ¿Qué estrategia funcionó? ¿Qué haría diferente?"</em><br>
+                    <strong>Vínculo:</strong> La retroalimentación posterior (feed forward) guía la reflexión y ayuda a planificar el siguiente paso.</p>
+                </div>
+            </div>
+
+            <h3>¿Por qué es esencial?</h3>
+
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Promueve el aprendizaje autónomo:</strong> Los estudiantes metacognitivos no dependen exclusivamente del docente. Pueden identificar qué necesitan aprender y evaluar su propio progreso.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Mejora la comprensión profunda:</strong> El estudiante deja de ser receptor pasivo y se convierte en constructor activo de conocimiento.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Facilita la transferencia:</strong> Comprender <em>cómo</em> se aprendió permite aplicar lo aprendido en contextos nuevos (ej.: de la teoría a la práctica áulica).</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Desarrolla resiliencia ante el error:</strong> El error se comprende como información valiosa, no como juicio sobre la capacidad.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Potencia la retroalimentación:</strong> Un estudiante metacognitivo analiza, cuestiona y utiliza activamente la retroalimentación.</div>
+            </div>
+            <div class="benefit-item">
+                <span class="check">✅</span>
+                <div><strong>Reduce la ansiedad académica:</strong> Quien comprende su proceso de aprendizaje se siente más seguro frente a las evaluaciones.</div>
+            </div>
+
+            <h3>Estrategias para el aula</h3>
+
+            <div class="info-cards">
+                <div class="info-card violet">
+                    <h4>📝 Diarios de aprendizaje</h4>
+                    <p>Registro al final de cada clase: qué aprendí, cómo lo aprendí, qué dificultades tuve.</p>
+                </div>
+                <div class="info-card blue">
+                    <h4>❓ Preguntas metacognitivas sistemáticas</h4>
+                    <p>"¿Qué estrategia usaste?", "¿Cómo sabés que entendiste?", "¿Qué harías diferente?"</p>
+                </div>
+                <div class="info-card green">
+                    <h4>🗣️ Modelado del pensamiento</h4>
+                    <p>El docente verbaliza su proceso: "Primero voy a... Esto me recuerda a... Voy a revisar porque..."</p>
+                </div>
+                <div class="info-card orange">
+                    <h4>📋 Autoevaluación con rúbricas</h4>
+                    <p>Antes de entregar, el estudiante evalúa su trabajo con la misma rúbrica del docente.</p>
+                </div>
+                <div class="info-card violet">
+                    <h4>🎯 Metas personales de aprendizaje</h4>
+                    <p>El estudiante establece metas específicas y revisa periódicamente su progreso.</p>
+                </div>
+                <div class="info-card blue">
+                    <h4>👥 Enseñar a otros</h4>
+                    <p>Explicar un concepto a un compañero obliga a organizar el pensamiento e identificar vacíos propios.</p>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong>🌟 Conclusión:</strong> La metacognición no es un "agregado" al aprendizaje; es su núcleo central. Cuando se combina con evaluación formativa y retroalimentación efectiva, se crea un ecosistema que transforma la experiencia educativa.
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 6: QUIZ ========== -->
+        <section id="quiz" class="fade-in">
+            <h2>📝 Quiz interactivo</h2>
+
+            <div class="progress-container no-print">
+                <div class="progress-bar" id="progressBar" style="width: 0%;">0%</div>
+            </div>
+
+            <div class="quiz-question" id="q1">
+                <h4>1. ¿Cuáles son las tres preguntas fundamentales de la retroalimentación según Hattie y Timperley?</h4>
+                <div class="radio-group">
+                    <label><input type="radio" name="q1" value="a"> a) ¿Quién soy? ¿Qué quiero? ¿Cómo lo logro?</label>
+                    <label><input type="radio" name="q1" value="b"> b) ¿Hacia dónde voy? ¿Cómo voy? ¿Hacia dónde sigo?</label>
+                    <label><input type="radio" name="q1" value="c"> c) ¿Qué aprendí? ¿Cuánto? ¿Cuándo?</label>
+                    <label><input type="radio" name="q1" value="d"> d) ¿Qué hay que hacer? ¿Quién? ¿Cuándo?</label>
+                </div>
+                <div class="quiz-feedback" id="fb1"></div>
+            </div>
+
+            <div class="quiz-question" id="q2">
+                <h4>2. ¿Cuál es un ejemplo de retroalimentación efectiva?</h4>
+                <div class="radio-group">
+                    <label><input type="radio" name="q2" value="a"> a) "¡Muy bien, excelente!"</label>
+                    <label><input type="radio" name="q2" value="b"> b) "Mal. Estudiar más."</label>
+                    <label><input type="radio" name="q2" value="c"> c) "Tu análisis del caso identifica bien los síntomas, pero falta vincularlos con un marco teórico. Te sugiero revisar el concepto de apego de Bowlby."</label>
+                    <label><input type="radio" name="q2" value="d"> d) "Podría ser mejor."</label>
+                </div>
+                <div class="quiz-feedback" id="fb2"></div>
+            </div>
+
+            <div class="quiz-question" id="q3">
+                <h4>3. ¿Cuál es el nivel de retroalimentación más efectivo?</h4>
+                <div class="radio-group">
+                    <label><input type="radio" name="q3" value="a"> a) Sobre la persona</label>
+                    <label><input type="radio" name="q3" value="b"> b) Sobre la tarea</label>
+                    <label><input type="radio" name="q3" value="c"> c) Sobre la autorregulación</label>
+                    <label><input type="radio" name="q3" value="d"> d) Sobre el proceso</label>
+                </div>
+                <div class="quiz-feedback" id="fb3"></div>
+            </div>
+
+            <div class="quiz-question" id="q4">
+                <h4>4. ¿Qué es la tríada didáctica?</h4>
+                <div class="radio-group">
+                    <label><input type="radio" name="q4" value="a"> a) Evaluación inicial, formativa y sumativa</label>
+                    <label><input type="radio" name="q4" value="b"> b) Docente, estudiante y contenido</label>
+                    <label><input type="radio" name="q4" value="c"> c) Planificación, ejecución y evaluación</label>
+                    <label><input type="radio" name="q4" value="d"> d) Heteroevaluación, coevaluación y autoevaluación</label>
+                </div>
+                <div class="quiz-feedback" id="fb4"></div>
+            </div>
+
+            <div class="quiz-question" id="q5">
+                <h4>5. ¿Cuál es una pregunta metacognitiva?</h4>
+                <div class="radio-group">
+                    <label><input type="radio" name="q5" value="a"> a) ¿Cuál es la definición de refuerzo intermitente?</label>
+                    <label><input type="radio" name="q5" value="b"> b) ¿Cómo llegaste a esa conclusión sobre el caso?</label>
+                    <label><input type="radio" name="q5" value="c"> c) ¿En qué año nació Freud?</label>
+                    <label><input type="radio" name="q5" value="d"> d) ¿Cuáles son las corrientes psicológicas vistas en la unidad?</label>
+                </div>
+                <div class="quiz-feedback" id="fb5"></div>
+            </div>
+
+            <div class="quiz-question" id="q6">
+                <h4>6. ¿Qué relación tiene la retroalimentación con la metacognición?</h4>
+                <div class="radio-group">
+                    <label><input type="radio" name="q6" value="a"> a) No tienen relación</label>
+                    <label><input type="radio" name="q6" value="b"> b) La retroalimentación proporciona los datos para que el estudiante reflexione metacognitivamente</label>
+                    <label><input type="radio" name="q6" value="c"> c) La metacognición reemplaza la retroalimentación</label>
+                    <label><input type="radio" name="q6" value="d"> d) Son lo mismo</label>
+                </div>
+                <div class="quiz-feedback" id="fb6"></div>
+            </div>
+
+            <div class="quiz-question" id="q7">
+                <h4>7. En la tríada didáctica, ¿dónde opera principalmente la metacognición?</h4>
+                <div class="radio-group">
+                    <label><input type="radio" name="q7" value="a"> a) En la relación docente-contenido</label>
+                    <label><input type="radio" name="q7" value="b"> b) En la relación docente-estudiante</label>
+                    <label><input type="radio" name="q7" value="c"> c) En la relación estudiante-contenido</label>
+                    <label><input type="radio" name="q7" value="d"> d) Fuera de la tríada</label>
+                </div>
+                <div class="quiz-feedback" id="fb7"></div>
+            </div>
+
+            <div class="score-display" id="scoreDisplay">
+                <div class="score-number" id="scoreNumber"></div>
+                <div class="score-label" id="scoreLabel"></div>
+            </div>
+
+            <div class="btn-group no-print">
+                <button class="btn btn-primary" onclick="checkQuiz()">✅ Corregir</button>
+                <button class="btn btn-warning" onclick="resetQuiz()">🔄 Reiniciar</button>
+            </div>
+        </section>
+
+
+        <!-- ========== DATOS DEL ESTUDIANTE ========== -->
+        <section id="datos-estudiante" class="fade-in">
+            <h2>👤 Datos del estudiante</h2>
+            <p>Completá estos datos antes de guardar una actividad o el trabajo completo. Así cada PDF queda identificado correctamente.</p>
+            <div class="actividad-instruccion">
+                <div class="form-group">
+                    <label for="studentName">Nombre completo:</label>
+                    <input type="text" id="studentName" placeholder="Tu nombre completo" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="studentCourse">Curso / división:</label>
+                    <input type="text" id="studentCourse" placeholder="Ej.: 3.er año, turno mañana">
+                </div>
+                <div class="form-group">
+                    <label for="studentDate">Fecha:</label>
+                    <input type="date" id="studentDate">
+                </div>
+                <div class="form-group">
+                    <label for="studentEmail">Correo electrónico:</label>
+                    <input type="email" id="studentEmail" placeholder="tu@email.com" autocomplete="email">
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 7: ACTIVIDADES ========== -->
+        <section id="actividades" class="fade-in">
+            <h2>✏️ Actividades para completar</h2>
+            <p>Completá cada actividad. Cada una puede guardarse como PDF individual con solo tus respuestas.</p>
+
+            <!-- Actividad 1 -->
+            <div class="actividad" id="act1-section">
+                <h3>📌 Actividad 1: Análisis de retroalimentación</h3>
+                <div class="actividad-instruccion">
+                    <h4>📖 Situación:</h4>
+                    <p>Un estudiante entregó el siguiente fragmento como parte de un trabajo sobre teorías del aprendizaje:</p>
+                    <div class="example-box neutral">
+                        <p>"El conductismo es una corriente de la psicología que estudia la conducta. Skinner dijo que los premios y castigos modifican la conducta. Piaget también hablaba del aprendizaje pero desde otro lado. En el aula esto se usa mucho."</p>
+                    </div>
+                    <h4>Consigna:</h4>
+
+                    <div class="form-group">
+                        <label>a) Redactá una retroalimentación no efectiva (vaga o centrada en la persona):</label>
+                        <textarea id="act1a" placeholder="Escribí una retroalimentación que NO sería efectiva..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>b) Redactá una retroalimentación efectiva centrada en la tarea:</label>
+                        <textarea id="act1b" placeholder="Retroalimentación específica sobre el contenido..." rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>c) Redactá una retroalimentación efectiva centrada en el proceso y autorregulación:</label>
+                        <textarea id="act1c" placeholder="Retroalimentación que guíe la reflexión metacognitiva..." rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>d) Fundamentá por qué la versión (c) es la más efectiva:</label>
+                        <textarea id="act1d" placeholder="Basate en lo leído sobre niveles de retroalimentación..." rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="btn-group no-print">
+                    <button class="btn btn-purple" onclick="printActivity(1)">📄 Guardar esta actividad como PDF</button>
+                </div>
+            </div>
+
+            <hr class="act-sep">
+
+            <!-- Actividad 2 -->
+            <div class="actividad" id="act2-section">
+                <h3>📌 Actividad 2: Diseño de retroalimentación para contextos educativos</h3>
+                <div class="actividad-instruccion">
+                    <h4>Consigna:</h4>
+                    <p>Para cada situación, diseñá una retroalimentación efectiva especificando el modo y fundamentando.</p>
+
+                    <div class="form-group">
+                        <label>Situación A: Un estudiante presentó el análisis de una escena escolar donde describió correctamente que un adolescente se mostraba inquieto y evitaba participar, pero no consideró la consigna docente, el clima del grupo ni posibles intervenciones pedagógicas.</label>
+                        <div class="form-group">
+                            <label>Modo elegido:</label>
+                            <select id="act2a-modo">
+                                <option value="">Seleccioná</option>
+                                <option value="Escrita">Escrita</option>
+                                <option value="Oral individual">Oral individual</option>
+                                <option value="Grupal">Grupal</option>
+                                <option value="Entre pares">Entre pares</option>
+                                <option value="Mediante preguntas">Mediante preguntas</option>
+                            </select>
+                        </div>
+                        <textarea id="act2a" placeholder="Redactá tu retroalimentación y fundamentá..." rows="5"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Situación B: Un grupo de estudiantes realizó una exposición sobre la teoría del apego de Bowlby. El contenido era correcto pero expusieron leyendo las diapositivas sin generar interacción con la audiencia ni vincular la teoría con situaciones áulicas.</label>
+                        <div class="form-group">
+                            <label>Modo elegido:</label>
+                            <select id="act2b-modo">
+                                <option value="">Seleccioná</option>
+                                <option value="Escrita">Escrita</option>
+                                <option value="Oral individual">Oral individual</option>
+                                <option value="Grupal">Grupal</option>
+                                <option value="Entre pares">Entre pares</option>
+                                <option value="Mediante preguntas">Mediante preguntas</option>
+                            </select>
+                        </div>
+                        <textarea id="act2b" placeholder="Redactá tu retroalimentación y fundamentá..." rows="5"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Situación C: Una estudiante escribió un ensayo comparando a Piaget y Vygotsky. La comparación es rica en contenido pero el texto carece de estructura argumentativa clara: no hay tesis, los párrafos no están conectados y la conclusión repite información sin sintetizar.</label>
+                        <div class="form-group">
+                            <label>Modo elegido:</label>
+                            <select id="act2c-modo">
+                                <option value="">Seleccioná</option>
+                                <option value="Escrita">Escrita</option>
+                                <option value="Oral individual">Oral individual</option>
+                                <option value="Grupal">Grupal</option>
+                                <option value="Entre pares">Entre pares</option>
+                                <option value="Mediante preguntas">Mediante preguntas</option>
+                            </select>
+                        </div>
+                        <textarea id="act2c" placeholder="Redactá tu retroalimentación y fundamentá..." rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="btn-group no-print">
+                    <button class="btn btn-purple" onclick="printActivity(2)">📄 Guardar esta actividad como PDF</button>
+                </div>
+            </div>
+
+            <hr class="act-sep">
+
+            <!-- Actividad 3 -->
+            <div class="actividad" id="act3-section">
+                <h3>📌 Actividad 3: Reflexión metacognitiva personal</h3>
+                <div class="actividad-instruccion">
+                    <h4>Consigna:</h4>
+                    <p>Reflexioná sobre tu propio proceso de aprendizaje como estudiante del Profesorado:</p>
+
+                    <div class="form-group">
+                        <label>¿Cómo te das cuenta de que realmente entendiste un tema de psicología o educación? ¿Qué señales internas te lo indican?</label>
+                        <textarea id="act3a" placeholder="Pensá en tus experiencias..." rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Qué hacés cuando te encontrás con un texto teórico que no comprendés (por ejemplo, un texto de Lacan o de Foucault)? Describí tu proceso paso a paso:</label>
+                        <textarea id="act3b" placeholder="¿Releés? ¿Buscás glosarios? ¿Consultás bibliografía complementaria?" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Pensando en la retroalimentación que recibiste de tus docentes: ¿Cuál fue la que más te ayudó a aprender? ¿Por qué? ¿Qué tenía esa retroalimentación que otras no?</label>
+                        <textarea id="act3c" placeholder="Recordá una experiencia concreta..." rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Después de leer este material, ¿qué estrategia metacognitiva nueva te gustaría incorporar? ¿Cómo la pondrías en práctica en tu formación?</label>
+                        <textarea id="act3d" placeholder="Estrategia y plan de acción..." rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="btn-group no-print">
+                    <button class="btn btn-purple" onclick="printActivity(3)">📄 Guardar esta actividad como PDF</button>
+                </div>
+            </div>
+
+            <hr class="act-sep">
+
+            <!-- Actividad 4 -->
+            <div class="actividad" id="act4-section">
+                <h3>📌 Actividad 4: Diario de aprendizaje metacognitivo</h3>
+                <div class="actividad-instruccion">
+                    <h4>Consigna:</h4>
+                    <p>Completá este diario sobre tu experiencia al trabajar con este material:</p>
+
+                    <div class="form-group">
+                        <label>¿Qué aprendiste hoy sobre evaluación formativa, retroalimentación y metacognición?</label>
+                        <textarea id="act4a" placeholder="Conceptos principales..." rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Qué concepto te resultó más fácil de comprender? ¿Por qué?</label>
+                        <textarea id="act4b" placeholder="¿Qué facilitó tu comprensión?" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Qué concepto te resultó más difícil? ¿Qué podés hacer para comprenderlo mejor?</label>
+                        <textarea id="act4c" placeholder="Dificultad y estrategias para superarla..." rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Si tuvieras que explicarle a un compañero/a la relación entre evaluación formativa, retroalimentación y metacognición, ¿cómo se lo dirías con tus propias palabras?</label>
+                        <textarea id="act4d" placeholder="Tu explicación para un compañero..." rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Qué harías diferente la próxima vez que tengas que estudiar un tema complejo, aplicando lo aprendido sobre metacognición?</label>
+                        <textarea id="act4e" placeholder="Tu plan de estudio metacognitivo..." rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="btn-group no-print">
+                    <button class="btn btn-purple" onclick="printActivity(4)">📄 Guardar esta actividad como PDF</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 8: REFLEXIÓN FINAL ========== -->
+        <section id="reflexion" class="fade-in">
+            <h2>💭 Reflexión final integradora</h2>
+
+            <div class="reflection-area">
+                <h4>📝 Espacio de reflexión personal</h4>
+
+                <div class="form-group">
+                    <label>¿Cuál fue la idea más poderosa que encontraste en este material? ¿Por qué te impactó?</label>
+                    <textarea id="ref1" placeholder="Tu reflexión..." rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>¿Cómo cambió tu comprensión sobre qué significa "evaluar"?</label>
+                    <textarea id="ref2" placeholder="Reflexión sobre tu idea de evaluación..." rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Como futuro docente del Profesorado en Psicología, ¿cómo integrarías evaluación formativa, retroalimentación y metacognición en tu práctica? Tres acciones concretas:</label>
+                    <textarea id="ref3" placeholder="Acción 1: &#10;Acción 2: &#10;Acción 3:" rows="6"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>¿Qué compromiso personal de aprendizaje asumís a partir de hoy?</label>
+                    <textarea id="ref4" placeholder="Mi compromiso es..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <div class="btn-group no-print">
+                <button class="btn btn-purple" onclick="printActivity('ref')">📄 Guardar la reflexión como PDF</button>
+            </div>
+
+            <div class="success-box">
+                <strong>🌟 Para cerrar:</strong> "La evaluación formativa genera información, la retroalimentación la comunica con sentido, y la metacognición la transforma en aprendizaje verdadero. Las tres juntas transforman la relación del estudiante con el conocimiento y consigo mismo como aprendiz."
+            </div>
+        </section>
+
+        <!-- ========== SECCIÓN 9: GUARDAR Y ENTREGAR ========== -->
+        <section id="guardar" class="fade-in">
+            <h2>💾 Guardar como PDF y entregar el trabajo</h2>
+
+            <div class="info-box"><strong>Antes de guardar:</strong> verificá que los datos del estudiante estén completos en la sección anterior. Esos datos se incorporan automáticamente a cada PDF.</div>
+
+            <div class="actividad">
+                <h3>📄 Opciones de guardado</h3>
+                <div class="actividad-instruccion">
+                    <p>Podés guardar el trabajo de dos maneras:</p>
+                    <ul>
+                        <li><strong>PDF por actividad:</strong> usá el botón “Guardar esta actividad como PDF” al final de cada actividad. Se incluirán tus datos y las respuestas de esa actividad.</li>
+                        <li><strong>PDF completo:</strong> usá el botón “Guardar todo como PDF” para generar un único archivo con el material, tus datos y todas tus respuestas.</li>
+                    </ul>
+                    <p><strong>Importante:</strong> al presionar el botón se abrirá la ventana de impresión del navegador. Elegí la opción <em>Guardar como PDF</em> o <em>Microsoft Print to PDF</em>, según el dispositivo que estés usando.</p>
+                </div>
+                <div class="btn-group no-print">
+                    <button class="btn btn-primary" onclick="savePDF()">📄 Guardar todo como PDF</button>
+                </div>
+            </div>
+
+            <div class="actividad">
+                <h3>📤 Entrega del trabajo</h3>
+                <div class="actividad-instruccion">
+                    <p>Una vez guardado el PDF, subilo por el medio indicado por la cátedra o por el aula virtual correspondiente. Esta página no realiza la entrega automáticamente.</p>
+                    <div class="form-group">
+                        <label for="uploadPlatform">Medio de entrega previsto:</label>
+                        <select id="uploadPlatform" onchange="updateUploadInstructions()">
+                            <option value="">— Seleccioná —</option>
+                            <option value="classroom">Google Classroom</option>
+                            <option value="moodle">Moodle / Campus Virtual</option>
+                            <option value="drive">Google Drive</option>
+                            <option value="onedrive">OneDrive / SharePoint</option>
+                            <option value="email">Email</option>
+                            <option value="custom">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customPlatformGroup" style="display:none;">
+                        <label>Especificá:</label>
+                        <input type="text" id="customPlatform" placeholder="Ej.: aula virtual institucional, Teams, formulario de entrega...">
+                    </div>
+                    <div id="uploadInstructions" class="info-box" style="display:none;"></div>
+                    <div class="form-group">
+                        <label>Enlace de destino, si corresponde:</label>
+                        <input type="text" id="uploadUrl" placeholder="https://...">
+                    </div>
+                    <div class="btn-group no-print">
+                        <button class="btn btn-warning" onclick="openUploadLink()">🔗 Abrir enlace de entrega</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+</div>
+
+    <footer>
+        <p>🎓 Evaluación formativa, retroalimentación y metacognición — Taller de Evaluación</p>
+        <p style="margin-top:6px; font-size:0.88em;">Profesorado en Psicología | 2026</p>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // ===== ACCORDION =====
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const isActive = header.classList.contains('active');
+            document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
+            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
+            if (!isActive) { header.classList.add('active'); content.classList.add('active'); }
+        }
+
+        // ===== QUIZ =====
+        const correctAnswers = { q1:'b', q2:'c', q3:'c', q4:'b', q5:'b', q6:'b', q7:'c' };
+        const explanations = {
+            q1: 'Las tres preguntas: ¿Hacia dónde voy? (feed up), ¿Cómo voy? (feedback), ¿Hacia dónde sigo? (feed forward).',
+            q2: 'La retroalimentación efectiva es específica, describe qué está bien, qué falta, y ofrece una sugerencia concreta.',
+            q3: 'La retroalimentación sobre la autorregulación es la más efectiva porque desarrolla la capacidad de gestionar el propio aprendizaje.',
+            q4: 'La tríada didáctica está compuesta por docente, estudiante y contenido.',
+            q5: '"¿Cómo llegaste a esa conclusión?" invita a reflexionar sobre el propio proceso de pensamiento.',
+            q6: 'La retroalimentación proporciona los datos que el estudiante necesita para reflexionar metacognitivamente.',
+            q7: 'La metacognición opera principalmente en la relación estudiante-contenido: es el estudiante reflexionando sobre cómo se apropia del saber.'
+        };
+
+        function checkQuiz() {
+            let correct = 0;
+            const total = Object.keys(correctAnswers).length;
+            let answered = 0;
+
+            for (let q in correctAnswers) {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                const fb = document.getElementById('fb' + q.slice(1));
+                const qDiv = document.getElementById(q);
+
+                if (selected) {
+                    answered++;
+                    if (selected.value === correctAnswers[q]) {
+                        correct++;
+                        qDiv.classList.add('correct');
+                        qDiv.classList.remove('incorrect');
+                        fb.className = 'quiz-feedback show correct';
+                        fb.innerHTML = '✅ ¡Correcto! ' + explanations[q];
+                    } else {
+                        qDiv.classList.add('incorrect');
+                        qDiv.classList.remove('correct');
+                        fb.className = 'quiz-feedback show incorrect';
+                        fb.innerHTML = '❌ Incorrecto. ' + explanations[q];
+                    }
+                } else {
+                    qDiv.classList.remove('correct', 'incorrect');
+                    fb.classList.remove('show');
+                }
+            }
+
+            const progress = (answered / total) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressBar').textContent = Math.round(progress) + '%';
+
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.style.display = 'block';
+            document.getElementById('scoreNumber').textContent = correct + ' / ' + total;
+
+            const pct = (correct / total) * 100;
+            let label = '';
+            if (pct === 100) label = '🏆 ¡Excelente!';
+            else if (pct >= 80) label = '🌟 ¡Muy bien!';
+            else if (pct >= 60) label = '👍 Bien. Repasá las dudas.';
+            else if (pct >= 40) label = '📖 Necesitás repasar.';
+            else label = '💪 Releé el material completo.';
+            document.getElementById('scoreLabel').textContent = label;
+
+            if (answered < total) alert('⚠️ Respondiste ' + answered + ' de ' + total + '.');
+        }
+
+        function resetQuiz() {
+            for (let q in correctAnswers) {
+                document.querySelectorAll(`input[name="${q}"]`).forEach(r => r.checked = false);
+                const fb = document.getElementById('fb' + q.slice(1));
+                fb.className = 'quiz-feedback';
+                fb.innerHTML = '';
+                document.getElementById(q).classList.remove('correct', 'incorrect');
+            }
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressBar').textContent = '0%';
+            document.getElementById('scoreDisplay').style.display = 'none';
+        }
+
+        // ===== UTILIDADES PARA GUARDAR EN PDF =====
+        function escapeHTML(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getFieldValue(id, fallback = '') {
+            const el = document.getElementById(id);
+            return el && typeof el.value === 'string' ? el.value.trim() : fallback;
+        }
+
+        function getStudentMeta() {
+            return {
+                name: getFieldValue('studentName', 'Sin nombre') || 'Sin nombre',
+                course: getFieldValue('studentCourse', 'Sin curso') || 'Sin curso',
+                email: getFieldValue('studentEmail', 'Sin correo electrónico') || 'Sin correo electrónico',
+                date: getFieldValue('studentDate', new Date().toISOString().split('T')[0]) || new Date().toISOString().split('T')[0]
+            };
+        }
+
+        function printHTMLDocument(html, title) {
+            const oldFrame = document.getElementById('printFrame');
+            if (oldFrame) oldFrame.remove();
+
+            const iframe = document.createElement('iframe');
+            iframe.id = 'printFrame';
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '1px';
+            iframe.style.height = '1px';
+            iframe.style.opacity = '0';
+            iframe.style.border = '0';
+            iframe.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(iframe);
+
+            const printWindow = iframe.contentWindow;
+            const doc = printWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+
+            const previousTitle = document.title;
+            document.title = title;
+
+            const runPrint = () => {
+                try {
+                    printWindow.focus();
+                    printWindow.print();
+                } catch (err) {
+                    alert('No se pudo abrir la ventana de impresión. Probá usar Ctrl+P o Archivo > Imprimir.');
+                } finally {
+                    setTimeout(() => {
+                        document.title = previousTitle;
+                        iframe.remove();
+                    }, 1500);
+                }
+            };
+
+            setTimeout(runPrint, 350);
+        }
+
+        function buildPrintHeader(title) {
+            const meta = getStudentMeta();
+            return `<div class="print-header">
+                <h1>${escapeHTML(title)}</h1>
+                <p><strong>Nombre:</strong> ${escapeHTML(meta.name)} &nbsp; | &nbsp; <strong>Curso:</strong> ${escapeHTML(meta.course)} &nbsp; | &nbsp; <strong>Fecha:</strong> ${escapeHTML(meta.date)}</p>
+                <p><strong>Correo electrónico:</strong> ${escapeHTML(meta.email)}</p>
+            </div>`;
+        }
+
+        function printableShell(title, body) {
+            return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+            <title>${escapeHTML(title)}</title>
+            <style>
+                * { box-sizing: border-box; }
+                body { font-family: Arial, sans-serif; padding: 28px; color: #222; line-height: 1.6; }
+                h1, h2, h3, h4 { color: #1a2a4a; }
+                h1 { font-size: 1.55rem; margin-bottom: 8px; }
+                h2 { font-size: 1.25rem; border-bottom: 2px solid #4a90c4; padding-bottom: 5px; margin-top: 26px; }
+                h3 { font-size: 1.1rem; margin-top: 22px; }
+                .print-header { border-bottom: 3px solid #2c5f8a; margin-bottom: 24px; padding-bottom: 14px; }
+                .field, .print-block, section, .actividad { page-break-inside: avoid; margin-bottom: 18px; }
+                .field label { display: block; font-weight: bold; color: #1a2a4a; margin-bottom: 6px; }
+                .answer { padding: 10px 12px; background: #f7f8fa; border-left: 4px solid #4a90c4; border-radius: 6px; min-height: 38px; white-space: pre-wrap; }
+                .answer.empty { color: #777; font-style: italic; }
+                .print-note { background: #f7f8fa; border-left: 4px solid #e67e22; padding: 10px 12px; border-radius: 6px; margin: 12px 0; }
+                .no-print, nav, button, .btn, .btn-group, .upload-zone, footer { display: none !important; }
+                table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+                th, td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
+                th { background: #f0f4f8; }
+                svg { max-width: 100%; }
+                @page { margin: 1.5cm; }
+            </style></head><body>${body}</body></html>`;
+        }
+
+        function answerBlock(value, emptyText = '(Sin respuesta)') {
+            const text = (value || '').trim();
+            return `<div class="answer ${text ? '' : 'empty'}">${escapeHTML(text || emptyText)}</div>`;
+        }
+
+        // ===== PDF INDIVIDUAL POR ACTIVIDAD =====
+        function printActivity(num) {
+            let title = '';
+            let fields = [];
+
+            if (num === 1) {
+                title = 'Actividad 1: Análisis de retroalimentación';
+                fields = [
+                    { label: 'a) Retroalimentación no efectiva:', val: getFieldValue('act1a') },
+                    { label: 'b) Retroalimentación efectiva centrada en la tarea:', val: getFieldValue('act1b') },
+                    { label: 'c) Retroalimentación efectiva centrada en el proceso y la autorregulación:', val: getFieldValue('act1c') },
+                    { label: 'd) Fundamentación:', val: getFieldValue('act1d') }
+                ];
+            } else if (num === 2) {
+                title = 'Actividad 2: Diseño de retroalimentación para contextos educativos';
+                fields = [
+                    { label: 'Situación A — Modo: ' + (getFieldValue('act2a-modo') || 'No seleccionado') + ':', val: getFieldValue('act2a') },
+                    { label: 'Situación B — Modo: ' + (getFieldValue('act2b-modo') || 'No seleccionado') + ':', val: getFieldValue('act2b') },
+                    { label: 'Situación C — Modo: ' + (getFieldValue('act2c-modo') || 'No seleccionado') + ':', val: getFieldValue('act2c') }
+                ];
+            } else if (num === 3) {
+                title = 'Actividad 3: Reflexión metacognitiva personal';
+                fields = [
+                    { label: '¿Cómo sabés que entendiste un tema?:', val: getFieldValue('act3a') },
+                    { label: '¿Qué hacés ante un texto difícil?:', val: getFieldValue('act3b') },
+                    { label: '¿Qué retroalimentación te ayudó más?:', val: getFieldValue('act3c') },
+                    { label: '¿Qué estrategia metacognitiva incorporarías?:', val: getFieldValue('act3d') }
+                ];
+            } else if (num === 4) {
+                title = 'Actividad 4: Diario de aprendizaje metacognitivo';
+                fields = [
+                    { label: '¿Qué aprendiste hoy?:', val: getFieldValue('act4a') },
+                    { label: '¿Qué fue más fácil?:', val: getFieldValue('act4b') },
+                    { label: '¿Qué fue más difícil?:', val: getFieldValue('act4c') },
+                    { label: '¿Cómo se lo explicarías a un compañero?:', val: getFieldValue('act4d') },
+                    { label: '¿Qué harías diferente?:', val: getFieldValue('act4e') }
+                ];
+            } else if (num === 'ref') {
+                title = 'Reflexión final integradora';
+                fields = [
+                    { label: 'Idea más poderosa:', val: getFieldValue('ref1') },
+                    { label: '¿Cómo cambió tu idea de evaluar?:', val: getFieldValue('ref2') },
+                    { label: 'Tres acciones concretas como futuro docente:', val: getFieldValue('ref3') },
+                    { label: 'Compromiso personal:', val: getFieldValue('ref4') }
+                ];
+            }
+
+            let body = buildPrintHeader(title);
+            fields.forEach(f => {
+                body += `<div class="field"><label>${escapeHTML(f.label)}</label>${answerBlock(f.val)}</div>`;
+            });
+            body += '<div class="print-note">Taller de Evaluación — Profesorado en Psicología</div>';
+            printHTMLDocument(printableShell(title, body), title);
+        }
+
+        // ===== PDF COMPLETO =====
+        function savePDF() {
+            const main = document.querySelector('.container');
+            const cloned = main.cloneNode(true);
+
+            cloned.querySelectorAll('script, nav, .no-print, .btn-group, button, iframe, #printFrame').forEach(el => el.remove());
+
+            cloned.querySelectorAll('textarea').forEach(t => {
+                const original = document.getElementById(t.id);
+                const div = document.createElement('div');
+                const value = original ? original.value.trim() : '';
+                div.className = 'answer' + (value ? '' : ' empty');
+                div.textContent = value || '(Sin respuesta)';
+                t.replaceWith(div);
+            });
+
+            cloned.querySelectorAll('input').forEach(inp => {
+                const type = (inp.getAttribute('type') || 'text').toLowerCase();
+                if (type === 'radio' || type === 'checkbox') {
+                    const original = document.querySelector(`input[name="${inp.name}"]:checked`);
+                    inp.replaceWith(document.createTextNode(original && original.value === inp.value ? '☑ ' : '☐ '));
+                    return;
+                }
+                const original = document.getElementById(inp.id);
+                const div = document.createElement('div');
+                const value = original ? original.value.trim() : '';
+                div.className = 'answer' + (value ? '' : ' empty');
+                div.textContent = value || '(Sin completar)';
+                inp.replaceWith(div);
+            });
+
+            cloned.querySelectorAll('select').forEach(sel => {
+                const original = document.getElementById(sel.id);
+                const div = document.createElement('div');
+                let text = '(Sin seleccionar)';
+                if (original && original.selectedIndex >= 0) text = original.options[original.selectedIndex].text || text;
+                div.className = 'answer' + (text === '(Sin seleccionar)' || text.includes('Seleccioná') ? ' empty' : '');
+                div.textContent = text;
+                sel.replaceWith(div);
+            });
+
+            cloned.querySelectorAll('.accordion-content').forEach(el => { el.style.display = 'block'; el.classList.add('active'); });
+            cloned.querySelectorAll('.fade-in').forEach(el => el.style.opacity = '1');
+            cloned.querySelectorAll('#guardar .actividad:last-child').forEach(el => el.remove());
+
+            const body = buildPrintHeader('Trabajo completo') + cloned.innerHTML;
+            printHTMLDocument(printableShell('Trabajo completo — Taller de Evaluación', body), 'Trabajo completo — Taller de Evaluación');
+        }
+
+        // ===== ENTREGA =====
+        function updateUploadInstructions() {
+            const platform = document.getElementById('uploadPlatform').value;
+            const instructions = document.getElementById('uploadInstructions');
+            const customGroup = document.getElementById('customPlatformGroup');
+            customGroup.style.display = platform === 'custom' ? 'block' : 'none';
+            if (!platform) { instructions.style.display = 'none'; return; }
+            instructions.style.display = 'block';
+            const msgs = {
+                classroom: '📌 <strong>Google Classroom:</strong><br>1. Ingresá a classroom.google.com y abrí la tarea.<br>2. Elegí “Agregar o crear” → “Archivo”.<br>3. Adjuntá el PDF y presioná “Entregar”.',
+                moodle: '📌 <strong>Moodle / Campus Virtual:</strong><br>1. Ingresá al aula virtual.<br>2. Buscá la actividad de entrega.<br>3. Subí el PDF y verificá que quede guardado.',
+                drive: '📌 <strong>Google Drive:</strong><br>1. Subí el PDF a Drive.<br>2. Compartí el enlace con los permisos solicitados por la cátedra.',
+                onedrive: '📌 <strong>OneDrive / SharePoint:</strong><br>1. Subí el PDF.<br>2. Compartí el archivo o el enlace según la indicación de la cátedra.',
+                email: '📌 <strong>Correo electrónico:</strong><br>1. Redactá un mensaje a la dirección indicada.<br>2. Adjuntá el PDF con nombre, apellido y curso en el nombre del archivo.',
+                custom: '📌 Seguí las instrucciones de la plataforma indicada por la cátedra.'
+            };
+            instructions.innerHTML = msgs[platform] || '';
+        }
+
+        function openUploadLink() {
+            const url = document.getElementById('uploadUrl').value.trim();
+            const platform = document.getElementById('uploadPlatform').value;
+            const defaults = {
+                classroom: 'https://classroom.google.com/',
+                drive: 'https://drive.google.com/',
+                onedrive: 'https://onedrive.live.com/',
+                email: 'mailto:?subject=Entrega - Taller de Evaluación'
+            };
+            const target = url || defaults[platform] || '';
+            if (target) window.open(target, '_blank');
+            else alert('Ingresá un enlace de destino o seleccioná un medio de entrega.');
+        }
+
+        // ===== FADE IN =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.style.opacity = '1'; });
+        }, { threshold: 0.08 });
+        document.querySelectorAll('.fade-in').forEach(el => { el.style.opacity = '0'; observer.observe(el); });
+
+        // Fecha por defecto
+        const defaultDateField = document.getElementById('studentDate');
+        if (defaultDateField && !defaultDateField.value) defaultDateField.value = new Date().toISOString().split('T')[0];
+
+        // ===== SMOOTH SCROLL =====
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+
+</body>
+</html>
