@@ -105,7 +105,7 @@
     box-shadow: none;
   }
   
-  /* Estilos para lista de preguntas insertadas */
+  /* Estilos para lista de preguntas */
   .mis-preguntas {
     margin-top: 1.5rem;
     display: flex;
@@ -121,13 +121,13 @@
     border-radius: 8px;
   }
   .q-number {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: var(--primary);
     margin-right: 15px;
     background: #e0e7ff;
-    min-width: 35px;
-    height: 35px;
+    min-width: 30px;
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -278,20 +278,23 @@
   </div>
 
   <div class="section">
-    <h2>✍️ 2. Agregá tus propias preguntas</h2>
-    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Diseñá preguntas metacognitivas nuevas para sumar a las opciones del dado.</p>
+    <h2>✍️ 2. Opciones del Dado</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Administrá las preguntas del dado. Podés editar las existentes o agregar nuevas caras.</p>
     
-    <input type="text" id="newPregunta" placeholder="Pregunta (ej: ¿Qué habilidad nueva descubrí que tengo?)" required>
-    <input type="text" id="newAndamio" placeholder="Andamio / Pista (ej: Pensá en algo que antes te costaba y hoy pudiste hacer)">
-    <input type="text" id="newInicio" placeholder="Inicio de respuesta (ej: Descubrí que soy capaz de...)">
-    
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-      <button id="addFaceBtn" onclick="agregarOEditarCara()">➕ Agregar pregunta</button>
-      <button id="cancelEditBtn" onclick="cancelarEdicion()" style="display: none; background: #94a3b8;">❌ Cancelar</button>
+    <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;" id="formContainer">
+      <h3 style="margin-top: 0; font-size: 1rem; color: #334155; margin-bottom: 10px;" id="formTitle">Agregar Nueva Pregunta</h3>
+      <input type="text" id="newPregunta" placeholder="Pregunta (ej: ¿Qué habilidad descubrí?)" required>
+      <input type="text" id="newAndamio" placeholder="Pista / Ayuda (ej: Pensá en algo que antes te costaba)">
+      <input type="text" id="newInicio" placeholder="Inicio de respuesta (ej: Descubrí que...)">
+      
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="addFaceBtn" onclick="guardarPregunta()">➕ Agregar pregunta</button>
+        <button id="cancelEditBtn" onclick="cancelarEdicion()" style="display: none; background: #94a3b8;">❌ Cancelar</button>
+      </div>
     </div>
 
-    <!-- Lista de preguntas insertadas -->
-    <div class="mis-preguntas" id="misPreguntasList"></div>
+    <!-- Lista unificada de todas las preguntas -->
+    <div class="mis-preguntas" id="preguntasList"></div>
   </div>
 
   <div class="section dice-container">
@@ -317,31 +320,43 @@
 
   <div class="section" style="text-align: center;">
     <h2>📄 4. Descargar Actividad</h2>
-    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Generá un PDF con tu nombre y todas las preguntas para completarlo.</p>
-    <button onclick="generarPDF()" id="pdfBtn" style="background: #10b981;">📥 Descargar PDF</button>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Generá un documento PDF profesional con todas las opciones para imprimirlo o completarlo digitalmente.</p>
+    <button onclick="generarPDF()" id="pdfBtn" style="background: #10b981; font-size: 1.1rem; padding: 1rem 2rem;">📥 Descargar PDF</button>
   </div>
 </div>
 
-<!-- Plantilla para la generación del PDF -->
+<!-- Plantilla para la generación del PDF con estructura robusta -->
 <div id="pdf-export-template">
-  <div style="font-family: 'Outfit', sans-serif; padding: 40px; color: #1e1b4b; background: white;">
-    <h1 style="color: #6366f1; text-align: center; font-size: 28px; margin-bottom: 10px;">🎲 Dado Metacognitivo</h1>
-    <h2 style="text-align: center; font-size: 18px; color: #64748b; margin-bottom: 40px;">Actividad de Reflexión Individual</h2>
+  <!-- Diseño limpio y simplificado, sin flexbox complejo, para evitar que html2pdf falle -->
+  <div style="font-family: Arial, Helvetica, sans-serif; background: white; color: #1e293b; width: 100%; max-width: 800px; padding: 30px; box-sizing: border-box;">
     
-    <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
-      <strong>Estudiante:</strong> <span id="pdfNameDisplay" style="font-size: 18px;"></span>
+    <!-- Encabezado Estilizado -->
+    <div style="text-align: center; border-bottom: 3px solid #6366f1; padding-bottom: 15px; margin-bottom: 25px;">
+      <h1 style="color: #6366f1; font-size: 28px; margin: 0 0 5px 0;">🎲 Dado Metacognitivo</h1>
+      <h2 style="color: #64748b; font-size: 16px; margin: 0; font-weight: normal;">Hoja de Reflexión de Aprendizaje</h2>
+    </div>
+    
+    <!-- Info del Estudiante -->
+    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 15px; margin-bottom: 35px;">
+      <p style="margin: 0; font-size: 16px;">
+        <strong>Estudiante:</strong> 
+        <span id="pdfNameDisplay" style="border-bottom: 1px solid #64748b; padding-bottom: 2px; margin-left: 10px; font-weight: bold; color: #0f172a;"></span>
+      </p>
     </div>
 
-    <h3 style="margin-bottom: 20px; font-size: 20px;">Preguntas para reflexionar:</h3>
+    <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #334155;">Respondé a las siguientes consignas:</h3>
+    
+    <!-- Lista de Preguntas generada dinámicamente -->
     <div id="pdfQuestionsList"></div>
+
   </div>
 </div>
 
-<div class="toast" id="toast">¡Cara agregada con éxito!</div>
+<div class="toast" id="toast">¡Acción realizada con éxito!</div>
 
 <script>
-  // Las 4 preguntas metacognitivas por default
-  const defaultConsignas = [
+  // Estado único para TODAS las preguntas (las por defecto y las que se agreguen)
+  let consignas = [
     {
       pregunta: "Algo que hice bien y quiero repetir",
       andamio: "Pensá en una acción concreta. ¿Qué hiciste exactamente? ¿Por qué funcionó?",
@@ -364,7 +379,6 @@
     }
   ];
 
-  let misPreguntas = [];
   let editIndex = -1;
 
   // Caras del dado en formato SVG
@@ -386,14 +400,10 @@
     }, 3000);
   }
 
-  function getConsignasTotales() {
-    return defaultConsignas.concat(misPreguntas);
-  }
-
-  function renderMisPreguntas() {
-    const list = document.getElementById('misPreguntasList');
+  function renderPreguntas() {
+    const list = document.getElementById('preguntasList');
     list.innerHTML = '';
-    misPreguntas.forEach((p, index) => {
+    consignas.forEach((p, index) => {
       list.innerHTML += `
         <div class="inserted-q">
           <div class="q-number">${index + 1}</div>
@@ -401,15 +411,15 @@
             <strong>${p.pregunta}</strong>
           </div>
           <div class="q-actions">
-            <button class="btn-edit" onclick="iniciarEdicion(${index})" title="Editar">✏️</button>
-            <button class="btn-delete" onclick="borrarCara(${index})" title="Borrar">🗑️</button>
+            <button class="btn-edit" onclick="iniciarEdicion(${index})" title="Editar esta pregunta">✏️</button>
+            <button class="btn-delete" onclick="borrarCara(${index})" title="Borrar esta pregunta">🗑️</button>
           </div>
         </div>
       `;
     });
   }
 
-  function agregarOEditarCara() {
+  function guardarPregunta() {
     const pregunta = document.getElementById('newPregunta').value.trim();
     const andamio = document.getElementById('newAndamio').value.trim();
     const inicio = document.getElementById('newInicio').value.trim();
@@ -420,24 +430,25 @@
     }
 
     if (editIndex > -1) {
-      misPreguntas[editIndex] = { pregunta, andamio, inicio };
-      showToast("¡Pregunta actualizada!");
+      consignas[editIndex] = { pregunta, andamio, inicio };
+      showToast("¡Pregunta actualizada con éxito!");
     } else {
-      misPreguntas.push({ pregunta, andamio, inicio });
+      consignas.push({ pregunta, andamio, inicio });
       showToast("¡Pregunta agregada al dado!");
     }
 
     cancelarEdicion();
-    renderMisPreguntas();
+    renderPreguntas();
   }
 
   function iniciarEdicion(index) {
     editIndex = index;
-    const p = misPreguntas[index];
+    const p = consignas[index];
     document.getElementById('newPregunta').value = p.pregunta;
     document.getElementById('newAndamio').value = p.andamio;
     document.getElementById('newInicio').value = p.inicio;
     
+    document.getElementById('formTitle').innerText = `Editando Pregunta #${index + 1}`;
     document.getElementById('addFaceBtn').innerText = "💾 Guardar cambios";
     document.getElementById('cancelEditBtn').style.display = 'inline-flex';
     document.getElementById('newPregunta').focus();
@@ -449,20 +460,25 @@
     document.getElementById('newAndamio').value = '';
     document.getElementById('newInicio').value = '';
     
+    document.getElementById('formTitle').innerText = "Agregar Nueva Pregunta";
     document.getElementById('addFaceBtn').innerText = "➕ Agregar pregunta";
     document.getElementById('cancelEditBtn').style.display = 'none';
   }
 
   function borrarCara(index) {
-    if(confirm("¿Seguro que querés borrar esta pregunta?")) {
-      misPreguntas.splice(index, 1);
+    if (consignas.length <= 1) {
+      alert("El dado no puede quedar vacío. Debe tener al menos una pregunta.");
+      return;
+    }
+    if (confirm("¿Seguro que querés borrar esta pregunta permanentemente?")) {
+      consignas.splice(index, 1);
       if (editIndex === index) {
         cancelarEdicion();
       } else if (editIndex > index) {
         editIndex--;
       }
-      renderMisPreguntas();
-      showToast("Pregunta borrada.");
+      renderPreguntas();
+      showToast("Pregunta eliminada.");
     }
   }
 
@@ -471,9 +487,10 @@
   }
 
   function tirarDado() {
+    if (consignas.length === 0) return;
+    
     const diceSvg = document.getElementById("diceSvg");
     const caja = document.getElementById("cajaResultado");
-    const todas = getConsignasTotales();
     
     diceSvg.classList.add("rolling");
     caja.style.opacity = 0.5;
@@ -489,8 +506,8 @@
         // Final face dot
         updateDots(Math.floor(Math.random() * 6) + 1);
         
-        const azar = Math.floor(Math.random() * todas.length);
-        const elegida = todas[azar];
+        const azar = Math.floor(Math.random() * consignas.length);
+        const elegida = consignas[azar];
         
         document.getElementById("pregunta").innerText = elegida.pregunta;
         document.getElementById("andamio").innerText = elegida.andamio;
@@ -511,57 +528,56 @@
 
     const btn = document.getElementById('pdfBtn');
     const originalText = btn.innerHTML;
-    btn.innerHTML = "⏳ Generando...";
+    btn.innerHTML = "⏳ Generando PDF...";
     btn.disabled = true;
 
-    // Configurar la plantilla para el PDF
+    // Poblar nombre
     document.getElementById('pdfNameDisplay').innerText = name;
     
+    // Generar html para las preguntas
     const listContainer = document.getElementById('pdfQuestionsList');
     listContainer.innerHTML = '';
     
-    const todas = getConsignasTotales();
-
-    todas.forEach((c, index) => {
-      const isCustom = index >= defaultConsignas.length;
-      const customNumber = isCustom ? (index - defaultConsignas.length + 1) : '';
-      const tag = isCustom ? `<span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-left: 10px; vertical-align: middle;">Tu pregunta #${customNumber} ✨</span>` : '';
-      
+    consignas.forEach((c, index) => {
       const item = document.createElement('div');
-      item.style.marginBottom = '15px';
-      item.style.padding = '15px';
-      item.style.background = isCustom ? '#ecfdf5' : '#f8fafc';
-      item.style.border = isCustom ? '2px solid #10b981' : '1px solid #e2e8f0';
-      item.style.borderRadius = '12px';
-      item.style.pageBreakInside = 'avoid';
       
-      item.innerHTML = `
-        <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">${index + 1}. ${c.pregunta} ${tag}</div>
-        ${c.andamio ? `<div style="font-size: 13px; color: #475569; margin-bottom: 4px;">${c.andamio}</div>` : ''}
-        ${c.inicio ? `<div style="font-size: 13px; font-style: italic; color: #6366f1;">${c.inicio}</div>` : ''}
-        <div style="margin-top: 15px; border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
-        <div style="border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
-      `;
+      // pageBreakInside: avoid es crítico para que html2pdf no corte la caja
+      item.style.pageBreakInside = 'avoid';
+      item.style.marginBottom = '25px';
+      
+      item.innerHTML = \`
+        <div style="background: #e0e7ff; border-radius: 6px 6px 0 0; padding: 10px 15px; border: 1px solid #c7d2fe; border-bottom: none;">
+          <h4 style="margin: 0; color: #1e3a8a; font-size: 15px;">\${index + 1}. \${c.pregunta}</h4>
+        </div>
+        <div style="border: 1px solid #c7d2fe; border-top: none; border-radius: 0 0 6px 6px; padding: 15px; background: #ffffff;">
+          \${c.andamio ? \`<p style="margin: 0 0 5px 0; color: #475569; font-size: 13px;"><em>Pista:</em> \${c.andamio}</p>\` : ''}
+          \${c.inicio ? \`<p style="margin: 0 0 15px 0; color: #6366f1; font-size: 13px; font-weight: bold;">\${c.inicio}</p>\` : ''}
+          
+          <div style="margin-top: 15px;">
+            <div style="border-bottom: 1px dashed #94a3b8; height: 30px; width: 100%;"></div>
+            <div style="border-bottom: 1px dashed #94a3b8; height: 30px; width: 100%;"></div>
+          </div>
+        </div>
+      \`;
       listContainer.appendChild(item);
     });
 
     const element = document.getElementById('pdf-export-template');
-    element.style.display = 'block'; // Lo mostramos temporalmente para html2pdf
-    element.style.width = '800px';
+    // Forzamos un display block temporal para procesarlo
+    element.style.display = 'block';
 
     const opt = {
       margin:       15,
-      filename:     `Dado_Metacognitivo_${name.replace(/\s+/g, '_')}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: 800 },
+      filename:     \`Dado_Metacognitivo_\${name.replace(/\\s+/g, '_')}.pdf\`,
+      image:        { type: 'jpeg', quality: 1 },
+      html2canvas:  { scale: 2, useCORS: true, logging: false },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+      pagebreak:    { mode: ['css', 'legacy', 'avoid-all'] }
     };
 
     html2pdf().set(opt).from(element).save().then(() => {
-      element.style.display = 'none'; // Lo ocultamos nuevamente
-      element.style.width = 'auto';
-      btn.innerHTML = "✅ PDF Descargado";
+      element.style.display = 'none';
+      btn.innerHTML = "✅ ¡PDF Descargado!";
       setTimeout(() => {
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -574,6 +590,11 @@
       alert("Ocurrió un error al generar el PDF.");
     });
   }
+
+  // Inicializar vista al cargar
+  window.onload = () => {
+    renderPreguntas();
+  };
 </script>
 </body>
 </html>
