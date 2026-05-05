@@ -563,20 +563,22 @@
     });
 
     const element = document.getElementById('pdf-export-template');
-    // Forzamos un display block temporal para procesarlo
+    // Forzamos un display block temporal y un ancho fijo
     element.style.display = 'block';
+    element.style.width = '800px';
 
     const opt = {
       margin:       15,
       filename:     `Dado_Metacognitivo_${name.replace(/\s+/g, '_')}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 800 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy', 'avoid-all'] }
+      pagebreak:    { mode: 'css' }
     };
 
     html2pdf().set(opt).from(element).save().then(() => {
       element.style.display = 'none';
+      element.style.width = '';
       btn.innerHTML = "✅ ¡PDF Descargado!";
       setTimeout(() => {
         btn.innerHTML = originalText;
@@ -585,6 +587,7 @@
     }).catch(err => {
       console.error(err);
       element.style.display = 'none';
+      element.style.width = '';
       btn.innerHTML = originalText;
       btn.disabled = false;
       alert("Ocurrió un error al generar el PDF.");
