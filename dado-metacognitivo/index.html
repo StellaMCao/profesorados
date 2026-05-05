@@ -525,7 +525,7 @@
     todas.forEach((c, index) => {
       const isCustom = index >= defaultConsignas.length;
       const customNumber = isCustom ? (index - defaultConsignas.length + 1) : '';
-      const tag = isCustom ? \`<span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-left: 10px; vertical-align: middle;">Tu pregunta #\${customNumber} ✨</span>\` : '';
+      const tag = isCustom ? `<span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-left: 10px; vertical-align: middle;">Tu pregunta #${customNumber} ✨</span>` : '';
       
       const item = document.createElement('div');
       item.style.marginBottom = '15px';
@@ -535,13 +535,13 @@
       item.style.borderRadius = '12px';
       item.style.pageBreakInside = 'avoid';
       
-      item.innerHTML = \`
-        <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">\${index + 1}. \${c.pregunta} \${tag}</div>
-        \${c.andamio ? \`<div style="font-size: 13px; color: #475569; margin-bottom: 4px;">\${c.andamio}</div>\` : ''}
-        \${c.inicio ? \`<div style="font-size: 13px; font-style: italic; color: #6366f1;">\${c.inicio}</div>\` : ''}
+      item.innerHTML = `
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">${index + 1}. ${c.pregunta} ${tag}</div>
+        ${c.andamio ? `<div style="font-size: 13px; color: #475569; margin-bottom: 4px;">${c.andamio}</div>` : ''}
+        ${c.inicio ? `<div style="font-size: 13px; font-style: italic; color: #6366f1;">${c.inicio}</div>` : ''}
         <div style="margin-top: 15px; border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
         <div style="border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
-      \`;
+      `;
       listContainer.appendChild(item);
     });
 
