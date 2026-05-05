@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dado Metacognitivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<!-- Incluimos html2pdf para la exportación a PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-color: #e0e7ff;
+    --text-main: #1e1b4b;
+    --card-bg: rgba(255, 255, 255, 0.85);
+  }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  .container {
+    width: 100%;
+    max-width: 800px;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+  }
+  .subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 2rem;
+  }
+  .section {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+  .section h2 {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  button:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .dice-container {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .dice {
+    font-size: 5rem;
+    cursor: pointer;
+    display: inline-block;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    user-select: none;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+  .dice:hover {
+    transform: scale(1.1) rotate(10deg);
+  }
+  .dice.rolling {
+    animation: roll 0.4s infinite linear;
+  }
+  @keyframes roll {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  
+  .caja {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-left: 5px solid var(--primary);
+    border-radius: 0 12px 12px 0;
+    text-align: left;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .pregunta {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    color: #0f172a;
+  }
+  .andamio {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  .inicio {
+    font-style: italic;
+    color: var(--primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  
+  /* Contenedor de exportación PDF oculto en UI */
+  #pdf-export-template {
+    display: none;
+  }
+  
+  /* Notificación Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #10b981;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1000;
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  @media (max-width: 600px) {
+    .container {
+      padding: 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app-container">
+  <h1>🎲 Dado Metacognitivo</h1>
+  <p class="subtitle">Reflexioná sobre tu proceso de aprendizaje</p>
+
+  <div class="section">
+    <h2>👤 1. Identificación</h2>
+    <input type="text" id="studentName" placeholder="Ingresá tu nombre y apellido" required>
+  </div>
+
+  <div class="section">
+    <h2>✍️ 2. Agregá tu propia cara al dado</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Diseñá una pregunta metacognitiva nueva para sumar a las opciones del dado.</p>
+    
+    <input type="text" id="newPregunta" placeholder="Pregunta (ej: ¿Qué habilidad nueva descubrí que tengo?)" required>
+    <input type="text" id="newAndamio" placeholder="Andamio / Pista (ej: Pensá en algo que antes te costaba y hoy pudiste hacer)">
+    <input type="text" id="newInicio" placeholder="Inicio de respuesta (ej: Descubrí que soy capaz de...)">
+    
+    <button id="addFaceBtn" onclick="agregarCara()">➕ Agregar al dado</button>
+  </div>
+
+  <div class="section dice-container">
+    <h2>🎲 3. ¡Tirá el dado!</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem;">Hacé clic en el dado para obtener una pregunta al azar y reflexionar.</p>
+    <div class="dice" id="dice" onclick="tirarDado()">🎲</div>
+    
+    <div class="caja" id="cajaResultado">
+      <div class="pregunta" id="pregunta">Hacé clic en el dado para empezar...</div>
+      <div class="andamio" id="andamio"></div>
+      <div class="inicio" id="inicio"></div>
+    </div>
+  </div>
+
+  <div class="section" style="text-align: center;">
+    <h2>📄 4. Descargar Actividad</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Generá un PDF con tu nombre y todas las preguntas (incluyendo la tuya) para completarlo.</p>
+    <button onclick="generarPDF()" id="pdfBtn" style="background: #10b981;">📥 Descargar PDF</button>
+  </div>
+</div>
+
+<!-- Plantilla para la generación del PDF -->
+<div id="pdf-export-template">
+  <div style="font-family: 'Outfit', sans-serif; padding: 40px; color: #1e1b4b; background: white;">
+    <h1 style="color: #6366f1; text-align: center; font-size: 28px; margin-bottom: 10px;">🎲 Dado Metacognitivo</h1>
+    <h2 style="text-align: center; font-size: 18px; color: #64748b; margin-bottom: 40px;">Actividad de Reflexión Individual</h2>
+    
+    <div style="background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+      <strong>Estudiante:</strong> <span id="pdfNameDisplay" style="font-size: 18px;"></span>
+    </div>
+
+    <h3 style="margin-bottom: 20px; font-size: 20px;">Preguntas para reflexionar:</h3>
+    <div id="pdfQuestionsList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">¡Cara agregada con éxito!</div>
+
+<script>
+  // Las 4 preguntas metacognitivas más importantes
+  let consignas = [
+    {
+      pregunta: "Algo que hice bien y quiero repetir",
+      andamio: "Pensá en una acción concreta. ¿Qué hiciste exactamente? ¿Por qué funcionó?",
+      inicio: "Me di cuenta de que me sirvió cuando..."
+    },
+    {
+      pregunta: "¿Dónde me trabé?",
+      andamio: "Identificá el momento exacto de la dificultad.",
+      inicio: "Me trabé cuando..."
+    },
+    {
+      pregunta: "Algo que entendí mejor hoy",
+      andamio: "Comparalo con lo que pensabas antes.",
+      inicio: "Antes pensaba que... ahora entiendo que..."
+    },
+    {
+      pregunta: "¿Qué haría distinto la próxima vez?",
+      andamio: "Imaginá una situación similar futura.",
+      inicio: "La próxima vez voy a..."
+    }
+  ];
+
+  const emojisDado = ['🎲', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+  let customFaceAdded = false;
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.innerText = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  function agregarCara() {
+    const pregunta = document.getElementById('newPregunta').value.trim();
+    const andamio = document.getElementById('newAndamio').value.trim();
+    const inicio = document.getElementById('newInicio').value.trim();
+
+    if (!pregunta) {
+      alert("Por favor, ingresá al menos la pregunta metacognitiva.");
+      return;
+    }
+
+    consignas.push({
+      pregunta: pregunta,
+      andamio: andamio || "",
+      inicio: inicio || ""
+    });
+
+    customFaceAdded = true;
+    
+    // Limpiar y deshabilitar inputs
+    document.getElementById('newPregunta').disabled = true;
+    document.getElementById('newAndamio').disabled = true;
+    document.getElementById('newInicio').disabled = true;
+    
+    const btn = document.getElementById('addFaceBtn');
+    btn.innerText = "✅ Cara agregada exitosamente";
+    btn.disabled = true;
+    btn.style.background = "#10b981";
+
+    showToast("¡Pregunta agregada al dado!");
+  }
+
+  function tirarDado() {
+    const diceEl = document.getElementById("dice");
+    const caja = document.getElementById("cajaResultado");
+    
+    diceEl.classList.add("rolling");
+    caja.style.opacity = 0.5;
+
+    let rolls = 0;
+    const rollInterval = setInterval(() => {
+      diceEl.innerText = emojisDado[Math.floor(Math.random() * emojisDado.length)];
+      rolls++;
+      if (rolls > 12) {
+        clearInterval(rollInterval);
+        diceEl.classList.remove("rolling");
+        diceEl.innerText = "🎲";
+        
+        const azar = Math.floor(Math.random() * consignas.length);
+        document.getElementById("pregunta").innerText = consignas[azar].pregunta;
+        document.getElementById("andamio").innerText = consignas[azar].andamio;
+        document.getElementById("inicio").innerText = consignas[azar].inicio;
+        
+        caja.style.opacity = 1;
+      }
+    }, 60);
+  }
+
+  function generarPDF() {
+    const name = document.getElementById('studentName').value.trim();
+    if (!name) {
+      alert("Por favor, completá el paso 1 ingresando tu nombre antes de generar el PDF.");
+      document.getElementById('studentName').focus();
+      return;
+    }
+
+    if (!customFaceAdded) {
+      const confirmAdd = confirm("Aún no agregaste tu propia cara al dado en el paso 2. ¿Querés generar el PDF de todas formas?");
+      if (!confirmAdd) return;
+    }
+
+    const btn = document.getElementById('pdfBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = "⏳ Generando...";
+    btn.disabled = true;
+
+    // Configurar la plantilla para el PDF
+    document.getElementById('pdfNameDisplay').innerText = name;
+    
+    const listContainer = document.getElementById('pdfQuestionsList');
+    listContainer.innerHTML = '';
+    
+    consignas.forEach((c, index) => {
+      const isCustom = (customFaceAdded && index === consignas.length - 1);
+      const tag = isCustom ? '<span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-left: 10px; vertical-align: middle;">Tu pregunta ✨</span>' : '';
+      
+      const item = document.createElement('div');
+      item.style.marginBottom = '25px';
+      item.style.padding = '20px';
+      item.style.background = isCustom ? '#ecfdf5' : '#f8fafc';
+      item.style.border = isCustom ? '2px solid #10b981' : '1px solid #e2e8f0';
+      item.style.borderRadius = '12px';
+      item.style.pageBreakInside = 'avoid';
+      
+      item.innerHTML = `
+        <div style="font-size: 17px; font-weight: bold; margin-bottom: 8px; color: #0f172a;">${index + 1}. ${c.pregunta} ${tag}</div>
+        ${c.andamio ? `<div style="font-size: 14px; color: #475569; margin-bottom: 6px;">${c.andamio}</div>` : ''}
+        ${c.inicio ? `<div style="font-size: 14px; font-style: italic; color: #6366f1;">${c.inicio}</div>` : ''}
+        <div style="margin-top: 20px; border-bottom: 1px dashed #cbd5e1; height: 30px;"></div>
+        <div style="border-bottom: 1px dashed #cbd5e1; height: 30px;"></div>
+        <div style="border-bottom: 1px dashed #cbd5e1; height: 30px;"></div>
+      `;
+      listContainer.appendChild(item);
+    });
+
+    const element = document.getElementById('pdf-export-template');
+    element.style.display = 'block'; // Lo mostramos temporalmente para html2pdf
+
+    const opt = {
+      margin:       15,
+      filename:     `Dado_Metacognitivo_${name.replace(/\s+/g, '_')}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+      element.style.display = 'none'; // Lo ocultamos nuevamente
+      btn.innerHTML = "✅ PDF Descargado";
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 3000);
+    }).catch(err => {
+      console.error(err);
+      element.style.display = 'none';
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+      alert("Ocurrió un error al generar el PDF.");
+    });
+  }
+</script>
+</body>
+</html>
