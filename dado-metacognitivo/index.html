@@ -319,36 +319,9 @@
   </div>
 
   <div class="section" style="text-align: center;">
-    <h2>📄 4. Descargar Actividad</h2>
-    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Generá un documento PDF profesional con todas las opciones para imprimirlo o completarlo digitalmente.</p>
-    <button onclick="generarPDF()" id="pdfBtn" style="background: #10b981; font-size: 1.1rem; padding: 1rem 2rem;">📥 Descargar PDF</button>
-  </div>
-</div>
-
-<!-- Plantilla para la generación del PDF con estructura robusta -->
-<div id="pdf-export-template">
-  <!-- Diseño limpio y simplificado, sin flexbox complejo, para evitar que html2pdf falle -->
-  <div style="font-family: Arial, Helvetica, sans-serif; background: white; color: #1e293b; width: 100%; max-width: 800px; padding: 30px; box-sizing: border-box;">
-    
-    <!-- Encabezado Estilizado -->
-    <div style="text-align: center; border-bottom: 3px solid #6366f1; padding-bottom: 15px; margin-bottom: 25px;">
-      <h1 style="color: #6366f1; font-size: 28px; margin: 0 0 5px 0;">🎲 Dado Metacognitivo</h1>
-      <h2 style="color: #64748b; font-size: 16px; margin: 0; font-weight: normal;">Hoja de Reflexión de Aprendizaje</h2>
-    </div>
-    
-    <!-- Info del Estudiante -->
-    <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 15px; margin-bottom: 35px;">
-      <p style="margin: 0; font-size: 16px;">
-        <strong>Estudiante:</strong> 
-        <span id="pdfNameDisplay" style="border-bottom: 1px solid #64748b; padding-bottom: 2px; margin-left: 10px; font-weight: bold; color: #0f172a;"></span>
-      </p>
-    </div>
-
-    <h3 style="margin: 0 0 20px 0; font-size: 18px; color: #334155;">Respondé a las siguientes consignas:</h3>
-    
-    <!-- Lista de Preguntas generada dinámicamente -->
-    <div id="pdfQuestionsList"></div>
-
+    <h2>📄 4. Imprimir Actividad</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Se abre una nueva ventana lista para imprimir. Desde ahí podés guardarla como PDF o mandarla directamente a la impresora.</p>
+    <button onclick="abrirParaImprimir()" id="pdfBtn" style="background: #10b981; font-size: 1.1rem; padding: 1rem 2rem;">🖨️ Abrir para imprimir</button>
   </div>
 </div>
 
@@ -518,80 +491,104 @@
     }, 60);
   }
 
-  function generarPDF() {
+  function abrirParaImprimir() {
     const name = document.getElementById('studentName').value.trim();
     if (!name) {
-      alert("Por favor, completá el paso 1 ingresando tu nombre antes de generar el PDF.");
+      alert("Por favor, ingresá tu nombre en el paso 1 antes de imprimir.");
       document.getElementById('studentName').focus();
       return;
     }
 
-    const btn = document.getElementById('pdfBtn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = "⏳ Generando PDF...";
-    btn.disabled = true;
-
-    // Poblar nombre
-    document.getElementById('pdfNameDisplay').innerText = name;
-    
-    // Generar html para las preguntas
-    const listContainer = document.getElementById('pdfQuestionsList');
-    listContainer.innerHTML = '';
-    
+    // Construir el HTML de las preguntas
+    let preguntasHTML = '';
     consignas.forEach((c, index) => {
-      const item = document.createElement('div');
-      
-      // pageBreakInside: avoid es crítico para que html2pdf no corte la caja
-      item.style.pageBreakInside = 'avoid';
-      item.style.marginBottom = '25px';
-      
-      item.innerHTML = `
-        <div style="background: #e0e7ff; border-radius: 6px 6px 0 0; padding: 10px 15px; border: 1px solid #c7d2fe; border-bottom: none;">
-          <h4 style="margin: 0; color: #1e3a8a; font-size: 15px;">${index + 1}. ${c.pregunta}</h4>
-        </div>
-        <div style="border: 1px solid #c7d2fe; border-top: none; border-radius: 0 0 6px 6px; padding: 15px; background: #ffffff;">
-          ${c.andamio ? `<p style="margin: 0 0 5px 0; color: #475569; font-size: 13px;"><em>Pista:</em> ${c.andamio}</p>` : ''}
-          ${c.inicio ? `<p style="margin: 0 0 15px 0; color: #6366f1; font-size: 13px; font-weight: bold;">${c.inicio}</p>` : ''}
-          
-          <div style="margin-top: 15px;">
-            <div style="border-bottom: 1px dashed #94a3b8; height: 30px; width: 100%;"></div>
-            <div style="border-bottom: 1px dashed #94a3b8; height: 30px; width: 100%;"></div>
+      preguntasHTML += `
+        <div class="pregunta-item">
+          <div class="pregunta-header">
+            <span class="num">${index + 1}</span>
+            <strong>${c.pregunta}</strong>
+          </div>
+          <div class="pregunta-body">
+            ${c.andamio ? `<p class="pista"><em>Pista:</em> ${c.andamio}</p>` : ''}
+            ${c.inicio ? `<p class="inicio">${c.inicio}</p>` : ''}
+            <div class="lineas">
+              <div class="linea"></div>
+              <div class="linea"></div>
+              <div class="linea"></div>
+            </div>
           </div>
         </div>
       `;
-      listContainer.appendChild(item);
     });
 
-    const element = document.getElementById('pdf-export-template');
-    // Forzamos un display block temporal y un ancho fijo
-    element.style.display = 'block';
-    element.style.width = '800px';
+    // HTML completo para la ventana de impresion
+    const htmlImpresion = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dado Metacognitivo - ${name}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', Arial, sans-serif; background: white; color: #1e293b; padding: 30px; max-width: 780px; margin: 0 auto; }
+    
+    .header { text-align: center; padding-bottom: 18px; margin-bottom: 22px; border-bottom: 3px solid #6366f1; }
+    .header h1 { color: #6366f1; font-size: 30px; font-weight: 800; }
+    .header p { color: #64748b; font-size: 15px; margin-top: 4px; }
+    
+    .estudiante { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 20px; margin-bottom: 28px; font-size: 16px; }
+    .estudiante strong { color: #334155; }
+    .estudiante span { font-size: 18px; font-weight: 800; color: #1e293b; margin-left: 8px; }
+    
+    .intro { font-size: 15px; font-weight: 600; color: #334155; margin-bottom: 18px; }
+    
+    .pregunta-item { margin-bottom: 22px; page-break-inside: avoid; break-inside: avoid; }
+    .pregunta-header { display: flex; align-items: center; gap: 12px; background: #e0e7ff; padding: 10px 15px; border-radius: 8px 8px 0 0; border: 1px solid #a5b4fc; }
+    .pregunta-header .num { background: #6366f1; color: white; font-size: 14px; font-weight: 800; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .pregunta-header strong { color: #1e1b4b; font-size: 15px; }
+    .pregunta-body { border: 1px solid #a5b4fc; border-top: none; border-radius: 0 0 8px 8px; padding: 14px 18px; background: white; }
+    .pista { font-size: 13px; color: #475569; margin-bottom: 6px; }
+    .inicio { font-size: 13px; font-weight: 600; color: #6366f1; margin-bottom: 14px; }
+    .linea { border-bottom: 1px dashed #94a3b8; height: 32px; width: 100%; }
+    .lineas { margin-top: 12px; }
+    
+    .footer { margin-top: 30px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+    
+    @media print {
+      body { padding: 10px; }
+      @page { margin: 1.5cm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎲 Dado Metacognitivo</h1>
+    <p>Hoja de Reflexión de Aprendizaje</p>
+  </div>
+  
+  <div class="estudiante">
+    <strong>Estudiante:</strong> <span>${name}</span>
+  </div>
+  
+  <p class="intro">Respondé las siguientes preguntas según la cara que te tocó:</p>
+  
+  ${preguntasHTML}
+  
+  <div class="footer">Dado Metacognitivo &bull; Actividad de reflexión educativa</div>
 
-    const opt = {
-      margin:       15,
-      filename:     `Dado_Metacognitivo_${name.replace(/\s+/g, '_')}.pdf`,
-      image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 800 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: 'css' }
-    };
+  <script>
+    window.onload = () => { window.print(); };
+  <\/script>
+</body>
+</html>`;
 
-    html2pdf().set(opt).from(element).save().then(() => {
-      element.style.display = 'none';
-      element.style.width = '';
-      btn.innerHTML = "✅ ¡PDF Descargado!";
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }, 3000);
-    }).catch(err => {
-      console.error(err);
-      element.style.display = 'none';
-      element.style.width = '';
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-      alert("Ocurrió un error al generar el PDF.");
-    });
+    const ventana = window.open('', '_blank', 'width=900,height=700');
+    if (!ventana) {
+      alert('Tu navegador bloqueó la ventana emergente. Por favor, permití las ventanas emergentes para este sitio.');
+      return;
+    }
+    ventana.document.write(htmlImpresion);
+    ventana.document.close();
   }
 
   // Inicializar vista al cargar
