@@ -110,7 +110,7 @@
     padding: 2rem 0;
   }
   .dice {
-    font-size: 5rem;
+    font-size: 7.5rem;
     cursor: pointer;
     display: inline-block;
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -191,10 +191,20 @@
   
   @media (max-width: 600px) {
     .container {
-      padding: 1.5rem;
+      padding: 1.25rem;
     }
     h1 {
       font-size: 2rem;
+    }
+    .dice {
+      font-size: 6rem;
+    }
+    .caja {
+      padding: 1rem;
+      min-height: auto;
+    }
+    .section {
+      padding: 1.25rem;
     }
   }
 </style>
@@ -380,20 +390,19 @@
       const tag = isCustom ? '<span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-left: 10px; vertical-align: middle;">Tu pregunta ✨</span>' : '';
       
       const item = document.createElement('div');
-      item.style.marginBottom = '25px';
-      item.style.padding = '20px';
+      item.style.marginBottom = '15px';
+      item.style.padding = '15px';
       item.style.background = isCustom ? '#ecfdf5' : '#f8fafc';
       item.style.border = isCustom ? '2px solid #10b981' : '1px solid #e2e8f0';
       item.style.borderRadius = '12px';
       item.style.pageBreakInside = 'avoid';
       
       item.innerHTML = `
-        <div style="font-size: 17px; font-weight: bold; margin-bottom: 8px; color: #0f172a;">${index + 1}. ${c.pregunta} ${tag}</div>
-        ${c.andamio ? `<div style="font-size: 14px; color: #475569; margin-bottom: 6px;">${c.andamio}</div>` : ''}
-        ${c.inicio ? `<div style="font-size: 14px; font-style: italic; color: #6366f1;">${c.inicio}</div>` : ''}
-        <div style="margin-top: 20px; border-bottom: 1px dashed #cbd5e1; height: 30px;"></div>
-        <div style="border-bottom: 1px dashed #cbd5e1; height: 30px;"></div>
-        <div style="border-bottom: 1px dashed #cbd5e1; height: 30px;"></div>
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">${index + 1}. ${c.pregunta} ${tag}</div>
+        ${c.andamio ? `<div style="font-size: 13px; color: #475569; margin-bottom: 4px;">${c.andamio}</div>` : ''}
+        ${c.inicio ? `<div style="font-size: 13px; font-style: italic; color: #6366f1;">${c.inicio}</div>` : ''}
+        <div style="margin-top: 15px; border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
+        <div style="border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
       `;
       listContainer.appendChild(item);
     });
