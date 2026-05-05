@@ -105,32 +105,85 @@
     box-shadow: none;
   }
   
+  /* Estilos para lista de preguntas insertadas */
+  .mis-preguntas {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .inserted-q {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  .q-number {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-right: 15px;
+    background: #e0e7ff;
+    min-width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+  }
+  .q-text {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  .q-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 10px;
+  }
+  .q-actions button {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  .q-actions button.btn-edit {
+    background: #f59e0b;
+  }
+  .q-actions button.btn-delete {
+    background: #ef4444;
+  }
+
+  /* Estilos para Dado SVG Realista */
   .dice-container {
     text-align: center;
     padding: 2rem 0;
   }
-  .dice {
-    font-size: 7.5rem;
+  .dice-wrapper {
+    perspective: 1000px;
     cursor: pointer;
     display: inline-block;
+    margin-bottom: 2rem;
+  }
+  .svg-dice {
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    user-select: none;
-    text-shadow: 0 10px 20px rgba(0,0,0,0.15);
   }
-  .dice:hover {
-    transform: scale(1.1) rotate(10deg);
+  .dice-wrapper:hover .svg-dice {
+    transform: scale(1.05) rotate(5deg);
   }
-  .dice.rolling {
-    animation: roll 0.4s infinite linear;
+  .svg-dice.rolling {
+    animation: diceRoll 0.4s infinite linear;
   }
-  @keyframes roll {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.2); }
-    100% { transform: rotate(360deg) scale(1); }
+  @keyframes diceRoll {
+    0% { transform: rotate3d(1, 1, 1, 0deg) scale(1); }
+    50% { transform: rotate3d(1, 1, 1, 180deg) scale(1.1); }
+    100% { transform: rotate3d(1, 1, 1, 360deg) scale(1); }
   }
   
   .caja {
-    margin-top: 1.5rem;
     padding: 1.5rem;
     background: #f8fafc;
     border-left: 5px solid var(--primary);
@@ -196,8 +249,9 @@
     h1 {
       font-size: 2rem;
     }
-    .dice {
-      font-size: 6rem;
+    .svg-dice {
+      width: 150px;
+      height: 150px;
     }
     .caja {
       padding: 1rem;
@@ -205,6 +259,9 @@
     }
     .section {
       padding: 1.25rem;
+    }
+    .q-actions {
+      flex-direction: column;
     }
   }
 </style>
@@ -221,23 +278,35 @@
   </div>
 
   <div class="section">
-    <h2>✍️ 2. Agregá tu propia cara al dado</h2>
-    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Diseñá una pregunta metacognitiva nueva para sumar a las opciones del dado.</p>
+    <h2>✍️ 2. Agregá tus propias preguntas</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Diseñá preguntas metacognitivas nuevas para sumar a las opciones del dado.</p>
     
     <input type="text" id="newPregunta" placeholder="Pregunta (ej: ¿Qué habilidad nueva descubrí que tengo?)" required>
     <input type="text" id="newAndamio" placeholder="Andamio / Pista (ej: Pensá en algo que antes te costaba y hoy pudiste hacer)">
     <input type="text" id="newInicio" placeholder="Inicio de respuesta (ej: Descubrí que soy capaz de...)">
     
     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-      <button id="addFaceBtn" onclick="agregarCara()">➕ Agregar al dado</button>
-      <button id="deleteFaceBtn" onclick="borrarCara()" style="display: none; background: #ef4444;">🗑️ Borrar mi pregunta</button>
+      <button id="addFaceBtn" onclick="agregarOEditarCara()">➕ Agregar pregunta</button>
+      <button id="cancelEditBtn" onclick="cancelarEdicion()" style="display: none; background: #94a3b8;">❌ Cancelar</button>
     </div>
+
+    <!-- Lista de preguntas insertadas -->
+    <div class="mis-preguntas" id="misPreguntasList"></div>
   </div>
 
   <div class="section dice-container">
     <h2>🎲 3. ¡Tirá el dado!</h2>
     <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem;">Hacé clic en el dado para obtener una pregunta al azar y reflexionar.</p>
-    <div class="dice" id="dice" onclick="tirarDado()">🎲</div>
+    
+    <div class="dice-wrapper" onclick="tirarDado()">
+      <svg viewBox="0 0 100 100" class="svg-dice" id="diceSvg">
+        <rect width="100" height="100" rx="20" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+        <g id="diceDots">
+          <!-- Cara inicial: 1 -->
+          <circle cx="50" cy="50" r="10" fill="#334155"/>
+        </g>
+      </svg>
+    </div>
     
     <div class="caja" id="cajaResultado">
       <div class="pregunta" id="pregunta">Hacé clic en el dado para empezar...</div>
@@ -248,7 +317,7 @@
 
   <div class="section" style="text-align: center;">
     <h2>📄 4. Descargar Actividad</h2>
-    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Generá un PDF con tu nombre y todas las preguntas (incluyendo la tuya) para completarlo.</p>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Generá un PDF con tu nombre y todas las preguntas para completarlo.</p>
     <button onclick="generarPDF()" id="pdfBtn" style="background: #10b981;">📥 Descargar PDF</button>
   </div>
 </div>
@@ -271,8 +340,8 @@
 <div class="toast" id="toast">¡Cara agregada con éxito!</div>
 
 <script>
-  // Las 4 preguntas metacognitivas más importantes
-  let consignas = [
+  // Las 4 preguntas metacognitivas por default
+  const defaultConsignas = [
     {
       pregunta: "Algo que hice bien y quiero repetir",
       andamio: "Pensá en una acción concreta. ¿Qué hiciste exactamente? ¿Por qué funcionó?",
@@ -295,8 +364,18 @@
     }
   ];
 
-  const emojisDado = ['🎲', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-  let customFaceAdded = false;
+  let misPreguntas = [];
+  let editIndex = -1;
+
+  // Caras del dado en formato SVG
+  const facesSvg = {
+    1: '<circle cx="50" cy="50" r="10" fill="#334155"/>',
+    2: '<circle cx="30" cy="30" r="10" fill="#334155"/><circle cx="70" cy="70" r="10" fill="#334155"/>',
+    3: '<circle cx="25" cy="25" r="10" fill="#334155"/><circle cx="50" cy="50" r="10" fill="#334155"/><circle cx="75" cy="75" r="10" fill="#334155"/>',
+    4: '<circle cx="30" cy="30" r="10" fill="#334155"/><circle cx="70" cy="30" r="10" fill="#334155"/><circle cx="30" cy="70" r="10" fill="#334155"/><circle cx="70" cy="70" r="10" fill="#334155"/>',
+    5: '<circle cx="25" cy="25" r="10" fill="#334155"/><circle cx="75" cy="25" r="10" fill="#334155"/><circle cx="50" cy="50" r="10" fill="#334155"/><circle cx="25" cy="75" r="10" fill="#334155"/><circle cx="75" cy="75" r="10" fill="#334155"/>',
+    6: '<circle cx="30" cy="20" r="10" fill="#334155"/><circle cx="30" cy="50" r="10" fill="#334155"/><circle cx="30" cy="80" r="10" fill="#334155"/><circle cx="70" cy="20" r="10" fill="#334155"/><circle cx="70" cy="50" r="10" fill="#334155"/><circle cx="70" cy="80" r="10" fill="#334155"/>'
+  };
 
   function showToast(message) {
     const toast = document.getElementById('toast');
@@ -307,7 +386,30 @@
     }, 3000);
   }
 
-  function agregarCara() {
+  function getConsignasTotales() {
+    return defaultConsignas.concat(misPreguntas);
+  }
+
+  function renderMisPreguntas() {
+    const list = document.getElementById('misPreguntasList');
+    list.innerHTML = '';
+    misPreguntas.forEach((p, index) => {
+      list.innerHTML += `
+        <div class="inserted-q">
+          <div class="q-number">${index + 1}</div>
+          <div class="q-text">
+            <strong>${p.pregunta}</strong>
+          </div>
+          <div class="q-actions">
+            <button class="btn-edit" onclick="iniciarEdicion(${index})" title="Editar">✏️</button>
+            <button class="btn-delete" onclick="borrarCara(${index})" title="Borrar">🗑️</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function agregarOEditarCara() {
     const pregunta = document.getElementById('newPregunta').value.trim();
     const andamio = document.getElementById('newAndamio').value.trim();
     const inicio = document.getElementById('newInicio').value.trim();
@@ -317,71 +419,82 @@
       return;
     }
 
-    consignas.push({
-      pregunta: pregunta,
-      andamio: andamio || "",
-      inicio: inicio || ""
-    });
+    if (editIndex > -1) {
+      misPreguntas[editIndex] = { pregunta, andamio, inicio };
+      showToast("¡Pregunta actualizada!");
+    } else {
+      misPreguntas.push({ pregunta, andamio, inicio });
+      showToast("¡Pregunta agregada al dado!");
+    }
 
-    customFaceAdded = true;
-    
-    // Limpiar y deshabilitar inputs
-    document.getElementById('newPregunta').disabled = true;
-    document.getElementById('newAndamio').disabled = true;
-    document.getElementById('newInicio').disabled = true;
-    
-    const btn = document.getElementById('addFaceBtn');
-    btn.innerText = "✅ Cara agregada exitosamente";
-    btn.disabled = true;
-    btn.style.background = "#10b981";
-    
-    document.getElementById('deleteFaceBtn').style.display = 'inline-flex';
-
-    showToast("¡Pregunta agregada al dado!");
+    cancelarEdicion();
+    renderMisPreguntas();
   }
 
-  function borrarCara() {
-    if (!customFaceAdded) return;
+  function iniciarEdicion(index) {
+    editIndex = index;
+    const p = misPreguntas[index];
+    document.getElementById('newPregunta').value = p.pregunta;
+    document.getElementById('newAndamio').value = p.andamio;
+    document.getElementById('newInicio').value = p.inicio;
     
-    consignas.pop();
-    customFaceAdded = false;
-    
-    document.getElementById('newPregunta').disabled = false;
-    document.getElementById('newAndamio').disabled = false;
-    document.getElementById('newInicio').disabled = false;
-    
-    const btn = document.getElementById('addFaceBtn');
-    btn.innerText = "➕ Agregar al dado";
-    btn.disabled = false;
-    btn.style.background = "var(--primary)";
-    
-    document.getElementById('deleteFaceBtn').style.display = 'none';
+    document.getElementById('addFaceBtn').innerText = "💾 Guardar cambios";
+    document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+    document.getElementById('newPregunta').focus();
+  }
 
-    showToast("Cara borrada. Podés editarla y volver a agregarla.");
+  function cancelarEdicion() {
+    editIndex = -1;
+    document.getElementById('newPregunta').value = '';
+    document.getElementById('newAndamio').value = '';
+    document.getElementById('newInicio').value = '';
+    
+    document.getElementById('addFaceBtn').innerText = "➕ Agregar pregunta";
+    document.getElementById('cancelEditBtn').style.display = 'none';
+  }
+
+  function borrarCara(index) {
+    if(confirm("¿Seguro que querés borrar esta pregunta?")) {
+      misPreguntas.splice(index, 1);
+      if (editIndex === index) {
+        cancelarEdicion();
+      } else if (editIndex > index) {
+        editIndex--;
+      }
+      renderMisPreguntas();
+      showToast("Pregunta borrada.");
+    }
+  }
+
+  function updateDots(num) {
+    document.getElementById('diceDots').innerHTML = facesSvg[num];
   }
 
   function tirarDado() {
-    const diceEl = document.getElementById("dice");
+    const diceSvg = document.getElementById("diceSvg");
     const caja = document.getElementById("cajaResultado");
+    const todas = getConsignasTotales();
     
-    diceEl.classList.add("rolling");
+    diceSvg.classList.add("rolling");
     caja.style.opacity = 0.5;
 
     let rolls = 0;
     const rollInterval = setInterval(() => {
-      diceEl.innerText = emojisDado[Math.floor(Math.random() * emojisDado.length)];
+      updateDots(Math.floor(Math.random() * 6) + 1);
       rolls++;
       if (rolls > 12) {
         clearInterval(rollInterval);
-        diceEl.classList.remove("rolling");
+        diceSvg.classList.remove("rolling");
         
-        const carasFin = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-        diceEl.innerText = carasFin[Math.floor(Math.random() * carasFin.length)];
+        // Final face dot
+        updateDots(Math.floor(Math.random() * 6) + 1);
         
-        const azar = Math.floor(Math.random() * consignas.length);
-        document.getElementById("pregunta").innerText = consignas[azar].pregunta;
-        document.getElementById("andamio").innerText = consignas[azar].andamio;
-        document.getElementById("inicio").innerText = consignas[azar].inicio;
+        const azar = Math.floor(Math.random() * todas.length);
+        const elegida = todas[azar];
+        
+        document.getElementById("pregunta").innerText = elegida.pregunta;
+        document.getElementById("andamio").innerText = elegida.andamio;
+        document.getElementById("inicio").innerText = elegida.inicio;
         
         caja.style.opacity = 1;
       }
@@ -396,11 +509,6 @@
       return;
     }
 
-    if (!customFaceAdded) {
-      const confirmAdd = confirm("Aún no agregaste tu propia cara al dado en el paso 2. ¿Querés generar el PDF de todas formas?");
-      if (!confirmAdd) return;
-    }
-
     const btn = document.getElementById('pdfBtn');
     const originalText = btn.innerHTML;
     btn.innerHTML = "⏳ Generando...";
@@ -412,9 +520,12 @@
     const listContainer = document.getElementById('pdfQuestionsList');
     listContainer.innerHTML = '';
     
-    consignas.forEach((c, index) => {
-      const isCustom = (customFaceAdded && index === consignas.length - 1);
-      const tag = isCustom ? '<span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-left: 10px; vertical-align: middle;">Tu pregunta ✨</span>' : '';
+    const todas = getConsignasTotales();
+
+    todas.forEach((c, index) => {
+      const isCustom = index >= defaultConsignas.length;
+      const customNumber = isCustom ? (index - defaultConsignas.length + 1) : '';
+      const tag = isCustom ? \`<span style="background: #10b981; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; margin-left: 10px; vertical-align: middle;">Tu pregunta #\${customNumber} ✨</span>\` : '';
       
       const item = document.createElement('div');
       item.style.marginBottom = '15px';
@@ -424,29 +535,32 @@
       item.style.borderRadius = '12px';
       item.style.pageBreakInside = 'avoid';
       
-      item.innerHTML = `
-        <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">${index + 1}. ${c.pregunta} ${tag}</div>
-        ${c.andamio ? `<div style="font-size: 13px; color: #475569; margin-bottom: 4px;">${c.andamio}</div>` : ''}
-        ${c.inicio ? `<div style="font-size: 13px; font-style: italic; color: #6366f1;">${c.inicio}</div>` : ''}
+      item.innerHTML = \`
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">\${index + 1}. \${c.pregunta} \${tag}</div>
+        \${c.andamio ? \`<div style="font-size: 13px; color: #475569; margin-bottom: 4px;">\${c.andamio}</div>\` : ''}
+        \${c.inicio ? \`<div style="font-size: 13px; font-style: italic; color: #6366f1;">\${c.inicio}</div>\` : ''}
         <div style="margin-top: 15px; border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
         <div style="border-bottom: 1px dashed #cbd5e1; height: 25px;"></div>
-      `;
+      \`;
       listContainer.appendChild(item);
     });
 
     const element = document.getElementById('pdf-export-template');
     element.style.display = 'block'; // Lo mostramos temporalmente para html2pdf
+    element.style.width = '800px';
 
     const opt = {
       margin:       15,
       filename:     `Dado_Metacognitivo_${name.replace(/\s+/g, '_')}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: 800 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     html2pdf().set(opt).from(element).save().then(() => {
       element.style.display = 'none'; // Lo ocultamos nuevamente
+      element.style.width = 'auto';
       btn.innerHTML = "✅ PDF Descargado";
       setTimeout(() => {
         btn.innerHTML = originalText;
