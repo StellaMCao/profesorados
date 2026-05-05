@@ -545,20 +545,20 @@
       item.style.pageBreakInside = 'avoid';
       item.style.marginBottom = '25px';
       
-      item.innerHTML = \`
+      item.innerHTML = `
         <div style="background: #e0e7ff; border-radius: 6px 6px 0 0; padding: 10px 15px; border: 1px solid #c7d2fe; border-bottom: none;">
-          <h4 style="margin: 0; color: #1e3a8a; font-size: 15px;">\${index + 1}. \${c.pregunta}</h4>
+          <h4 style="margin: 0; color: #1e3a8a; font-size: 15px;">${index + 1}. ${c.pregunta}</h4>
         </div>
         <div style="border: 1px solid #c7d2fe; border-top: none; border-radius: 0 0 6px 6px; padding: 15px; background: #ffffff;">
-          \${c.andamio ? \`<p style="margin: 0 0 5px 0; color: #475569; font-size: 13px;"><em>Pista:</em> \${c.andamio}</p>\` : ''}
-          \${c.inicio ? \`<p style="margin: 0 0 15px 0; color: #6366f1; font-size: 13px; font-weight: bold;">\${c.inicio}</p>\` : ''}
+          ${c.andamio ? `<p style="margin: 0 0 5px 0; color: #475569; font-size: 13px;"><em>Pista:</em> ${c.andamio}</p>` : ''}
+          ${c.inicio ? `<p style="margin: 0 0 15px 0; color: #6366f1; font-size: 13px; font-weight: bold;">${c.inicio}</p>` : ''}
           
           <div style="margin-top: 15px;">
             <div style="border-bottom: 1px dashed #94a3b8; height: 30px; width: 100%;"></div>
             <div style="border-bottom: 1px dashed #94a3b8; height: 30px; width: 100%;"></div>
           </div>
         </div>
-      \`;
+      `;
       listContainer.appendChild(item);
     });
 
@@ -568,7 +568,7 @@
 
     const opt = {
       margin:       15,
-      filename:     \`Dado_Metacognitivo_\${name.replace(/\\s+/g, '_')}.pdf\`,
+      filename:     `Dado_Metacognitivo_${name.replace(/\s+/g, '_')}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
       html2canvas:  { scale: 2, useCORS: true, logging: false },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
