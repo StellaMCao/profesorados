@@ -228,7 +228,10 @@
     <input type="text" id="newAndamio" placeholder="Andamio / Pista (ej: Pensá en algo que antes te costaba y hoy pudiste hacer)">
     <input type="text" id="newInicio" placeholder="Inicio de respuesta (ej: Descubrí que soy capaz de...)">
     
-    <button id="addFaceBtn" onclick="agregarCara()">➕ Agregar al dado</button>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button id="addFaceBtn" onclick="agregarCara()">➕ Agregar al dado</button>
+      <button id="deleteFaceBtn" onclick="borrarCara()" style="display: none; background: #ef4444;">🗑️ Borrar mi pregunta</button>
+    </div>
   </div>
 
   <div class="section dice-container">
@@ -331,8 +334,30 @@
     btn.innerText = "✅ Cara agregada exitosamente";
     btn.disabled = true;
     btn.style.background = "#10b981";
+    
+    document.getElementById('deleteFaceBtn').style.display = 'inline-flex';
 
     showToast("¡Pregunta agregada al dado!");
+  }
+
+  function borrarCara() {
+    if (!customFaceAdded) return;
+    
+    consignas.pop();
+    customFaceAdded = false;
+    
+    document.getElementById('newPregunta').disabled = false;
+    document.getElementById('newAndamio').disabled = false;
+    document.getElementById('newInicio').disabled = false;
+    
+    const btn = document.getElementById('addFaceBtn');
+    btn.innerText = "➕ Agregar al dado";
+    btn.disabled = false;
+    btn.style.background = "var(--primary)";
+    
+    document.getElementById('deleteFaceBtn').style.display = 'none';
+
+    showToast("Cara borrada. Podés editarla y volver a agregarla.");
   }
 
   function tirarDado() {
@@ -349,7 +374,9 @@
       if (rolls > 12) {
         clearInterval(rollInterval);
         diceEl.classList.remove("rolling");
-        diceEl.innerText = "🎲";
+        
+        const carasFin = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        diceEl.innerText = carasFin[Math.floor(Math.random() * carasFin.length)];
         
         const azar = Math.floor(Math.random() * consignas.length);
         document.getElementById("pregunta").innerText = consignas[azar].pregunta;
