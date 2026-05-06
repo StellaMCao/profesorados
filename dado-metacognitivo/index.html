@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dado Metacognitivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<!-- Incluimos html2pdf para la exportación a PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-color: #e0e7ff;
+    --text-main: #1e1b4b;
+    --card-bg: rgba(255, 255, 255, 0.85);
+  }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  .container {
+    width: 100%;
+    max-width: 800px;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+  }
+  .subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 2rem;
+  }
+  .section {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+  .section h2 {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+  button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  button:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  /* Estilos para lista de preguntas */
+  .mis-preguntas {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .inserted-q {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  .q-number {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-right: 15px;
+    background: #e0e7ff;
+    min-width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+  }
+  .q-text {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  .q-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 10px;
+  }
+  .q-actions button {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+  .q-actions button.btn-edit {
+    background: #f59e0b;
+  }
+  .q-actions button.btn-delete {
+    background: #ef4444;
+  }
+
+  /* Estilos para Dado SVG Realista */
+  .dice-container {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .dice-wrapper {
+    perspective: 1000px;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 2rem;
+  }
+  .svg-dice {
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .dice-wrapper:hover .svg-dice {
+    transform: scale(1.05) rotate(5deg);
+  }
+  .svg-dice.rolling {
+    animation: diceRoll 0.4s infinite linear;
+  }
+  @keyframes diceRoll {
+    0% { transform: rotate3d(1, 1, 1, 0deg) scale(1); }
+    50% { transform: rotate3d(1, 1, 1, 180deg) scale(1.1); }
+    100% { transform: rotate3d(1, 1, 1, 360deg) scale(1); }
+  }
+  
+  .caja {
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-left: 5px solid var(--primary);
+    border-radius: 0 12px 12px 0;
+    text-align: left;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .pregunta {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    color: #0f172a;
+  }
+  .andamio {
+    font-size: 1rem;
+    color: #475569;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  .inicio {
+    font-style: italic;
+    color: var(--primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  
+  /* Contenedor de exportación PDF oculto en UI */
+  #pdf-export-template {
+    display: none;
+  }
+  
+  /* Notificación Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #10b981;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1000;
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  @media (max-width: 600px) {
+    .container {
+      padding: 1.25rem;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    .svg-dice {
+      width: 150px;
+      height: 150px;
+    }
+    .caja {
+      padding: 1rem;
+      min-height: auto;
+    }
+    .section {
+      padding: 1.25rem;
+    }
+    .q-actions {
+      flex-direction: column;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app-container">
+  <h1>🎲 Dado Metacognitivo</h1>
+  <p class="subtitle">Reflexioná sobre tu proceso de aprendizaje</p>
+
+  <div class="section">
+    <h2>👤 1. Identificación</h2>
+    <input type="text" id="studentName" placeholder="Ingresá tu nombre y apellido" required>
+  </div>
+
+  <div class="section">
+    <h2>✍️ 2. Opciones del Dado</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Administrá las preguntas del dado. Podés editar las existentes o agregar nuevas caras.</p>
+    
+    <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;" id="formContainer">
+      <h3 style="margin-top: 0; font-size: 1rem; color: #334155; margin-bottom: 10px;" id="formTitle">Agregar Nueva Pregunta</h3>
+      <input type="text" id="newPregunta" placeholder="Pregunta (ej: ¿Qué habilidad descubrí?)" required>
+      <input type="text" id="newAndamio" placeholder="Pista / Ayuda (ej: Pensá en algo que antes te costaba)">
+      <input type="text" id="newInicio" placeholder="Inicio de respuesta (ej: Descubrí que...)">
+      
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="addFaceBtn" onclick="guardarPregunta()">➕ Agregar pregunta</button>
+        <button id="cancelEditBtn" onclick="cancelarEdicion()" style="display: none; background: #94a3b8;">❌ Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Lista unificada de todas las preguntas -->
+    <div class="mis-preguntas" id="preguntasList"></div>
+  </div>
+
+  <div class="section dice-container">
+    <h2>🎲 3. ¡Tirá el dado!</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem;">Hacé clic en el dado para obtener una pregunta al azar y reflexionar.</p>
+    
+    <div class="dice-wrapper" onclick="tirarDado()">
+      <svg viewBox="0 0 100 100" class="svg-dice" id="diceSvg">
+        <rect width="100" height="100" rx="20" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+        <g id="diceDots">
+          <!-- Cara inicial: 1 -->
+          <circle cx="50" cy="50" r="10" fill="#334155"/>
+        </g>
+      </svg>
+    </div>
+    
+    <div class="caja" id="cajaResultado">
+      <div class="pregunta" id="pregunta">Hacé clic en el dado para empezar...</div>
+      <div class="andamio" id="andamio"></div>
+      <div class="inicio" id="inicio"></div>
+    </div>
+  </div>
+
+  <div class="section" style="text-align: center;">
+    <h2>🖨️ 4. Imprimir / Guardar como PDF</h2>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1rem;">Se abre el diálogo de impresión de tu navegador. Desde ahí podés imprimir en papel o elegir <strong>"Guardar como PDF"</strong> para descargarlo.</p>
+    <button onclick="abrirParaImprimir()" id="pdfBtn" style="background: #10b981; font-size: 1.1rem; padding: 1rem 2rem;">🖨️ Imprimir / Guardar PDF</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">¡Acción realizada con éxito!</div>
+
+<script>
+  // Estado único para TODAS las preguntas (las por defecto y las que se agreguen)
+  let consignas = [
+    {
+      pregunta: "Algo que hice bien y quiero repetir",
+      andamio: "Pensá en una acción concreta. ¿Qué hiciste exactamente? ¿Por qué funcionó?",
+      inicio: "Me di cuenta de que me sirvió cuando..."
+    },
+    {
+      pregunta: "¿Dónde me trabé?",
+      andamio: "Identificá el momento exacto de la dificultad.",
+      inicio: "Me trabé cuando..."
+    },
+    {
+      pregunta: "Algo que entendí mejor hoy",
+      andamio: "Comparalo con lo que pensabas antes.",
+      inicio: "Antes pensaba que... ahora entiendo que..."
+    },
+    {
+      pregunta: "¿Qué haría distinto la próxima vez?",
+      andamio: "Imaginá una situación similar futura.",
+      inicio: "La próxima vez voy a..."
+    }
+  ];
+
+  let editIndex = -1;
+
+  // Caras del dado en formato SVG
+  const facesSvg = {
+    1: '<circle cx="50" cy="50" r="10" fill="#334155"/>',
+    2: '<circle cx="30" cy="30" r="10" fill="#334155"/><circle cx="70" cy="70" r="10" fill="#334155"/>',
+    3: '<circle cx="25" cy="25" r="10" fill="#334155"/><circle cx="50" cy="50" r="10" fill="#334155"/><circle cx="75" cy="75" r="10" fill="#334155"/>',
+    4: '<circle cx="30" cy="30" r="10" fill="#334155"/><circle cx="70" cy="30" r="10" fill="#334155"/><circle cx="30" cy="70" r="10" fill="#334155"/><circle cx="70" cy="70" r="10" fill="#334155"/>',
+    5: '<circle cx="25" cy="25" r="10" fill="#334155"/><circle cx="75" cy="25" r="10" fill="#334155"/><circle cx="50" cy="50" r="10" fill="#334155"/><circle cx="25" cy="75" r="10" fill="#334155"/><circle cx="75" cy="75" r="10" fill="#334155"/>',
+    6: '<circle cx="30" cy="20" r="10" fill="#334155"/><circle cx="30" cy="50" r="10" fill="#334155"/><circle cx="30" cy="80" r="10" fill="#334155"/><circle cx="70" cy="20" r="10" fill="#334155"/><circle cx="70" cy="50" r="10" fill="#334155"/><circle cx="70" cy="80" r="10" fill="#334155"/>'
+  };
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.innerText = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  function renderPreguntas() {
+    const list = document.getElementById('preguntasList');
+    list.innerHTML = '';
+    consignas.forEach((p, index) => {
+      list.innerHTML += `
+        <div class="inserted-q">
+          <div class="q-number">${index + 1}</div>
+          <div class="q-text">
+            <strong>${p.pregunta}</strong>
+          </div>
+          <div class="q-actions">
+            <button class="btn-edit" onclick="iniciarEdicion(${index})" title="Editar esta pregunta">✏️</button>
+            <button class="btn-delete" onclick="borrarCara(${index})" title="Borrar esta pregunta">🗑️</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function guardarPregunta() {
+    const pregunta = document.getElementById('newPregunta').value.trim();
+    const andamio = document.getElementById('newAndamio').value.trim();
+    const inicio = document.getElementById('newInicio').value.trim();
+
+    if (!pregunta) {
+      alert("Por favor, ingresá al menos la pregunta metacognitiva.");
+      return;
+    }
+
+    if (editIndex > -1) {
+      consignas[editIndex] = { pregunta, andamio, inicio };
+      showToast("¡Pregunta actualizada con éxito!");
+    } else {
+      consignas.push({ pregunta, andamio, inicio });
+      showToast("¡Pregunta agregada al dado!");
+    }
+
+    cancelarEdicion();
+    renderPreguntas();
+  }
+
+  function iniciarEdicion(index) {
+    editIndex = index;
+    const p = consignas[index];
+    document.getElementById('newPregunta').value = p.pregunta;
+    document.getElementById('newAndamio').value = p.andamio;
+    document.getElementById('newInicio').value = p.inicio;
+    
+    document.getElementById('formTitle').innerText = `Editando Pregunta #${index + 1}`;
+    document.getElementById('addFaceBtn').innerText = "💾 Guardar cambios";
+    document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+    document.getElementById('newPregunta').focus();
+  }
+
+  function cancelarEdicion() {
+    editIndex = -1;
+    document.getElementById('newPregunta').value = '';
+    document.getElementById('newAndamio').value = '';
+    document.getElementById('newInicio').value = '';
+    
+    document.getElementById('formTitle').innerText = "Agregar Nueva Pregunta";
+    document.getElementById('addFaceBtn').innerText = "➕ Agregar pregunta";
+    document.getElementById('cancelEditBtn').style.display = 'none';
+  }
+
+  function borrarCara(index) {
+    if (consignas.length <= 1) {
+      alert("El dado no puede quedar vacío. Debe tener al menos una pregunta.");
+      return;
+    }
+    if (confirm("¿Seguro que querés borrar esta pregunta permanentemente?")) {
+      consignas.splice(index, 1);
+      if (editIndex === index) {
+        cancelarEdicion();
+      } else if (editIndex > index) {
+        editIndex--;
+      }
+      renderPreguntas();
+      showToast("Pregunta eliminada.");
+    }
+  }
+
+  function updateDots(num) {
+    document.getElementById('diceDots').innerHTML = facesSvg[num];
+  }
+
+  function tirarDado() {
+    if (consignas.length === 0) return;
+    
+    const diceSvg = document.getElementById("diceSvg");
+    const caja = document.getElementById("cajaResultado");
+    
+    diceSvg.classList.add("rolling");
+    caja.style.opacity = 0.5;
+
+    let rolls = 0;
+    const rollInterval = setInterval(() => {
+      updateDots(Math.floor(Math.random() * 6) + 1);
+      rolls++;
+      if (rolls > 12) {
+        clearInterval(rollInterval);
+        diceSvg.classList.remove("rolling");
+        
+        // Final face dot
+        updateDots(Math.floor(Math.random() * 6) + 1);
+        
+        const azar = Math.floor(Math.random() * consignas.length);
+        const elegida = consignas[azar];
+        
+        document.getElementById("pregunta").innerText = elegida.pregunta;
+        document.getElementById("andamio").innerText = elegida.andamio;
+        document.getElementById("inicio").innerText = elegida.inicio;
+        
+        caja.style.opacity = 1;
+      }
+    }, 60);
+  }
+
+  function abrirParaImprimir() {
+    const name = document.getElementById('studentName').value.trim();
+    if (!name) {
+      alert("Por favor, ingresá tu nombre en el paso 1 antes de imprimir.");
+      document.getElementById('studentName').focus();
+      return;
+    }
+
+    // Construir el HTML de las preguntas
+    let preguntasHTML = '';
+    consignas.forEach((c, index) => {
+      preguntasHTML += `
+        <div class="pregunta-item">
+          <div class="pregunta-header">
+            <span class="num">${index + 1}</span>
+            <strong>${c.pregunta}</strong>
+          </div>
+          <div class="pregunta-body">
+            ${c.andamio ? `<p class="pista"><em>Pista:</em> ${c.andamio}</p>` : ''}
+            ${c.inicio ? `<p class="inicio">${c.inicio}</p>` : ''}
+            <div class="lineas">
+              <div class="linea"></div>
+              <div class="linea"></div>
+              <div class="linea"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    // HTML completo para la ventana de impresion
+    const htmlImpresion = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dado Metacognitivo - ${name}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', Arial, sans-serif; background: white; color: #1e293b; padding: 30px; max-width: 780px; margin: 0 auto; }
+    
+    .header { text-align: center; padding-bottom: 18px; margin-bottom: 22px; border-bottom: 3px solid #6366f1; }
+    .header h1 { color: #6366f1; font-size: 30px; font-weight: 800; }
+    .header p { color: #64748b; font-size: 15px; margin-top: 4px; }
+    
+    .estudiante { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 20px; margin-bottom: 28px; font-size: 16px; }
+    .estudiante strong { color: #334155; }
+    .estudiante span { font-size: 18px; font-weight: 800; color: #1e293b; margin-left: 8px; }
+    
+    .intro { font-size: 15px; font-weight: 600; color: #334155; margin-bottom: 18px; }
+    
+    .pregunta-item { margin-bottom: 22px; page-break-inside: avoid; break-inside: avoid; }
+    .pregunta-header { display: flex; align-items: center; gap: 12px; background: #e0e7ff; padding: 10px 15px; border-radius: 8px 8px 0 0; border: 1px solid #a5b4fc; }
+    .pregunta-header .num { background: #6366f1; color: white; font-size: 14px; font-weight: 800; min-width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .pregunta-header strong { color: #1e1b4b; font-size: 15px; }
+    .pregunta-body { border: 1px solid #a5b4fc; border-top: none; border-radius: 0 0 8px 8px; padding: 14px 18px; background: white; }
+    .pista { font-size: 13px; color: #475569; margin-bottom: 6px; }
+    .inicio { font-size: 13px; font-weight: 600; color: #6366f1; margin-bottom: 14px; }
+    .linea { border-bottom: 1px dashed #94a3b8; height: 32px; width: 100%; }
+    .lineas { margin-top: 12px; }
+    
+    .footer { margin-top: 30px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 14px; }
+    
+    @media print {
+      body { padding: 10px; }
+      @page { margin: 1.5cm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎲 Dado Metacognitivo</h1>
+    <p>Hoja de Reflexión de Aprendizaje</p>
+  </div>
+  
+  <div class="estudiante">
+    <strong>Estudiante:</strong> <span>${name}</span>
+  </div>
+  
+  <p class="intro">Respondé las siguientes preguntas según la cara que te tocó:</p>
+  
+  ${preguntasHTML}
+  
+  <div class="footer">Dado Metacognitivo &bull; Actividad de reflexión educativa</div>
+
+  <script>
+    window.onload = () => { window.print(); };
+  <\/script>
+</body>
+</html>`;
+
+    const ventana = window.open('', '_blank', 'width=900,height=700');
+    if (!ventana) {
+      alert('Tu navegador bloqueó la ventana emergente. Por favor, permití las ventanas emergentes para este sitio.');
+      return;
+    }
+    ventana.document.write(htmlImpresion);
+    ventana.document.close();
+  }
+
+  // Inicializar vista al cargar
+  window.onload = () => {
+    renderPreguntas();
+  };
+</script>
+</body>
+</html>
