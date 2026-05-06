@@ -468,7 +468,9 @@ function goToScene(sceneId, silent) {
                     transitionLayer.style.animation = exitKey + ' ' + exitDur + 's ease forwards';
                     setTimeout(function() { el.style.display = 'none'; }, exitDur * 1000);
                 }, exitAt * 1000);
-                   if (!btn.isDecorative) {
+            }
+
+            if (!btn.isDecorative) {
                 el.onclick = (e) => {
                     e.stopPropagation();
                     if (SCENARIO_DATA.enableScore && btn.points) {
