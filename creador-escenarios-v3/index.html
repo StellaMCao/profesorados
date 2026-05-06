@@ -468,9 +468,7 @@ function goToScene(sceneId, silent) {
                     transitionLayer.style.animation = exitKey + ' ' + exitDur + 's ease forwards';
                     setTimeout(function() { el.style.display = 'none'; }, exitDur * 1000);
                 }, exitAt * 1000);
-            }
-
-            if (!btn.isDecorative) {
+                   if (!btn.isDecorative) {
                 el.onclick = (e) => {
                     e.stopPropagation();
                     if (SCENARIO_DATA.enableScore && btn.points) {
@@ -481,45 +479,51 @@ function goToScene(sceneId, silent) {
                         setTimeout(() => { scoreBox.style.transform = 'scale(1)'; }, 200);
                     }
                     const action = btn.actionType || 'navigate';
-                    if (action === 'go-start') {
-                        if (SCENARIO_DATA.scenes.length > 0) goToScene(SCENARIO_DATA.scenes[0].id, !!btn.silentNav);
-                    } else if (action === 'go-previous') {
-                        const ci = SCENARIO_DATA.scenes.findIndex(s => s.id === currentSceneId);
-                        if (ci > 0) goToScene(SCENARIO_DATA.scenes[ci - 1].id, !!btn.silentNav);
-                    } else if (action === 'go-next') {
-                        const ci = SCENARIO_DATA.scenes.findIndex(s => s.id === currentSceneId);
-                        if (ci !== -1 && ci < SCENARIO_DATA.scenes.length - 1) goToScene(SCENARIO_DATA.scenes[ci + 1].id, !!btn.silentNav);
-                    } else if (action === 'close') {
-                        window.close();
-                        setTimeout(function() {
-                            var endEl = document.createElement('div');
-                            endEl.style.cssText = 'position:fixed;inset:0;background:#0a0a0a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:20px;font-family:inherit;text-align:center;padding:40px;';
-                            endEl.innerHTML = '<div style="font-size:4em">\\u2705<\\/div><h2 style="font-size:2em;font-weight:bold;margin:0">Actividad finalizada<\\/h2><p style="opacity:0.6;font-size:1.1em;">Pod\\u00e9s cerrar esta pesta\\u00f1a.<\\/p>';
-                            document.body.appendChild(endEl);
-                        }, 350);
-                    } else if (action === 'popup') {
+
+                    // Helper: execute the actual navigation action
+                    const executeAction = () => {
+                        if (action === 'go-start') {
+                            if (SCENARIO_DATA.scenes.length > 0) goToScene(SCENARIO_DATA.scenes[0].id, !!btn.silentNav);
+                        } else if (action === 'go-previous') {
+                            const ci = SCENARIO_DATA.scenes.findIndex(s => s.id === currentSceneId);
+                            if (ci > 0) goToScene(SCENARIO_DATA.scenes[ci - 1].id, !!btn.silentNav);
+                        } else if (action === 'go-next') {
+                            const ci = SCENARIO_DATA.scenes.findIndex(s => s.id === currentSceneId);
+                            if (ci !== -1 && ci < SCENARIO_DATA.scenes.length - 1) goToScene(SCENARIO_DATA.scenes[ci + 1].id, !!btn.silentNav);
+                        } else if (action === 'close') {
+                            window.close();
+                            setTimeout(function() {
+                                var endEl = document.createElement('div');
+                                endEl.style.cssText = 'position:fixed;inset:0;background:#0a0a0a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:20px;font-family:inherit;text-align:center;padding:40px;';
+                                endEl.innerHTML = '<div style="font-size:4em">\\u2705<\\/div><h2 style="font-size:2em;font-weight:bold;margin:0">Actividad finalizada<\\/h2><p style="opacity:0.6;font-size:1.1em;">Pod\\u00e9s cerrar esta pesta\\u00f1a.<\\/p>';
+                                document.body.appendChild(endEl);
+                            }, 350);
+                        } else if (btn.targetSceneId) {
+                            goToScene(btn.targetSceneId, !!btn.silentNav);
+                        }
+                    };
+
+                    if (action === 'popup') {
                         const _pt = document.getElementById('popup-text');
                         const _ptRaw = btn.popupText || '';
                         const parts = _ptRaw.split('**');
                         let html = '';
-                        for(let i=0; i<parts.length; i++) html += (i % 2 === 1) ? '<strong>' + parts[i] + '</strong>' : parts[i];
+                        for(let i=0; i<parts.length; i++) html += (i % 2 === 1) ? '<strong>' + parts[i] + '<\\/strong>' : parts[i];
                         _pt.innerHTML = html;
                         popupOverlay.style.display = 'flex';
-                        // Remove any previous continue button
                         const prevContinue = document.getElementById('popup-continue');
                         if (prevContinue) prevContinue.remove();
-                    } else if (btn.feedbackText && btn.targetSceneId) {
-                        // Show feedback message then navigate on confirm
+                    } else if (btn.feedbackText) {
+                        // Show feedback popup then execute action on Continuar
                         const popupTextEl = document.getElementById('popup-text');
                         const _fbRaw = btn.feedbackText || '';
                         const parts = _fbRaw.split('**');
                         let html = '';
-                        for(let i=0; i<parts.length; i++) html += (i % 2 === 1) ? '<strong>' + parts[i] + '</strong>' : parts[i];
+                        for(let i=0; i<parts.length; i++) html += (i % 2 === 1) ? '<strong>' + parts[i] + '<\\/strong>' : parts[i];
                         popupTextEl.innerHTML = html;
                         popupTextEl.style.fontWeight = btn.feedbackBold ? 'bold' : 'normal';
                         popupTextEl.style.fontSize = (btn.feedbackFontSize || 20) + 'px';
                         popupOverlay.style.display = 'flex';
-                        // Remove any old continue button, add new one
                         const prevContinue = document.getElementById('popup-continue');
                         if (prevContinue) prevContinue.remove();
                         const continueBtn = document.createElement('button');
@@ -527,10 +531,8 @@ function goToScene(sceneId, silent) {
                         continueBtn.innerText = 'Continuar ▶';
                         continueBtn.style.cssText = 'margin-top:14px;background:#e94560;color:#fff;border:none;border-radius:6px;padding:8px 22px;font-size:1em;cursor:pointer;font-weight:bold;';
                         continueBtn.onclick = () => {
-                            continueBtn.onclick = null; // evitar doble click
-                            // 1. Navegar de inmediato — la transición ocurre DEBAJO del overlay
-                            goToScene(btn.targetSceneId, !!btn.silentNav);
-                            // 2. Esperar que la nueva escena esté activa, luego disolver el overlay
+                            continueBtn.onclick = null;
+                            executeAction();
                             setTimeout(() => {
                                 popupOverlay.style.transition = 'opacity 0.4s ease';
                                 popupOverlay.style.opacity = '0';
@@ -543,8 +545,8 @@ function goToScene(sceneId, silent) {
                             }, 500);
                         };
                         document.getElementById('popup-text').after(continueBtn);
-                    } else if(btn.targetSceneId) {
-                        goToScene(btn.targetSceneId, !!btn.silentNav);
+                    } else {
+                        executeAction();
                     }
                 };
             }
