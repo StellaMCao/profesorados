@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactividad</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="portrait-hint">📱 Girá tu celular para ver mejor las opciones</div>
+    <div id="app-container">
+        <!-- Backgrounds injected here -->
+        <div id="bg-layer"></div>
+        
+        <!-- Buttons injected here -->
+        <div id="buttons-container"></div>
+        
+        <div id="start-overlay">
+            <h1 id="start-title">Interactividad Lista</h1>
+            <p id="start-subtitle" style="display:none; margin:8px 0 4px; opacity:0.85; font-size:1.1em;"></p>
+            <p id="start-description" style="display:none; margin:10px auto 18px; max-width:560px; opacity:0.75; font-size:0.95em; white-space:pre-wrap; line-height:1.6;"></p>
+            <button class="start-btn" id="start-btn" onclick="startApp()">Comenzar</button>
+            <p id="start-footer" style="display:none; margin-top:18px; opacity:0.45; font-size:0.75em;"></p>
+        </div>
+
+        <!-- Author credit (optional, set in Config) -->
+        <div id="player-credit" style="display:none; position:absolute; bottom:7px; right:12px; font-size:0.65rem; color:rgba(255,255,255,0.4); z-index:50; pointer-events:none; user-select:none; font-family:sans-serif; letter-spacing:0.02em;"></div>
+
+        <!-- Score UI -->
+        <div id="score-display" style="display:none; position:absolute; top:20px; left:20px; background:rgba(0,0,0,0.6); color:gold; padding:10px 20px; border-radius:30px; font-weight:bold; font-size:1.2rem; z-index:100; border:2px solid gold; pointer-events:none; transition: transform 0.2s;">
+            ⭐ Puntos: <span id="score-val">0</span>
+        </div>
+
+        <!-- Pop-up UI -->
+        <div id="popup-overlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.8); z-index:200; align-items:center; justify-content:center; padding:calc(30 * 100cqi / 1280);">
+            <div style="background:#fff; color:#0f172a; padding:calc(32 * 100cqi / 1280) calc(40 * 100cqi / 1280); border-radius:calc(12 * 100cqi / 1280); max-width:88%; width:100%; text-align:center; font-size:calc(22 * 100cqi / 1280); position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.5); box-sizing:border-box;">
+                <button id="close-popup" style="position:absolute; top:calc(10 * 100cqi / 1280); right:calc(14 * 100cqi / 1280); background:transparent; border:none; font-size:calc(20 * 100cqi / 1280); cursor:pointer; color:#64748b; line-height:1;">✖</button>
+                <div id="popup-text" style="margin-top:calc(10 * 100cqi / 1280); font-size:calc(22 * 100cqi / 1280); line-height:1.5;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Player -->
+    <audio id="audio-player"></audio>
+    <audio id="global-audio-player" loop></audio>
+
+    <script src="js/data.js"></script>
+    <script src="js/player.js"></script>
+</body>
+</html>
