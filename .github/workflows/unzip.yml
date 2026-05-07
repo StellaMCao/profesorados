@@ -1,0 +1,50 @@
+name: 🗂️ Descomprimir ZIPs automáticamente
+
+on:
+  push:
+    paths:
+      - '**.zip'
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout del repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # necesario para poder hacer push
+
+      - name: Buscar y descomprimir ZIPs
+        run: |
+          shopt -s globstar nullglob
+          found=false
+
+          for zipfile in **/*.zip *.zip; do
+            [ -f "$zipfile" ] || continue
+            destdir="${zipfile%.zip}"
+            echo "📦 Descomprimiendo: $zipfile → $destdir/"
+            mkdir -p "$destdir"
+            unzip -o "$zipfile" -d "$destdir"
+            rm "$zipfile"
+            echo "✅ Listo: $destdir/"
+            found=true
+          done
+
+          if [ "$found" = false ]; then
+            echo "ℹ️ No hay ZIPs nuevos para descomprimir."
+          fi
+
+      - name: Commit y push de los archivos extraídos
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "ℹ️ Sin cambios para commitear."
+          else
+            git commit -m "🗂️ Auto: ZIP descomprimido [skip ci]"
+            git push
+          fi
