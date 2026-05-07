@@ -24,12 +24,11 @@ jobs:
 
           for zipfile in **/*.zip *.zip; do
             [ -f "$zipfile" ] || continue
-            destdir="${zipfile%.zip}"
-            echo "📦 Descomprimiendo: $zipfile → $destdir/"
-            mkdir -p "$destdir"
-            unzip -o "$zipfile" -d "$destdir"
+            parentdir=$(dirname "$zipfile")
+            echo "📦 Descomprimiendo: $zipfile → $parentdir/"
+            unzip -o "$zipfile" -d "$parentdir"
             rm "$zipfile"
-            echo "✅ Listo: $destdir/"
+            echo "✅ Listo: $parentdir/"
             found=true
           done
 
