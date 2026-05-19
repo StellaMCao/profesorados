@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>matriz-evaluacion-estudiante</title>
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --paper: #fffdf8;
+      --ink: #202033;
+      --muted: #626b76;
+      --line: #d7cdbc;
+      --accent: #8a5a32;
+      --teal: #1f6f78;
+      --teal-dark: #174f56;
+      --soft: #f4e8da;
+      --soft2: #e6f1f2;
+      --cell: #fffefa;
+      --shadow: 0 16px 42px rgba(32, 32, 51, .12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(31,111,120,.13), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(138,90,50,.12), transparent 40%),
+        var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.42;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 28px));
+      margin: 24px auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 28px 36px 22px;
+      background: linear-gradient(135deg, var(--soft), var(--soft2));
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.75rem, 3vw, 2.55rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 900px;
+      font-size: 1.02rem;
+    }
+
+    .student-bar {
+      display: grid;
+      grid-template-columns: 1.05fr .75fr 1.25fr 1.05fr auto;
+      gap: 12px;
+      padding: 18px 36px;
+      background: #fff9ef;
+      border-bottom: 1px solid var(--line);
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .78rem;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .045em;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #c9baa7;
+      border-radius: 11px;
+      background: white;
+      color: var(--ink);
+      padding: 9px 10px;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(31,111,120,.13);
+    }
+
+    select {
+      appearance: none;
+      background:
+        linear-gradient(45deg, transparent 50%, var(--teal) 50%) calc(100% - 18px) 50% / 7px 7px no-repeat,
+        linear-gradient(135deg, var(--teal) 50%, transparent 50%) calc(100% - 13px) 50% / 7px 7px no-repeat,
+        #fff;
+      padding-right: 34px;
+    }
+
+    .custom-activity {
+      display: none;
+      margin-top: 7px;
+    }
+
+    .custom-activity.visible { display: block; }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      background: var(--teal);
+      color: white;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-weight: 850;
+      white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(31,111,120,.24);
+    }
+
+    .btn:hover { filter: brightness(.96); }
+
+    main {
+      padding: 26px 36px 36px;
+    }
+
+    .consigna {
+      border-left: 6px solid var(--accent);
+      background: #fff7ec;
+      padding: 16px 20px;
+      border-radius: 15px;
+      margin-bottom: 22px;
+    }
+
+    .consigna h2 {
+      margin: 0 0 7px;
+      font-size: 1.18rem;
+    }
+
+    .consigna p {
+      margin: 7px 0;
+    }
+
+    .no-print.hint {
+      color: var(--muted);
+      font-size: .96rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line);
+      background: white;
+    }
+
+    col.momento { width: 18%; }
+    col.tipo { width: 27.333%; }
+
+    th, td {
+      border: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    thead th {
+      background: #22313f;
+      color: white;
+      padding: 13px 10px;
+      text-align: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .98rem;
+    }
+
+    .rowhead {
+      background: #f3eadf;
+      padding: 14px 12px;
+    }
+
+    .rowhead strong {
+      display: block;
+      color: var(--accent);
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .rowhead span {
+      display: block;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    td {
+      background: var(--cell);
+      padding: 10px;
+      height: 208px;
+    }
+
+    .cell-title {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--teal);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .76rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .035em;
+    }
+
+    textarea {
+      height: 110px;
+      min-height: 110px;
+      resize: vertical;
+      font-size: .95rem;
+      line-height: 1.35;
+      background: white;
+    }
+
+    .example {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .83rem;
+      line-height: 1.32;
+      background: #f8f7f4;
+      border: 1px dashed #d0c4b5;
+      border-radius: 10px;
+      padding: 7px 8px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: .93rem;
+      padding: 11px 14px;
+      border-radius: 13px;
+      background: #f8f7f4;
+      border: 1px dashed #cbbda9;
+    }
+
+    @media (max-width: 900px) {
+      .student-bar {
+        grid-template-columns: 1fr;
+      }
+
+      table, thead, tbody, tr, th, td, colgroup, col {
+        display: block;
+        width: 100%;
+      }
+
+      thead { display: none; }
+
+      tr { border-bottom: 3px solid var(--line); }
+
+      td {
+        height: auto;
+      }
+
+      td::before {
+        content: attr(data-col);
+        display: block;
+        margin-bottom: 8px;
+        color: #22313f;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-weight: 850;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 8mm;
+      }
+
+      html, body {
+        width: 297mm;
+        min-height: 210mm;
+        background: white !important;
+        font-size: 10pt;
+      }
+
+      .page {
+        width: 100%;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        background: white;
+        overflow: visible;
+      }
+
+      header {
+        padding: 5mm 5mm 3mm;
+        background: white !important;
+        border-bottom: 1px solid #999;
+      }
+
+      h1 {
+        font-size: 17pt;
+        margin: 0 0 2mm;
+      }
+
+      .subtitle {
+        font-size: 8.5pt;
+        max-width: none;
+      }
+
+      .student-bar {
+        display: grid !important;
+        grid-template-columns: 1fr .65fr 1.35fr 1fr;
+        gap: 6px;
+        padding: 3mm 5mm;
+        background: white !important;
+        border-bottom: 1px solid #999;
+      }
+
+      .btn,
+      .no-print,
+      .example {
+        display: none !important;
+      }
+
+      label {
+        font-size: 6.5pt;
+        margin-bottom: 1mm;
+      }
+
+      input, select {
+        border: 0;
+        border-bottom: 1px solid #777;
+        border-radius: 0;
+        padding: 1mm 0;
+        background: white !important;
+        font-size: 8.5pt;
+      }
+
+      .custom-activity.visible {
+        display: block !important;
+        margin-top: 1mm;
+      }
+
+      main {
+        padding: 3mm 5mm 0;
+      }
+
+      .consigna {
+        border: 1px solid #b7a992;
+        border-left: 4px solid #8a5a32;
+        border-radius: 0;
+        background: white !important;
+        padding: 2mm 3mm;
+        margin-bottom: 3mm;
+        page-break-inside: avoid;
+      }
+
+      .consigna h2 {
+        font-size: 10pt;
+        margin: 0 0 1mm;
+      }
+
+      .consigna p {
+        font-size: 7.6pt;
+        margin: 1mm 0;
+      }
+
+      table {
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
+        page-break-inside: avoid;
+      }
+
+      colgroup { display: table-column-group !important; }
+      col { display: table-column !important; }
+      thead { display: table-header-group !important; }
+      tbody { display: table-row-group !important; }
+      tr { display: table-row !important; border: 0 !important; page-break-inside: avoid; }
+      th, td { display: table-cell !important; }
+
+      thead th {
+        background: #22313f !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 2mm;
+        font-size: 8pt;
+      }
+
+      .rowhead {
+        background: #f3eadf !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        padding: 2.2mm;
+      }
+
+      .rowhead strong {
+        font-size: 8.3pt;
+        margin-bottom: 1mm;
+      }
+
+      .rowhead span {
+        font-size: 6.8pt;
+        line-height: 1.25;
+      }
+
+      td {
+        height: 33mm;
+        padding: 1.8mm;
+        background: white !important;
+      }
+
+      td::before {
+        content: none !important;
+      }
+
+      .cell-title {
+        font-size: 6.2pt;
+        margin-bottom: 1mm;
+      }
+
+      textarea {
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        height: 27mm;
+        min-height: 27mm;
+        resize: none;
+        overflow: hidden;
+        font-size: 7.2pt;
+        line-height: 1.25;
+        background:
+          repeating-linear-gradient(
+            to bottom,
+            white 0,
+            white 5.7mm,
+            #d9d9d9 5.8mm,
+            white 5.9mm
+          ) !important;
+      }
+
+      textarea::placeholder {
+        color: transparent;
+      }
+
+      .footer-note {
+        margin-top: 2mm;
+        padding: 1.8mm 2.2mm;
+        border-radius: 0;
+        font-size: 7pt;
+        background: white !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <h1>Matriz para pensar la evaluación</h1>
+      <p class="subtitle">
+        Un cruce entre momentos de la evaluación y modos de participación: heteroevaluación,
+        coevaluación y autoevaluación, situado en una tarea concreta de nivel superior.
+      </p>
+    </header>
+
+    <section class="student-bar">
+      <div>
+        <label for="studentName">Nombre del estudiante</label>
+        <input id="studentName" type="text" placeholder="Escribí tu nombre y apellido" />
+      </div>
+      <div>
+        <label for="date">Fecha</label>
+        <input id="date" type="date" />
+      </div>
+      <div>
+        <label for="topic">Tema elegido</label>
+        <input id="topic" type="text" value="Teoría del apego de Bowlby en situaciones escolares" />
+      </div>
+      <div>
+        <label for="activityType">Tipo de actividad</label>
+        <select id="activityType">
+          <option>Análisis de caso</option>
+          <option>Ensayo argumentativo</option>
+          <option>Exposición oral</option>
+          <option>Informe de observación</option>
+          <option>Secuencia didáctica</option>
+          <option>Trabajo práctico integrador</option>
+          <option>Portfolio reflexivo</option>
+          <option>Debate fundamentado</option>
+          <option>Otro</option>
+        </select>
+        <input id="customActivity" class="custom-activity" type="text" placeholder="Completá el tipo de actividad" />
+      </div>
+      <button class="btn" onclick="savePdf()">Guardar como PDF</button>
+    </section>
+
+    <main>
+      <section class="consigna">
+        <h2>Consigna de trabajo</h2>
+        <p>
+          Primero definí un <strong>tema de nivel superior</strong> y seleccioná un
+          <strong>tipo de actividad</strong>. El ejemplo precargado trabaja la teoría del apego de Bowlby
+          mediante un análisis de caso, pero podés cambiarlo por otro tema o actividad.
+        </p>
+        <p>
+          Luego completá cada casillero con un <strong>descriptor breve y concreto</strong> que explique
+          cómo podría usarse una rúbrica en ese cruce. En cada descriptor indicá:
+          <strong>quién evalúa, en qué momento, con qué propósito, sobre qué producción concreta
+          y qué información ofrece la rúbrica para revisar o mejorar.</strong>
+        </p>
+        <p class="no-print hint">
+          Los ejemplos aparecen como ayuda en pantalla, pero no se imprimen. Al guardar como PDF,
+          quedará una matriz limpia para entregar.
+        </p>
+      </section>
+
+      <table aria-label="Matriz de evaluación">
+        <colgroup>
+          <col class="momento" />
+          <col class="tipo" />
+          <col class="tipo" />
+          <col class="tipo" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Momento</th>
+            <th>Heteroevaluación</th>
+            <th>Coevaluación</th>
+            <th>Autoevaluación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="rowhead">
+              <strong>Evaluación diagnóstica</strong>
+              <span>Antes o al inicio: permite reconocer saberes previos, ideas iniciales y puntos de partida.</span>
+            </th>
+            <td data-col="Heteroevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: Antes de trabajar el caso, el docente usa una rúbrica breve para leer una respuesta inicial sobre apego, vínculo adulto-niño y participación escolar.</div>
+            </td>
+            <td data-col="Coevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: En parejas, los estudiantes leen una primera interpretación del caso y reconocen indicios del vínculo de apego y del clima de aula.</div>
+            </td>
+            <td data-col="Autoevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: Cada estudiante revisa qué sabe sobre Bowlby, base segura y figuras de apego antes de analizar la escena escolar.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="rowhead">
+              <strong>Evaluación formativa</strong>
+              <span>Durante el proceso: orienta ajustes, revisiones, decisiones y nuevas oportunidades de mejora.</span>
+            </th>
+            <td data-col="Heteroevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: Durante la escritura del análisis, el docente señala si la interpretación se apoya en evidencias de la escena y usa conceptos de Bowlby con precisión.</div>
+            </td>
+            <td data-col="Coevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: Los pares leen un borrador y comentan si conecta conducta, vínculo de apego e intervención pedagógica sin etiquetar al estudiante.</div>
+            </td>
+            <td data-col="Autoevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: El estudiante revisa su borrador, identifica un criterio logrado y decide qué modificará antes de entregar la versión final.</div>
+            </td>
+          </tr>
+
+          <tr>
+            <th class="rowhead">
+              <strong>Evaluación sumativa</strong>
+              <span>Al cierre: permite valorar logros alcanzados y sintetizar evidencias del aprendizaje.</span>
+            </th>
+            <td data-col="Heteroevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: Al cierre, el docente valora precisión conceptual sobre apego, lectura de la situación escolar, argumentación e intervenciones propuestas.</div>
+            </td>
+            <td data-col="Coevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: Después de socializar los análisis, el grupo reconoce logros y sugiere cómo fortalecer la relación entre teoría del apego e intervención.</div>
+            </td>
+            <td data-col="Autoevaluación">
+              <span class="cell-title">Descriptor</span>
+              <textarea></textarea>
+              <div class="example">Ej.: El estudiante compara su análisis final con su primera lectura del caso y escribe qué aprendió sobre Bowlby y contexto escolar.</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="footer-note">
+        Recordá: una rúbrica no es solamente una tabla para poner notas. Bien usada, puede ser una pequeña
+        brújula: ayuda a mirar el trabajo, conversar sobre los criterios y decidir cómo seguir aprendiendo.
+      </p>
+    </main>
+  </div>
+
+  <script>
+    const dateInput = document.getElementById("date");
+    if (!dateInput.value) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    const activityType = document.getElementById("activityType");
+    const customActivity = document.getElementById("customActivity");
+
+    function updateCustomActivityVisibility() {
+      const isOther = activityType.value === "Otro";
+      customActivity.classList.toggle("visible", isOther);
+      customActivity.required = isOther;
+      if (!isOther) customActivity.value = "";
+    }
+
+    activityType.addEventListener("change", updateCustomActivityVisibility);
+    updateCustomActivityVisibility();
+
+    function slugify(text) {
+      return text
+        .toString()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    function getSelectedActivity() {
+      if (activityType.value === "Otro") {
+        return customActivity.value.trim() || "otra-actividad";
+      }
+      return activityType.value.trim();
+    }
+
+    function savePdf() {
+      const name = document.getElementById("studentName").value.trim();
+      const activity = getSelectedActivity();
+      const slug = slugify(name || "estudiante");
+      const activitySlug = activity ? "-" + slugify(activity) : "";
+      document.title = `matriz-evaluacion-${slug}${activitySlug}`;
+      window.print();
+    }
+  </script>
+</body>
+</html>
