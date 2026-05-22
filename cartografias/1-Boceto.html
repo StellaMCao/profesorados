@@ -224,6 +224,23 @@
     border-color: var(--coral);
     box-shadow: 0 0 0 3px rgba(219,107,87,.14);
   }
+
+  .full-input {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid rgba(95, 125, 107, .35);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: #fffdf7;
+  }
+  .full-input:focus {
+    outline: 2px solid rgba(46, 125, 50, .18);
+    border-color: var(--green);
+  }
+
   .formula {
     background: var(--blue-soft);
     border: 1px solid #bedbd7;
@@ -307,7 +324,7 @@
     <main>
       <section class="intro">
         <div class="note">
-          <strong>Consigna breve:</strong> no hace falta resolver todo el trabajo ahora. Solo necesitamos una primera frase del tema y dos justificaciones breves: una sobre su relevancia para la formación docente en psicología y otra sobre por qué importa para quien lo elige.
+          <strong>Consigna breve:</strong> no hace falta resolver todo el trabajo ahora. Solo necesitamos una primera frase del tema, un nombre simbólico y dos justificaciones breves: una sobre su relevancia para la formación docente en psicología y otra sobre por qué importa para quien lo elige.
         </div>
         <div class="mini-card">
           El territorio puede ser <strong>geográfico</strong>, como un barrio o una institución, pero también <strong>simbólico o vivido</strong>: un recorrido, una red de cuidado, una frontera invisible, un lugar donde se puede o no se puede estar.
@@ -353,6 +370,12 @@
           <label for="studentNames">Nombre y apellido del estudiante o de los estudiantes</label>
           <span class="hint">Completá este campo antes de guardar como PDF. El archivo tomará como nombre sugerido la fecha y lo que escriban acá, no el rótulo del campo.</span>
           <textarea id="studentNames" class="student-names" placeholder="Ej.: García, Laura / Pérez, Martín y Rodríguez, Ana" oninput="updateSuggestedTitle()"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="symbolicName">Nombre simbólico</label>
+          <span class="hint">Inventen una palabra o una frase muy breve que exprese algo del tema elegido. No tiene que ser literal: puede funcionar como una pequeña bandera del grupo o del trabajo.</span>
+          <input id="symbolicName" class="full-input" type="text" placeholder="Ej.: Umbral, Trama, Refugio, Frontera, Ronda" />
         </div>
 
         <div class="field">
