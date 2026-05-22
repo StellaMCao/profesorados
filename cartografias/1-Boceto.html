@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartografía social — Primer boceto del tema</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink:#263238;
+    --muted:#607d8b;
+    --paper:#fffaf0;
+    --cream:#fffdf7;
+    --blue:#2f6f73;
+    --blue-soft:#dff1ef;
+    --coral:#db6b57;
+    --coral-soft:#ffe7df;
+    --yellow:#fff3be;
+    --line:#e6d9bc;
+    --shadow:0 16px 38px rgba(50,42,20,.12);
+  }
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,243,190,.75), transparent 26%),
+      radial-gradient(circle at 85% 20%, rgba(223,241,239,.9), transparent 28%),
+      linear-gradient(135deg, #f8efe0 0%, #eef6f4 100%);
+    line-height: 1.55;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .print-bar {
+    max-width: 840px;
+    margin: 0 auto 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    color: var(--muted);
+    font-size: .9rem;
+  }
+  button {
+    border: 0;
+    background: var(--blue);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(47,111,115,.22);
+    white-space: nowrap;
+  }
+  .page {
+    max-width: 840px;
+    margin: 0 auto;
+    background: var(--cream);
+    border: 1px solid rgba(230,217,188,.9);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  header {
+    padding: 38px 44px 30px;
+    background:
+      linear-gradient(120deg, rgba(47,111,115,.95), rgba(47,111,115,.78)),
+      linear-gradient(45deg, var(--blue), #518e88);
+    color: white;
+    position: relative;
+  }
+  header::after {
+    content: "";
+    position: absolute;
+    right: 34px;
+    bottom: -34px;
+    width: 92px;
+    height: 92px;
+    border: 8px solid rgba(255,255,255,.24);
+    border-radius: 50%;
+  }
+  .kicker {
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    font-size: .72rem;
+    font-weight: 700;
+    opacity: .8;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.05;
+    max-width: 680px;
+  }
+  .subtitle {
+    margin-top: 12px;
+    max-width: 650px;
+    font-size: 1.05rem;
+    opacity: .92;
+  }
+  main { padding: 36px 44px 42px; }
+  .intro {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .note, .mini-card, .form-card {
+    border-radius: 22px;
+    padding: 20px 22px;
+  }
+  .note {
+    background: var(--yellow);
+    border: 1px solid #ebd982;
+    font-size: 1rem;
+  }
+  .mini-card {
+    background: var(--blue-soft);
+    border: 1px solid #bedbd7;
+  }
+  .mini-card strong, .note strong { font-weight: 800; }
+  h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.55rem;
+    margin: 30px 0 14px;
+    color: var(--blue);
+  }
+  .recipe {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 18px 0 28px;
+  }
+  .step {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 18px;
+  }
+  .step .num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--coral);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .step h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .step p { color: var(--muted); font-size: .94rem; }
+  .form-card {
+    background: white;
+    border: 2px solid var(--blue-soft);
+    box-shadow: 0 10px 24px rgba(38,50,56,.07);
+  }
+  .field { margin-bottom: 22px; }
+  label, .field-title {
+    display: block;
+    color: var(--blue);
+    font-weight: 800;
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+  .hint {
+    display: block;
+    color: var(--muted);
+    font-size: .9rem;
+    margin: 5px 0 8px;
+  }
+  .checks {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .student-names, .write-box, .inline-input {
+    border: 2px dotted #b8c7c5;
+    border-radius: 16px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: #fffdf9;
+    outline: none;
+  }
+  .student-names, .write-box {
+    width: 100%;
+    resize: vertical;
+  }
+  .student-names { min-height: 70px; }
+  .write-box { min-height: 96px; }
+  .student-names:focus, .write-box:focus, .inline-input:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(47,111,115,.12);
+  }
+  .check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--coral-soft);
+    border: 1px solid #f2c3b8;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+  }
+  .check input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--coral);
+    cursor: pointer;
+    flex: none;
+  }
+  .check:has(input:checked) {
+    background: #ffd4c9;
+    border-color: var(--coral);
+    box-shadow: 0 0 0 3px rgba(219,107,87,.14);
+  }
+  .formula {
+    background: var(--blue-soft);
+    border: 1px solid #bedbd7;
+    border-radius: 18px;
+    padding: 18px;
+    margin-top: 8px;
+  }
+  .formula p {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.14rem;
+    line-height: 1.9;
+  }
+  .inline-input {
+    display: inline-block;
+    min-width: 240px;
+    width: min(100%, 310px);
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 1rem;
+    vertical-align: baseline;
+  }
+  .example {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: .93rem;
+  }
+  .small-warning {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fff8df;
+    border: 1px solid #ecd98c;
+    border-radius: 14px;
+    color: #746231;
+    font-size: .88rem;
+  }
+  footer {
+    padding: 18px 44px 26px;
+    color: var(--muted);
+    font-size: .88rem;
+  }
+  @media (max-width: 760px) {
+    body { padding: 12px; }
+    header, main, footer { padding-left: 24px; padding-right: 24px; }
+    .intro, .recipe { grid-template-columns: 1fr; }
+    .print-bar { flex-direction: column; align-items: stretch; }
+    button { width: 100%; }
+    .inline-input { width: 100%; margin: 4px 0; }
+  }
+  @media print {
+    body { background: white; padding: 0; }
+    .print-bar { display: none; }
+    .page { box-shadow: none; border: 0; border-radius: 0; }
+    header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .recipe { grid-template-columns: repeat(3, 1fr); }
+    input, textarea {
+      border-color: #999 !important;
+      box-shadow: none !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .check, .check input {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="print-bar">
+    <span>Completá los campos y usá este botón para que el PDF tome fecha y nombres.</span>
+    <button onclick="printWithStudentNames()">Imprimir / guardar como PDF</button>
+  </div>
+  <div class="page">
+    <header>
+      <div class="kicker">Cartografías sociales e investigación participativa</div>
+      <h1>Primer boceto del tema</h1>
+      <p class="subtitle">Una ficha breve para elegir qué mirar, dónde mirarlo y por qué vale la pena hacerlo.</p>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div class="note">
+          <strong>Consigna breve:</strong> no hace falta resolver todo el trabajo ahora. Solo necesitamos una primera frase del tema y dos justificaciones breves: una sobre su relevancia para la formación docente en psicología y otra sobre por qué importa para quien lo elige.
+        </div>
+        <div class="mini-card">
+          El territorio puede ser <strong>geográfico</strong>, como un barrio o una institución, pero también <strong>simbólico o vivido</strong>: un recorrido, una red de cuidado, una frontera invisible, un lugar donde se puede o no se puede estar.
+        </div>
+      </section>
+
+      <h2>Una receta mínima</h2>
+      <section class="recipe">
+        <article class="step">
+          <div class="num">1</div>
+          <h3>Elegir algo que importe</h3>
+          <p>Una situación social o comunitaria que despierte una pregunta.</p>
+        </article>
+        <article class="step">
+          <div class="num">2</div>
+          <h3>Ubicar dónde aparece</h3>
+          <p>Un territorio acotado: físico, simbólico o vivido.</p>
+        </article>
+        <article class="step">
+          <div class="num">3</div>
+          <h3>Distinguir dos porqués</h3>
+          <p>Por qué importa para la formación y por qué importa para mí o para nosotros.</p>
+        </article>
+      </section>
+
+      <h2>Para completar en clase</h2>
+      <section class="form-card">
+        <div class="field">
+          <div class="field-title">Modalidad de trabajo</div>
+          <div class="checks" role="radiogroup" aria-label="Modalidad de trabajo">
+            <label class="check">
+              <input type="radio" name="modalidad" value="Individual">
+              Individual
+            </label>
+            <label class="check">
+              <input type="radio" name="modalidad" value="Grupal">
+              Grupal
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="studentNames">Nombre y apellido del estudiante o de los estudiantes</label>
+          <span class="hint">Completá este campo antes de guardar como PDF. El archivo tomará como nombre sugerido la fecha y lo que escriban acá, no el rótulo del campo.</span>
+          <textarea id="studentNames" class="student-names" placeholder="Ej.: García, Laura / Pérez, Martín y Rodríguez, Ana" oninput="updateSuggestedTitle()"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Enunciado del tema</label>
+          <span class="hint">Escriban una sola frase. Pueden usar esta estructura y completar los espacios:</span>
+          <div class="formula">
+            <p>
+              Queremos mapear
+              <input id="topicWhat" class="inline-input" type="text" placeholder="qué situación, experiencia o problema" />
+              en
+              <input id="topicWhere" class="inline-input" type="text" placeholder="qué territorio físico, simbólico o vivido" />.
+            </p>
+            <div class="example">Ejemplo: “Queremos mapear los espacios de cuidado y desborde emocional en el profesorado”.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="trainingRelevance">¿Por qué este tema es relevante para la formación docente en psicología?</label>
+          <span class="hint">Dimensión formativa: dos o tres oraciones. Piensen qué permite comprender sobre las personas, los vínculos, las instituciones, el territorio, los cuidados o las desigualdades.</span>
+          <textarea id="trainingRelevance" class="write-box" placeholder="Escriban aquí..."></textarea>
+        </div>
+
+        <div class="field">
+          <label for="personalRelevance">¿Por qué este tema es importante para mí o para nosotros?</label>
+          <span class="hint">Dimensión personal o grupal: dos o tres oraciones. Pueden mencionar qué les interesa, qué los inquieta, qué experiencia cercana aparece o qué pregunta propia se abrió.</span>
+          <textarea id="personalRelevance" class="write-box" placeholder="Escriban aquí..."></textarea>
+        </div>
+
+        <div class="small-warning">
+          Nota técnica: el navegador sugiere el nombre del archivo, pero siempre permite modificarlo manualmente al guardar. Para que aparezcan los apellidos, conviene usar el botón de esta página y no solo Ctrl+P.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Profesorado en Psicología · Cartografías sociales · Esta ficha es solo un punto de partida: el tema se puede ajustar después de conversar, mirar el territorio y revisar la propia implicancia.
+    </footer>
+  </div>
+
+<script>
+  function cleanFileName(text) {
+    return (text || "")
+      .trim()
+      .replace(/\n+/g, "_")
+      .replace(/\s+/g, "_")
+      .replace(/[\\/:*?"<>|]/g, "")
+      .replace(/_+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .slice(0, 90);
+  }
+
+  function todayForFileName() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
+  function suggestedPdfTitle() {
+    const namesField = document.getElementById("studentNames");
+    const names = namesField ? namesField.value : "";
+    const cleanNames = cleanFileName(names);
+    const baseTitle = `Actividad 1_Boceto-${todayForFileName()}`;
+    return cleanNames ? `${baseTitle}_${cleanNames}` : baseTitle;
+  }
+
+  function updateSuggestedTitle() {
+    document.title = suggestedPdfTitle();
+  }
+
+  function printWithStudentNames() {
+    updateSuggestedTitle();
+    setTimeout(() => window.print(), 50);
+  }
+
+  window.addEventListener("beforeprint", updateSuggestedTitle);
+</script>
+</body>
+</html>
