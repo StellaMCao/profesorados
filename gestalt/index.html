@@ -475,6 +475,81 @@
         background: var(--gold);
       }
 
+      .edu-demo {
+        display: grid;
+        gap: 12px;
+        align-content: center;
+        width: min(92%, 560px);
+      }
+
+      .edu-card {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 12px;
+        align-items: start;
+        padding: 14px;
+        border: 1px solid var(--line);
+        background: #f8fbf8;
+      }
+
+      .edu-card span {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        background: var(--teal);
+        color: #ffffff;
+        font-weight: 800;
+      }
+
+      .edu-card strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .edu-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .edu-map {
+        position: relative;
+        width: min(92%, 520px);
+        aspect-ratio: 1.35;
+      }
+
+      .edu-map .node-box {
+        position: absolute;
+        min-width: 112px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        background: #f8fbf8;
+        color: var(--ink);
+        text-align: center;
+        font-weight: 800;
+      }
+
+      .edu-map .node-box:nth-child(1) { left: 5%; top: 12%; }
+      .edu-map .node-box:nth-child(2) { right: 5%; top: 12%; }
+      .edu-map .node-box:nth-child(3) { left: 35%; top: 42%; background: #fff8ec; }
+      .edu-map .node-box:nth-child(4) { left: 5%; bottom: 12%; }
+      .edu-map .node-box:nth-child(5) { right: 5%; bottom: 12%; }
+
+      .edu-map .line {
+        position: absolute;
+        left: 18%;
+        right: 18%;
+        top: 50%;
+        height: 2px;
+        background: var(--line);
+        transform: rotate(-20deg);
+      }
+
+      .edu-map .line.alt {
+        transform: rotate(20deg);
+      }
+
       .micro-quiz {
         border-top: 1px solid var(--line);
         padding: 26px clamp(18px, 5vw, 72px) 34px;
@@ -693,6 +768,8 @@
           <button class="principle" data-principle="closure"><span>05</span>Cierre</button>
           <button class="principle" data-principle="pregnancia"><span>06</span>Pregnancia</button>
           <button class="principle" data-principle="insight"><span>07</span><em>insight</em></button>
+          <button class="principle" data-principle="educationInsight"><span>08</span><em>insight</em> en educaci&oacute;n</button>
+          <button class="principle" data-principle="educationValue"><span>09</span>Valor en educaci&oacute;n</button>
         </aside>
 
         <article class="lesson">
@@ -741,24 +818,6 @@
         </div>
       </section>
 
-      <section class="education">
-        <div class="education-inner">
-          <div>
-            <p class="eyebrow">Valor en educaci&oacute;n</p>
-            <h2>Aprender tambi&eacute;n es organizar</h2>
-            <p>
-              La Gestalt ayuda a pensar la ense&ntilde;anza como dise&ntilde;o de relaciones:
-              no alcanza con acumular datos, hace falta que el estudiante pueda ver una estructura.
-            </p>
-          </div>
-          <ul class="education-list">
-            <li><strong>Dar contexto:</strong> una idea se comprende mejor cuando se conecta con un problema, una imagen o una situaci&oacute;n completa.</li>
-            <li><strong>Organizar visualmente:</strong> la cercan&iacute;a, el color, el contraste y los agrupamientos gu&iacute;an la atenci&oacute;n y reducen confusi&oacute;n.</li>
-            <li><strong>Favorecer <em>insight</em>:</strong> buenas preguntas pueden ayudar a reestructurar un problema, no solo a repetir una respuesta.</li>
-            <li><strong>Cuidar el sentido:</strong> aprender no es sumar fragmentos aislados; es construir patrones que permitan interpretar y actuar.</li>
-          </ul>
-        </div>
-      </section>
     </main>
 
     <script>
@@ -911,6 +970,48 @@
             feedback: "Exacto: cambia la estructura percibida del problema.",
           },
         },
+        educationInsight: {
+          tag: "<em>insight</em> en educaci\u00f3n",
+          title: "Cuando entender es reorganizar lo que ya estaba",
+          text:
+            "En el aula, un <em>insight</em> aparece cuando el estudiante deja de ver datos sueltos y descubre una relaci\u00f3n nueva: una regla, una estrategia, una conexi\u00f3n o una forma distinta de plantear el problema.",
+          theory:
+            "Desde la Gestalt, ense\u00f1ar no consiste solo en reforzar respuestas correctas. Tambi\u00e9n implica crear condiciones para que el campo del problema pueda reestructurarse y volverse comprensible.",
+          demo: `<div class="edu-demo" aria-hidden="true">
+            <div class="edu-card"><span>1</span><p><strong>Matem&aacute;tica</strong>Un problema de fracciones se resuelve al ver que las partes pertenecen al mismo todo.</p></div>
+            <div class="edu-card"><span>2</span><p><strong>Lectura</strong>Un texto confuso cobra sentido cuando se identifica la idea central que organiza los p&aacute;rrafos.</p></div>
+            <div class="edu-card"><span>3</span><p><strong>Ciencias</strong>Un experimento deja de ser una receta cuando se comprende la relaci&oacute;n entre variables.</p></div>
+          </div>`,
+          quiz: {
+            title: "\u00bfCu\u00e1l ser\u00eda un ejemplo de <em>insight</em> educativo?",
+            prompt: "La clave es que cambia la manera de organizar el problema.",
+            visual: `<div class="edu-map" aria-hidden="true"><span class="line"></span><span class="line alt"></span><div class="node-box">Datos</div><div class="node-box">Pregunta</div><div class="node-box">Nueva relaci&oacute;n</div><div class="node-box">Estrategia</div><div class="node-box">Soluci&oacute;n</div></div>`,
+            options: ["Descubrir una relaci\u00f3n que reorganiza el problema", "Copiar una definici\u00f3n sin comprenderla", "Responder al azar hasta acertar"],
+            correct: 0,
+            feedback: "S\u00ed: el <em>insight</em> aparece cuando cambia la estructura del problema.",
+          },
+        },
+        educationValue: {
+          tag: "Valor en educaci\u00f3n",
+          title: "Aprender tambi\u00e9n es organizar",
+          text:
+            "La Gestalt ayuda a pensar la ense\u00f1anza como dise\u00f1o de relaciones: no alcanza con acumular datos, hace falta que el estudiante pueda ver una estructura.",
+          theory:
+            "Su valor educativo est\u00e1 en recordar que la comprensi\u00f3n depende del contexto, de la organizaci\u00f3n visual, de las relaciones entre ideas y de la posibilidad de reestructurar lo aprendido.",
+          demo: `<div class="edu-demo" aria-hidden="true">
+            <div class="edu-card"><span>A</span><p><strong>Dar contexto</strong>Una idea se comprende mejor cuando se conecta con un problema o situaci&oacute;n completa.</p></div>
+            <div class="edu-card"><span>B</span><p><strong>Organizar visualmente</strong>La cercan&iacute;a, el color y el contraste gu&iacute;an la atenci&oacute;n y reducen confusi&oacute;n.</p></div>
+            <div class="edu-card"><span>C</span><p><strong>Cuidar el sentido</strong>Aprender no es sumar fragmentos aislados, sino construir patrones para interpretar y actuar.</p></div>
+          </div>`,
+          quiz: {
+            title: "\u00bfQu\u00e9 aporta la Gestalt a la ense\u00f1anza?",
+            prompt: "Pens&aacute; en la diferencia entre acumular informaci\u00f3n y comprender una estructura.",
+            visual: `<div class="edu-map" aria-hidden="true"><span class="line"></span><span class="line alt"></span><div class="node-box">Contexto</div><div class="node-box">Atenci&oacute;n</div><div class="node-box">Organizaci&oacute;n</div><div class="node-box">Sentido</div><div class="node-box">Comprensi&oacute;n</div></div>`,
+            options: ["Ayuda a dise\u00f1ar relaciones significativas", "Reduce el aprendizaje a memoria mec\u00e1nica", "Niega la importancia del contexto"],
+            correct: 0,
+            feedback: "Exacto: la ense\u00f1anza mejora cuando hace visible la organizaci\u00f3n de lo que se aprende.",
+          },
+        },
       };
 
       const buttons = document.querySelectorAll(".principle");
@@ -939,7 +1040,7 @@
           button.innerHTML = option;
           button.addEventListener("click", () => {
             const correct = index === quiz.correct;
-            feedback.textContent = correct
+            feedback.innerHTML = correct
               ? quiz.feedback
               : "Todav\u00eda no: mir\u00e1 qu\u00e9 rasgo organiza primero la escena.";
             feedback.style.color = correct ? "#047c7b" : "#b54b37";
