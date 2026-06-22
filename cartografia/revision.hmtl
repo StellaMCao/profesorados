@@ -1,0 +1,365 @@
+html = """<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartografía social: preguntas para revisar la entrega final</title>
+  <style>
+    :root {
+      --azul: #1e3a5f;
+      --azul-claro: #f4f7fa;
+      --borde: #cfd8dc;
+      --texto: #263238;
+      --gris-fondo: #f8f9fa;
+      --verde: #2e6b4e;
+      --verde-claro: #edf5f1;
+      --dorado: #8a6418;
+      --dorado-claro: #fff7e6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--texto);
+      background-color: #eceff1;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--azul), #466a8f);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 12px;
+      font-size: 2.15rem;
+      line-height: 1.2;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 1.08rem;
+      opacity: 0.94;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .introduccion {
+      background-color: var(--azul-claro);
+      border-left: 5px solid var(--azul);
+      padding: 22px;
+      margin-bottom: 35px;
+      border-radius: 8px;
+    }
+
+    .introduccion p {
+      margin: 0 0 12px;
+    }
+
+    .introduccion p:last-child {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      color: var(--azul);
+      font-size: 1.5rem;
+      border-bottom: 2px solid var(--borde);
+      padding-bottom: 8px;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .tabla-contenedor {
+      margin-bottom: 35px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid var(--borde);
+      padding: 14px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--azul);
+      color: white;
+      font-weight: bold;
+    }
+
+    .col-estructura {
+      width: 25%;
+      font-weight: bold;
+      color: var(--azul);
+      background-color: var(--gris-fondo);
+    }
+
+    .col-preguntas p {
+      margin: 0 0 8px;
+    }
+
+    .col-preguntas p:last-child {
+      margin-bottom: 0;
+    }
+
+    .col-preguntas ul {
+      margin: 4px 0 0;
+      padding-left: 20px;
+    }
+
+    .col-verificacion {
+      text-align: center;
+      width: 115px;
+      vertical-align: middle;
+    }
+
+    .checkbox-control {
+      font-size: 1.25rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .nota-suave {
+      display: block;
+      margin-top: 8px;
+      color: #546e7a;
+      font-size: 0.94rem;
+    }
+
+    .seccion-final {
+      background-color: var(--verde-claro);
+      border: 1px solid #c8e6c9;
+      border-radius: 10px;
+      padding: 25px;
+      margin-top: 35px;
+    }
+
+    .seccion-final h3 {
+      color: var(--verde);
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+    }
+
+    .presentacion {
+      background-color: var(--dorado-claro);
+      border: 1px solid #e1c27a;
+      border-radius: 10px;
+      padding: 22px;
+      margin-top: 24px;
+    }
+
+    .presentacion h3 {
+      color: var(--dorado);
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+    }
+
+    .frase-cierre {
+      margin-top: 40px;
+      padding: 20px;
+      background: var(--gris-fondo);
+      border-radius: 8px;
+      font-style: italic;
+      color: #546e7a;
+      text-align: center;
+      border: 1px dashed var(--borde);
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      main {
+        box-shadow: none;
+        border-radius: 0;
+      }
+      .seccion-final, .introduccion, .presentacion {
+        break-inside: avoid;
+      }
+      th {
+        background-color: #546e7a !important;
+        color: white !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Cartografía social: preguntas para revisar la entrega final</h1>
+      <p>Una guía para mirar el propio recorrido antes de entregar</p>
+    </header>
+
+    <div class="content">
+      <section class="introduccion">
+        <p>
+          Una cartografía social no es un examen de dibujo ni una simple reproducción de un espacio físico.
+          El mapa es el punto de llegada de un proceso: observar, escuchar, preguntar, registrar, conversar
+          e interpretar lo que ocurre en un territorio vivido.
+        </p>
+        <p>
+          Lo más importante no es que el dibujo sea “perfecto”, sino que permita leer una trama:
+          vínculos, recorridos, conflictos, apoyos, cuidados, emociones, barreras, memorias y sentidos.
+        </p>
+        <p>
+          Antes de subir la versión final, usen esta guía de revisión para comprobar si el trabajo muestra
+          no solo el producto terminado, sino también el proceso que permitió construirlo.
+        </p>
+        <p>
+          Las categorías teóricas pueden servir como lentes para mirar mejor, pero la tarea principal
+          no es citar teoría: es cartografiar una experiencia situada. Si usan materiales previos, esos
+          materiales pueden ser insumos o antecedentes, pero no reemplazan una producción propia.
+        </p>
+      </section>
+
+      <section class="tabla-contenedor">
+        <h2>Lo que no puede faltar en la entrega</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Estructura</th>
+              <th>Preguntas para revisar</th>
+              <th style="text-align: center;">¿Está presente?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-estructura">1. Título situado</td>
+              <td class="col-preguntas">
+                <p>¿La cartografía tiene un título claro y situado?</p>
+                <p>¿Ese título permite anticipar qué territorio, experiencia, recorrido o problema se va a mapear?</p>
+                <span class="nota-suave">Puede ser un título de fantasía o metafórico, siempre que ayude a entrar en el recorrido propuesto.</span>
+              </td>
+              <td class="col-verificacion">
+                <span class="checkbox-control">☐ Sí</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-estructura">2. Breve presentación</td>
+              <td class="col-preguntas">
+                <p>¿Se explica qué institución, espacio, grupo, recorrido o experiencia se eligió?</p>
+                <p>¿Queda claro por qué ese territorio es relevante y desde qué pregunta se lo miró?</p>
+                <span class="nota-suave">No hace falta escribir mucho: alcanza con situar el recorte y orientar la lectura.</span>
+              </td>
+              <td class="col-verificacion">
+                <span class="checkbox-control">☐ Sí</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-estructura">3. Cartografía</td>
+              <td class="col-preguntas">
+                <p>¿La entrega incluye una producción gráfica de autoría propia?</p>
+                <p>¿El mapa muestra algo más que un plano general? ¿Aparecen vínculos, recorridos, barreras, apoyos, conflictos, cuidados, emociones, memorias o sentidos presentes en ese territorio?</p>
+                <p>¿Se puede reconocer qué se observa en el territorio actual y/o qué transformaciones se imaginan como posibles?</p>
+              </td>
+              <td class="col-verificacion">
+                <span class="checkbox-control">☐ Sí</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-estructura">4. Leyenda</td>
+              <td class="col-preguntas">
+                <p>¿Se incluye una referencia visible y legible con los íconos, colores, flechas o marcas utilizadas?</p>
+                <p>¿Otra persona podría mirar el mapa y comprender qué significa cada elemento?</p>
+                <span class="nota-suave">La leyenda no es un adorno: es la llave para que el mapa pueda ser leído.</span>
+              </td>
+              <td class="col-verificacion">
+                <span class="checkbox-control">☐ Sí</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-estructura">5. Bitácora</td>
+              <td class="col-preguntas">
+                <p>¿La bitácora permite ver cómo se construyó la cartografía y no solo el resultado final?</p>
+                <p>¿El registro incluye algunas de estas dimensiones?</p>
+                <ul>
+                  <li>Fecha, lugar, encuadre institucional y participantes o voces consultadas.</li>
+                  <li>Modo de recolección de información: observación, conversaciones, recorridos, preguntas, registros escritos u otras estrategias.</li>
+                  <li>Frases, escenas, testimonios o situaciones significativas del territorio.</li>
+                  <li>Implicancia de quien cartografía: qué sorprendió, incomodó, conmovió o hizo pensar.</li>
+                  <li>Cuidados éticos: no exponer nombres reales, proteger datos sensibles y pedir autorización cuando corresponda.</li>
+                </ul>
+              </td>
+              <td class="col-verificacion">
+                <span class="checkbox-control">☐ Sí</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-estructura">6. Conclusión</td>
+              <td class="col-preguntas">
+                <p>¿Se incluye una lectura interpretativa final?</p>
+                <p>¿Se explica qué muestra la cartografía, qué permite pensar, qué voces recupera, qué tensiones o redes aparecen y qué transformaciones podrían imaginarse a partir de lo trabajado?</p>
+                <span class="nota-suave">La conclusión no tiene que cerrar todo: puede abrir preguntas nuevas.</span>
+              </td>
+              <td class="col-verificacion">
+                <span class="checkbox-control">☐ Sí</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="seccion-final">
+        <h3>Antes de subir la versión final</h3>
+        <p>
+          Si pudieron responder “sí” a estas preguntas, la cartografía reúne los elementos necesarios
+          para la entrega final. Recuerden que lo central es poder contar cómo llegaron a esa representación:
+          qué observaron, qué escucharon, qué decisiones tomaron y qué lectura hacen del territorio elegido.
+        </p>
+        <p>
+          La cartografía no tiene que ser perfecta: tiene que ser propia, situada, legible y honesta con el recorrido realizado.
+        </p>
+      </section>
+
+      <section class="presentacion">
+        <h3>Para la presentación</h3>
+        <p>
+          Cada grupo contará con aproximadamente <strong>10 minutos</strong> para presentar el recorrido realizado
+          y la cartografía construida.
+        </p>
+        <p>
+          La idea es que puedan contar no solo qué dibujaron, sino cómo llegaron a esa representación
+          y qué lectura hacen del territorio elegido.
+        </p>
+        <p>
+          Recuerden indicar si van a necesitar proyector o si van a presentar la cartografía en papel.
+        </p>
+      </section>
+
+      <div class="frase-cierre">
+        “Un mapa social no dibuja solo dónde están las cosas: dibuja cómo se vive entre ellas.”
+      </div>
+    </div>
+  </main>
+</body>
+</html>
+
+out.write_text(html, encoding="utf-8")
+print(f"Archivo creado: {out}")
