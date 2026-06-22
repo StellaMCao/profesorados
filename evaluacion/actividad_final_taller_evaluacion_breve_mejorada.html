@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Actividad final de cierre – Taller de Evaluación</title>
+  <style>
+    @page { size: A4; margin: 1.6cm; }
+    :root{
+      --ink:#24201d;
+      --muted:#6f6760;
+      --line:#d8cdc3;
+      --soft:#f7f1ea;
+      --accent:#684832;
+      --accent-soft:#efe2d6;
+      --paper:#fffdfa;
+    }
+    body{
+      font-family: Georgia, 'Times New Roman', serif;
+      color:var(--ink);
+      margin:0;
+      background:linear-gradient(180deg, #f6f1eb 0%, #fffdfa 38%);
+      font-size:12.2pt;
+      line-height:1.38;
+    }
+    main{ max-width: 820px; margin: 22px auto; padding: 30px 34px; background:var(--paper); box-shadow:0 10px 28px rgba(70,45,25,.08); border:1px solid #eee5dc; border-radius:16px; }
+    header{
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      position:relative;
+    }
+    h1{ font-size: 22pt; margin:0 0 5px; font-weight:700; letter-spacing:.2px; }
+    h2{ font-size: 14pt; margin:18px 0 7px; color:var(--accent); border-bottom:1px solid var(--accent-soft); padding-bottom:3px; }
+    p{ margin: 7px 0; }
+    .datos{
+      margin: 14px 0;
+      font-size: 11.5pt;
+    }
+    .acciones{
+      margin: 14px 0 18px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      font-family: Arial, sans-serif;
+    }
+    button{
+      border:0;
+      background:var(--accent);
+      color:white;
+      padding:9px 13px;
+      border-radius:8px;
+      font-size:10.5pt;
+      cursor:pointer;
+    }
+    button:hover{ filter:brightness(1.08); }
+    .ayuda-pdf{
+      color:var(--muted);
+      font-size:9.8pt;
+    }
+    .campo-nombre{
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+      max-width: 100%;
+    }
+    .campo-nombre input{
+      flex:1;
+      border:none;
+      border-bottom:1px solid var(--line);
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size:11.5pt;
+      padding:2px 4px;
+      outline:none;
+      background:transparent;
+      color:var(--ink);
+    }
+    .campo-nombre input::placeholder{ color:#aaa; font-style:italic; }
+    .intro, .caja{
+      background:var(--soft);
+      border-left:4px solid var(--accent);
+      padding:10px 12px;
+      margin:12px 0;
+    }
+    ol{ padding-left: 22px; margin-top: 7px; }
+    li{ margin: 9px 0 12px; }
+    .respuesta{
+      border:1px solid var(--line);
+      border-radius:10px;
+      min-height: 50px;
+      padding: 8px 10px;
+      margin-top: 5px;
+      background: #fff;
+      box-shadow: inset 0 0 0 9999px rgba(255,255,255,.22);
+    }
+    .respuesta.chica{ min-height: 34px; }
+    .respuesta[contenteditable="true"]:empty:before{ content:'escribir aquí'; color:#b8aaa0; font-style:italic; }
+    .pista{ color:var(--muted); font-size: 10.8pt; font-style: italic; }
+    .bibliografia{ font-size: 10.5pt; margin-top: 18px; }
+    .nota{ font-size: 10.8pt; color:var(--muted); }
+
+    /* Rúbrica reflexiva */
+    table.rubrica{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 10.8pt;
+      font-family: Arial, sans-serif;
+    }
+    table.rubrica th, table.rubrica td{
+      border:1px solid var(--line);
+      padding: 7px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.rubrica thead th{
+      background: var(--soft);
+      color: var(--accent);
+      font-weight:700;
+      font-size: 10pt;
+    }
+    table.rubrica td.concepto{
+      font-family: Georgia, 'Times New Roman', serif;
+      font-weight:700;
+      font-size: 11pt;
+      width: 17%;
+    }
+    table.rubrica .escala{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      white-space: nowrap;
+    }
+    table.rubrica .escala label{
+      display:flex;
+      align-items:center;
+      gap:5px;
+      font-size: 9.8pt;
+      cursor:pointer;
+    }
+    table.rubrica td.comentario{
+      width: 33%;
+    }
+    table.rubrica td.comentario .linea-comentario{
+      border:none;
+      border-bottom:1px solid var(--line);
+      width:100%;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 10.5pt;
+      padding: 2px 2px;
+      outline:none;
+      background:transparent;
+      color:var(--ink);
+      margin-bottom: 3px;
+    }
+    .reflexion-final{
+      margin-top: 8px;
+    }
+    .respuesta.grande{ min-height: 95px; }
+    .recomendaciones{ margin-top: 16px; }
+    .lecturas{ font-size:10.3pt; color:var(--muted); margin-top:16px; border-top:1px solid var(--accent-soft); padding-top:10px; }
+
+    @media print{
+      *{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body{ background:white; }
+      main{ padding:0; margin:0; box-shadow:none; border:none; border-radius:0; }
+      .acciones{ display:none; }
+      .respuesta{ break-inside: avoid; }
+      table.rubrica{ break-inside: avoid; }
+      table.rubrica .escala label{ font-size: 9pt; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Actividad final de cierre</h1>
+    <p><strong>Taller de Evaluación</strong></p>
+    <p class="nota">Una invitación a pensar la evaluación como gesto pedagógico, no como trámite.</p>
+  </header>
+
+  <section class="datos">
+    <label class="campo-nombre"><strong>Nombre:</strong><input id="nombre-estudiante" type="text" placeholder="completar aquí" aria-label="Nombre"></label>
+  </section>
+
+  <section class="acciones" aria-label="Acciones para guardar la actividad">
+    <button type="button" onclick="guardarComoPDF()">Guardar como PDF</button>
+    <span class="ayuda-pdf">Sugerencia de nombre: <strong id="nombre-archivo">Actividad final</strong></span>
+  </section>
+
+  <section class="intro">
+    <p>Esta actividad se propone como cierre de cursada. Dado que este cuatrimestre perdimos varias clases, la intención no es “tomar todo”, sino volver sobre algunas ideas fundamentales de la materia.</p>
+    <p>La consigna apunta a una reflexión personal, situada y breve: cómo pensamos la evaluación cuando enseñamos, acompañamos, corregimos, orientamos y decidimos.</p>
+  </section>
+
+  <h2>Consigna</h2>
+  <p>Respondé con frases breves. No se espera una repetición de conceptos, sino una toma de posición: qué sentido tiene evaluar y qué tipo de experiencia formativa queremos construir.</p>
+
+  <ol>
+    <li>
+      <strong>Para mí, evaluar no debería ser solamente...</strong>
+      <div class="respuesta chica" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Evaluar sí debería ayudar a...</strong>
+      <div class="respuesta chica" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Una evaluación inicial tiene sentido cuando...</strong>
+      <p class="pista">Podés pensarla como punto de partida, no como etiquetamiento.</p>
+      <div class="respuesta" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Una evaluación formativa se nota cuando...</strong>
+      <p class="pista">Pensá en acompañamiento, orientación, decisiones durante el proceso.</p>
+      <div class="respuesta" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Una evaluación sumativa sería más justa si...</strong>
+      <p class="pista">No hace falta negar la calificación: se trata de pensar qué lugar ocupa.</p>
+      <div class="respuesta" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Una buena rúbrica no sirve para encerrar, sino para...</strong>
+      <div class="respuesta" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Una retroalimentación que ayuda a aprender debería decir...</strong>
+      <p class="pista">Incluí una frase posible que le escribirías a un estudiante.</p>
+      <div class="respuesta" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Cuando un estudiante se equivoca, una intervención docente valiosa podría ser...</strong>
+      <div class="respuesta" contenteditable="true"></div>
+    </li>
+    <li>
+      <strong>Después de este taller, me quedo pensando que evaluar es...</strong>
+      <div class="respuesta" contenteditable="true"></div>
+    </li>
+  </ol>
+
+  <h2>Criterios de valoración</h2>
+  <p>Se valorará que las respuestas sean personales, claras y vinculadas con las ideas centrales del taller.</p>
+
+  <h2>Un pequeño termómetro de cierre</h2>
+  <p>Antes de cerrar, marcá con qué nivel de apropiación sentís que te queda cada concepto trabajado en el taller. No es una nota: es una foto del proceso para reconocer qué quedó más afianzado y qué conviene seguir revisando. Si querés, agregá un comentario breve.</p>
+
+  <table class="rubrica">
+    <thead>
+      <tr>
+        <th>Concepto</th>
+        <th>Nivel de apropiación</th>
+        <th>Comentario breve (opcional)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="concepto">Evaluación inicial</td>
+        <td>
+          <div class="escala">
+            <label><input type="checkbox"> Necesito revisarlo</label>
+            <label><input type="checkbox"> Lo entiendo en parte</label>
+            <label><input type="checkbox"> Lo tengo bastante claro</label>
+            <label><input type="checkbox"> Lo puedo aplicar con confianza</label>
+          </div>
+        </td>
+        <td class="comentario"><input type="text" class="linea-comentario" placeholder="..."></td>
+      </tr>
+      <tr>
+        <td class="concepto">Evaluación formativa</td>
+        <td>
+          <div class="escala">
+            <label><input type="checkbox"> Necesito revisarlo</label>
+            <label><input type="checkbox"> Lo entiendo en parte</label>
+            <label><input type="checkbox"> Lo tengo bastante claro</label>
+            <label><input type="checkbox"> Lo puedo aplicar con confianza</label>
+          </div>
+        </td>
+        <td class="comentario"><input type="text" class="linea-comentario" placeholder="..."></td>
+      </tr>
+      <tr>
+        <td class="concepto">Evaluación sumativa</td>
+        <td>
+          <div class="escala">
+            <label><input type="checkbox"> Necesito revisarlo</label>
+            <label><input type="checkbox"> Lo entiendo en parte</label>
+            <label><input type="checkbox"> Lo tengo bastante claro</label>
+            <label><input type="checkbox"> Lo puedo aplicar con confianza</label>
+          </div>
+        </td>
+        <td class="comentario"><input type="text" class="linea-comentario" placeholder="..."></td>
+      </tr>
+      <tr>
+        <td class="concepto">Rúbrica</td>
+        <td>
+          <div class="escala">
+            <label><input type="checkbox"> Necesito revisarlo</label>
+            <label><input type="checkbox"> Lo entiendo en parte</label>
+            <label><input type="checkbox"> Lo tengo bastante claro</label>
+            <label><input type="checkbox"> Lo puedo aplicar con confianza</label>
+          </div>
+        </td>
+        <td class="comentario"><input type="text" class="linea-comentario" placeholder="..."></td>
+      </tr>
+      <tr>
+        <td class="concepto">Retroalimentación</td>
+        <td>
+          <div class="escala">
+            <label><input type="checkbox"> Necesito revisarlo</label>
+            <label><input type="checkbox"> Lo entiendo en parte</label>
+            <label><input type="checkbox"> Lo tengo bastante claro</label>
+            <label><input type="checkbox"> Lo puedo aplicar con confianza</label>
+          </div>
+        </td>
+        <td class="comentario"><input type="text" class="linea-comentario" placeholder="..."></td>
+      </tr>
+      <tr>
+        <td class="concepto">Metacognición</td>
+        <td>
+          <div class="escala">
+            <label><input type="checkbox"> Necesito revisarlo</label>
+            <label><input type="checkbox"> Lo entiendo en parte</label>
+            <label><input type="checkbox"> Lo tengo bastante claro</label>
+            <label><input type="checkbox"> Lo puedo aplicar con confianza</label>
+          </div>
+        </td>
+        <td class="comentario"><input type="text" class="linea-comentario" placeholder="..."></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Reflexión final</h2>
+  <p class="pista">Un párrafo breve y personal: qué te llevás de este taller, qué te gustaría seguir pensando o qué te quedó resonando.</p>
+  <div class="respuesta grande reflexion-final" contenteditable="true"></div>
+
+  <section class="recomendaciones">
+    <h2>Una recomendación para seguir mejorando el taller</h2>
+    <p class="pista">Dejame una sugerencia para futuras cursadas: algo que haya ayudado, algo que convendría revisar o una idea que te gustaría que aparezca en próximas ediciones.</p>
+    <div class="respuesta grande" contenteditable="true"></div>
+  </section>
+
+  <section class="lecturas">
+    <p><strong>Lecturas sugeridas para seguir pensando:</strong> no se espera repetirlas, sino usarlas como compañía para pensar la propia posición docente.</p>
+    <p>Anijovich, R., y González, C. (2011). El error como oportunidad para aprender. En <em>Evaluar para aprender: conceptos e instrumentos</em> (1.ª ed., pp. 124-137). Buenos Aires: Aique Grupo Editor.</p>
+    <p>Pérez Gómez, A. I. <em>Ser docente en tiempos de incertidumbre</em>.</p>
+  </section>
+
+</main>
+
+<script>
+  const inputNombre = document.getElementById('nombre-estudiante');
+  const nombreArchivo = document.getElementById('nombre-archivo');
+  const tituloOriginal = document.title;
+
+  function limpiarTexto(texto){
+    return texto
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9ñÑ ]/g, '')
+      .trim();
+  }
+
+  function obtenerApellido(){
+    const nombre = limpiarTexto(inputNombre.value);
+    if(!nombre) return '';
+    const partes = nombre.split(/\s+/);
+    return partes[partes.length - 1];
+  }
+
+  function actualizarNombreArchivo(){
+    const apellido = obtenerApellido();
+    const sugerido = apellido ? `Actividad final - ${apellido}` : 'Actividad final';
+    nombreArchivo.textContent = sugerido;
+    return sugerido;
+  }
+
+  inputNombre.addEventListener('input', actualizarNombreArchivo);
+
+  function guardarComoPDF(){
+    const sugerido = actualizarNombreArchivo();
+    document.title = sugerido;
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => { document.title = tituloOriginal; }, 500);
+    }, 50);
+  }
+
+  window.addEventListener('beforeprint', () => {
+    document.title = actualizarNombreArchivo();
+  });
+</script>
+</body>
+</html>
