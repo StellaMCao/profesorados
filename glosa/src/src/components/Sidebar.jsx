@@ -54,7 +54,7 @@ function ReactionBar({ highlight, basePath, user }) {
 // ──────────────────────────────────────────────────────────
 // Reply components
 // ──────────────────────────────────────────────────────────
-const QUICK_TEMPLATES = [
+const DEFAULT_QUICK_TEMPLATES = [
   'Excelente reflexión 👏',
   '¿Cómo lo relacionás con el texto? 🤔',
   'Revisá esta definición 📖',
@@ -63,23 +63,91 @@ const QUICK_TEMPLATES = [
 
 function ReplyForm({ onSubmit, onCancel, isDocente }) {
   const [text, setText] = useState('');
+  const [templates, setTemplates] = useState(() => {
+    const saved = localStorage.getItem('marginalia_quick_templates');
+    return saved ? JSON.parse(saved) : DEFAULT_QUICK_TEMPLATES;
+  });
+  const [isEditingTmpl, setIsEditingTmpl] = useState(false);
+  const [newTmpl, setNewTmpl] = useState('');
+
+  const saveTemplates = (updated) => {
+    setTemplates(updated);
+    localStorage.setItem('marginalia_quick_templates', JSON.stringify(updated));
+  };
+
+  const addTemplate = () => {
+    if (newTmpl.trim()) {
+      const updated = [...templates, newTmpl.trim()];
+      saveTemplates(updated);
+      setNewTmpl('');
+    }
+  };
+
+  const deleteTemplate = (idx) => {
+    const updated = templates.filter((_, i) => i !== idx);
+    saveTemplates(updated);
+  };
+
   return (
     <div className="animate-pop mt-3 pl-3 border-l-2 border-indigo-400">
       {isDocente && (
         <div className="mb-2 space-y-1">
-          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block">Plantillas docentes:</span>
-          <div className="flex flex-wrap gap-1">
-            {QUICK_TEMPLATES.map((tmpl, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setText(prev => prev ? `${prev} ${tmpl}` : tmpl)}
-                className="text-[10px] bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-md border border-indigo-200 transition-colors"
-              >
-                + {tmpl}
-              </button>
-            ))}
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block">Plantillas docentes:</span>
+            <button
+              type="button"
+              onClick={() => setIsEditingTmpl(v => !v)}
+              className="text-[10px] text-slate-400 hover:text-indigo-600 underline font-medium"
+            >
+              {isEditingTmpl ? '✓ Listo' : '⚙️ Personalizar'}
+            </button>
           </div>
+
+          {isEditingTmpl ? (
+            <div className="bg-indigo-50/70 p-2 rounded-xl border border-indigo-200 space-y-1.5 animate-pop">
+              <div className="flex gap-1">
+                <input
+                  type="text"
+                  value={newTmpl}
+                  onChange={e => setNewTmpl(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTemplate())}
+                  placeholder="Agregar frase rápida (ej: Revisar ortografía)..."
+                  className="flex-1 text-[10px] bg-white border border-indigo-200 rounded px-2 py-1 outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={addTemplate}
+                  disabled={!newTmpl.trim()}
+                  className="text-[10px] bg-indigo-600 text-white font-bold px-2 py-1 rounded disabled:opacity-40"
+                >+ Agregar</button>
+              </div>
+              <div className="flex flex-wrap gap-1 pt-1">
+                {templates.map((tmpl, idx) => (
+                  <span key={idx} className="text-[10px] bg-white text-indigo-900 border border-indigo-200 rounded px-1.5 py-0.5 flex items-center gap-1">
+                    {tmpl}
+                    <button
+                      type="button"
+                      onClick={() => deleteTemplate(idx)}
+                      className="text-red-500 hover:text-red-700 font-bold ml-0.5"
+                    >✕</button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-1">
+              {templates.map((tmpl, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setText(prev => prev ? `${prev} ${tmpl}` : tmpl)}
+                  className="text-[10px] bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-md border border-indigo-200 transition-colors"
+                >
+                  + {tmpl}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
       <textarea
