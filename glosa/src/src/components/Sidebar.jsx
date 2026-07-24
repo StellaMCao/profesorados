@@ -369,6 +369,7 @@ function HighlightCard({ highlight, user, documentId, materia, scrollToHighlight
 export default function Sidebar({ highlights, user, documentId, materia, scrollToHighlight, consigna }) {
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState(null);
+  const [sortBy, setSortBy] = useState('pagina');
 
   // Filter: private highlights only visible to the author and docente
   const visible = highlights.filter(h => {
@@ -388,6 +389,25 @@ export default function Sidebar({ highlights, user, documentId, materia, scrollT
       h.user?.name?.toLowerCase().includes(q) ||
       h.tag?.toLowerCase().includes(q);
     return matchTag && matchSearch;
+  });
+
+  const sorted = [...filtered].sort((a, b) => {
+    if (sortBy === 'pagina') {
+      const pageA = a.position?.pageNumber || a.position?.boundingRect?.pageNumber || 0;
+      const pageB = b.position?.pageNumber || b.position?.boundingRect?.pageNumber || 0;
+      return pageA - pageB;
+    }
+    if (sortBy === 'autor') {
+      const nameA = a.user?.name || '';
+      const nameB = b.user?.name || '';
+      return nameA.localeCompare(nameB);
+    }
+    if (sortBy === 'fecha') {
+      const timeA = new Date(a.createdAt || 0).getTime();
+      const timeB = new Date(b.createdAt || 0).getTime();
+      return timeB - timeA; // newest first
+    }
+    return 0;
   });
 
   const cleanId = documentId?.replace(/\.pdf$/i, '');
@@ -421,7 +441,7 @@ export default function Sidebar({ highlights, user, documentId, materia, scrollT
         </div>
       )}
 
-      {/* Search + filter bar */}
+      {/* Search + filter + sort bar */}
       {highlights.length > 0 && (
         <div className="px-3 pt-3 pb-2 border-b border-slate-100 space-y-2 bg-white flex-shrink-0">
           <div className="relative">
@@ -466,11 +486,24 @@ export default function Sidebar({ highlights, user, documentId, materia, scrollT
             </div>
           )}
 
-          <div className="flex items-center justify-between px-0.5">
+          {/* Count and Sort controls */}
+          <div className="flex items-center justify-between px-0.5 pt-0.5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-heading">
-              {filtered.length} {filtered.length === 1 ? 'anotación' : 'anotaciones'}
+              {sorted.length} {sorted.length === 1 ? 'anotación' : 'anotaciones'}
               {(search || activeTag) && ` de ${visible.length}`}
             </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Orden:</span>
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value)}
+                className="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-lg px-2 py-1 outline-none cursor-pointer hover:bg-indigo-100 transition-colors"
+              >
+                <option value="pagina">📄 Por página</option>
+                <option value="fecha">🕒 Por fecha</option>
+                <option value="autor">👤 Por autor</option>
+              </select>
+            </div>
           </div>
         </div>
       )}
@@ -478,7 +511,7 @@ export default function Sidebar({ highlights, user, documentId, materia, scrollT
       {/* Highlights list */}
       {highlights.length > 0 && (
         <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-slate-50">
-          {filtered.length === 0 ? (
+          {sorted.length === 0 ? (
             <div className="text-center py-10 text-slate-400">
               <p className="text-sm">Sin resultados para tu búsqueda</p>
               <button onClick={() => { setSearch(''); setActiveTag(null); }} className="text-xs text-indigo-600 mt-2 hover:underline">
@@ -486,7 +519,7 @@ export default function Sidebar({ highlights, user, documentId, materia, scrollT
               </button>
             </div>
           ) : (
-            filtered.map((h, i) => (
+            sorted.map((h, i) => (
               <HighlightCard
                 key={h.id || i}
                 highlight={h}
