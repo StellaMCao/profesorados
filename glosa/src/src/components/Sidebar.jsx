@@ -225,14 +225,34 @@ function HighlightCard({ highlight, user, documentId, materia, scrollToHighlight
     }
   };
 
+  const togglePin = async (e) => {
+    e.stopPropagation();
+    await updateDoc(doc(db, `${basePath}/${highlight.id}`), {
+      isPinned: !highlight.isPinned
+    });
+  };
+
   const userColor = highlight.user?.color || getUserColor(highlight.user?.uid || '');
   const pageNum = highlight.position?.pageNumber || highlight.position?.boundingRect?.pageNumber;
+  const isDocente = user?.role === 'docente';
 
   return (
     <div
       onClick={() => scrollToHighlight && scrollToHighlight(highlight)}
-      className="highlight-item bg-white rounded-2xl border border-slate-100 p-4 shadow-xs hover:shadow-md hover:border-slate-200 cursor-pointer group transition-all"
+      className={`highlight-item rounded-2xl border p-4 shadow-xs hover:shadow-md cursor-pointer group transition-all ${
+        highlight.isPinned
+          ? 'bg-amber-50/40 border-amber-300 ring-1 ring-amber-300/50'
+          : 'bg-white border-slate-100 hover:border-slate-200'
+      }`}
     >
+      {/* Pinned badge */}
+      {highlight.isPinned && (
+        <div className="flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full w-fit mb-2 border border-amber-200">
+          <span>⭐</span>
+          <span>Nota Docente Destacada</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -249,6 +269,15 @@ function HighlightCard({ highlight, user, documentId, materia, scrollToHighlight
             <span className="text-[10px] font-semibold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
               Pág. {pageNum}
             </span>
+          )}
+          {isDocente && (
+            <button
+              onClick={togglePin}
+              className={`text-xs p-1 rounded transition-colors ${
+                highlight.isPinned ? 'text-amber-500 hover:text-amber-700' : 'text-slate-300 hover:text-amber-500'
+              }`}
+              title={highlight.isPinned ? 'Quitar destacado' : 'Destacar como nota docente'}
+            >⭐</button>
           )}
           {canManage && !isEditing && (
             <div className="flex items-center gap-1 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -381,6 +410,7 @@ export default function Sidebar({ highlights, user, documentId, materia, scrollT
   const allTags = [...new Set(visible.map(h => h.tag).filter(Boolean))];
 
   const filtered = visible.filter(h => {
+    if (activeTag === '⭐ Destacadas') return h.isPinned;
     const matchTag = !activeTag || h.tag === activeTag;
     const q = search.toLowerCase();
     const matchSearch = !q ||
@@ -461,30 +491,36 @@ export default function Sidebar({ highlights, user, documentId, materia, scrollT
             )}
           </div>
 
-          {/* Tag filter chips */}
-          {allTags.length > 0 && (
-            <div className="flex gap-1.5 flex-wrap">
+          {/* Tag and Special filter chips */}
+          <div className="flex gap-1.5 flex-wrap">
+            <button
+              onClick={() => setActiveTag(null)}
+              className={`text-[10px] px-2.5 py-1 rounded-full border transition-all font-semibold ${
+                !activeTag ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
+              }`}
+            >
+              Todas
+            </button>
+            <button
+              onClick={() => setActiveTag(activeTag === '⭐ Destacadas' ? null : '⭐ Destacadas')}
+              className={`text-[10px] px-2.5 py-1 rounded-full border transition-all font-semibold ${
+                activeTag === '⭐ Destacadas' ? 'bg-amber-500 text-white border-amber-500 shadow-xs' : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'
+              }`}
+            >
+              ⭐ Destacadas
+            </button>
+            {allTags.map(tag => (
               <button
-                onClick={() => setActiveTag(null)}
+                key={tag}
+                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
                 className={`text-[10px] px-2.5 py-1 rounded-full border transition-all font-semibold ${
-                  !activeTag ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
+                  activeTag === tag ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
                 }`}
               >
-                Todas
+                {tag}
               </button>
-              {allTags.map(tag => (
-                <button
-                  key={tag}
-                  onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                  className={`text-[10px] px-2.5 py-1 rounded-full border transition-all font-semibold ${
-                    activeTag === tag ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          )}
+            ))}
+          </div>
 
           {/* Count and Sort controls */}
           <div className="flex items-center justify-between px-0.5 pt-0.5">
