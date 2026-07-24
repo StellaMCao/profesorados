@@ -270,7 +270,7 @@ export async function exportDocPDF(materia, docData) {
         .author { font-weight: 700; font-size: 13px; color: #1e293b; }
         .page-tag { font-size: 11px; font-weight: 600; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 99px; }
         .tag-pill { display: inline-block; font-size: 11px; font-weight: 700; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; }
-        .quote { border-left: 3px solid #6366f1; background: #f8fafc; padding: 8px 12px; font-style: italic; color: #475569; font-size: 12px; margin: 8px 0; border-radius: 0 8px 8px 0; }
+        .quote { border-left: 4px solid #f59e0b; background: #fef3c7; color: #78350f; padding: 8px 12px; font-style: italic; font-size: 12px; margin: 8px 0; border-radius: 0 8px 8px 0; }
         .img-preview { max-height: 200px; max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; margin: 8px 0; }
         .comment { font-size: 13px; color: #0f172a; font-weight: 500; margin-top: 6px; }
         .replies-box { margin-top: 12px; padding-top: 10px; border-top: 1px solid #f1f5f9; }

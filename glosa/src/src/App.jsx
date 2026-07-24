@@ -363,6 +363,15 @@ function App() {
         {/* User Actions */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
+            onClick={() => window.print()}
+            className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-all border border-slate-200 shadow-xs"
+            title="Imprimir o guardar como PDF la pantalla completa del Visor con el PDF y las glosas"
+          >
+            <span>🖨️</span>
+            <span>Imprimir Visor</span>
+          </button>
+
+          <button
             onClick={() => setShowHelpModal(true)}
             className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl transition-all border border-indigo-200/80 shadow-xs"
             title="Ver guía de uso y ayuda"

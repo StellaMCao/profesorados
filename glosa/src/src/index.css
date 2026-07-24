@@ -73,3 +73,28 @@ body {
 .highlight-item:hover {
   transform: translateY(-2px);
 }
+
+/* Print Styles for Viewer Screen */
+@media print {
+  header, button, .no-print, [title="Arrastrá para redimensionar"] {
+    display: none !important;
+  }
+  body, html, #root {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+  .h-screen {
+    height: auto !important;
+  }
+  .overflow-hidden {
+    overflow: visible !important;
+  }
+  .overflow-y-auto {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+  .fixed {
+    position: static !important;
+  }
+}
