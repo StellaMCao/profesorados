@@ -3,7 +3,7 @@ import { db, collection, addDoc, onSnapshot, query, orderBy, auth, signOut, doc,
 import DocumentViewer from './components/DocumentViewer';
 import Sidebar from './components/Sidebar';
 import AuthModal from './components/AuthModal';
-import AdminPanel from './components/AdminPanel';
+import AdminPanel, { exportDocPDF } from './components/AdminPanel';
 import HelpModal from './components/HelpModal';
 
 // Convert Base64 DataURL to Blob URL so PDF.js can load it natively
@@ -86,6 +86,7 @@ function App() {
   const [consigna, setConsigna] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     const saved = localStorage.getItem('marginalia_sidebar_width');
     return saved ? parseInt(saved, 10) : 340;
@@ -363,12 +364,17 @@ function App() {
         {/* User Actions */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <button
-            onClick={() => window.print()}
-            className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-all border border-slate-200 shadow-xs"
-            title="Imprimir o guardar como PDF la pantalla completa del Visor con el PDF y las glosas"
+            onClick={async () => {
+              setExportingPdf(true);
+              await exportDocPDF(materia, { id: documentId, nombre: docTitle, consigna });
+              setExportingPdf(false);
+            }}
+            disabled={exportingPdf}
+            className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition-all border border-slate-200 shadow-xs disabled:opacity-40"
+            title="Exportar reporte PDF completo con consigna, citas de texto, capturas e hilos de respuesta"
           >
             <span>🖨️</span>
-            <span>Imprimir Visor</span>
+            <span>{exportingPdf ? 'Generando...' : 'Exportar PDF'}</span>
           </button>
 
           <button

@@ -223,9 +223,14 @@ function ParticipationStats({ materia, docId }) {
 }
 
 export async function exportDocPDF(materia, docData) {
+  const cleanId = docData.id?.replace(/\.pdf$/i, '');
+  const basePath = materia
+    ? `materias/${materia}/documentos/${cleanId}/highlights`
+    : `documents/${cleanId}/highlights`;
+
   const hSnap = await getDocs(
     query(
-      collection(db, `materias/${materia}/documentos/${docData.id}/highlights`),
+      collection(db, basePath),
       orderBy('createdAt', 'asc')
     )
   );
@@ -235,7 +240,7 @@ export async function exportDocPDF(materia, docData) {
     const h = d.data();
     const repliesSnap = await getDocs(
       query(
-        collection(db, `materias/${materia}/documentos/${docData.id}/highlights/${d.id}/replies`),
+        collection(db, `${basePath}/${d.id}/replies`),
         orderBy('createdAt', 'asc')
       )
     );
