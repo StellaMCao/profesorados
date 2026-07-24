@@ -54,15 +54,39 @@ function ReactionBar({ highlight, basePath, user }) {
 // ──────────────────────────────────────────────────────────
 // Reply components
 // ──────────────────────────────────────────────────────────
-function ReplyForm({ onSubmit, onCancel }) {
+const QUICK_TEMPLATES = [
+  'Excelente reflexión 👏',
+  '¿Cómo lo relacionás con el texto? 🤔',
+  'Revisá esta definición 📖',
+  'Muy buen punto para debatir 💡'
+];
+
+function ReplyForm({ onSubmit, onCancel, isDocente }) {
   const [text, setText] = useState('');
   return (
     <div className="animate-pop mt-3 pl-3 border-l-2 border-indigo-400">
+      {isDocente && (
+        <div className="mb-2 space-y-1">
+          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block">Plantillas docentes:</span>
+          <div className="flex flex-wrap gap-1">
+            {QUICK_TEMPLATES.map((tmpl, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setText(prev => prev ? `${prev} ${tmpl}` : tmpl)}
+                className="text-[10px] bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-md border border-indigo-200 transition-colors"
+              >
+                + {tmpl}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       <textarea
         autoFocus
         value={text}
         onChange={e => setText(e.target.value)}
-        placeholder="Escribe tu respuesta..."
+        placeholder="Escribí tu respuesta..."
         className="w-full text-xs border border-slate-200 rounded-xl p-2.5 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 resize-none h-16 transition-all"
       />
       <div className="flex gap-2 mt-1.5 justify-end">
@@ -372,7 +396,7 @@ function HighlightCard({ highlight, user, documentId, materia, scrollToHighlight
         </span>
         {showReplyForm ? (
           <div className="w-full">
-            <ReplyForm onSubmit={handleReply} onCancel={() => setShowReplyForm(false)} />
+            <ReplyForm onSubmit={handleReply} onCancel={() => setShowReplyForm(false)} isDocente={isDocente} />
           </div>
         ) : (
           <button

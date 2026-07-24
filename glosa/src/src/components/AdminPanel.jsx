@@ -86,6 +86,64 @@ async function exportDocCSV(materia, docData) {
   URL.revokeObjectURL(url);
 }
 
+const printStudentReport = async (materia, docId, studentName) => {
+  const snap = await getDocs(query(
+    collection(db, `materias/${materia}/documentos/${docId}/highlights`),
+    orderBy('createdAt', 'asc')
+  ));
+  const studentHighlights = [];
+  snap.forEach(d => {
+    const h = d.data();
+    if (h.user?.name === studentName) {
+      studentHighlights.push(h);
+    }
+  });
+
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Reporte de Participación - ${studentName}</title>
+      <style>
+        body { font-family: system-ui, sans-serif; padding: 30px; color: #1e293b; max-width: 800px; margin: 0 auto; }
+        h1 { color: #4338ca; font-size: 22px; margin-bottom: 4px; }
+        h2 { color: #64748b; font-size: 14px; font-weight: normal; margin-top: 0; }
+        .meta { background: #f1f5f9; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin: 20px 0; }
+        .card { border: 1px solid #e2e8f0; border-left: 4px solid #4338ca; padding: 12px 16px; margin-bottom: 12px; border-radius: 6px; }
+        .tag { display: inline-block; background: #e0e7ff; color: #3730a3; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: bold; }
+        .quote { font-style: italic; color: #64748b; margin: 8px 0; border-left: 2px solid #cbd5e1; padding-left: 8px; }
+        .footer { text-align: center; margin-top: 40px; font-size: 11px; color: #94a3b8; border-t: 1px solid #e2e8f0; padding-top: 10px; }
+      </style>
+    </head>
+    <body>
+      <h1>Reporte de Participación Individual</h1>
+      <h2>Estudiante: <strong>${studentName}</strong> | Materia: <strong>${materia.replace(/-/g, ' ')}</strong></h2>
+      <div class="meta">
+        <strong>Documento:</strong> ${docId}<br>
+        <strong>Total de glosas:</strong> ${studentHighlights.length}<br>
+        <strong>Fecha de emisión:</strong> ${new Date().toLocaleDateString('es-AR')}
+      </div>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
+      ${studentHighlights.map((h, i) => `
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #64748b;">
+            <span><strong>Anotación #${i + 1}</strong> ${h.position?.pageNumber ? `· Pág. ${h.position.pageNumber}` : ''}</span>
+            <span>${h.createdAt ? new Date(h.createdAt).toLocaleString('es-AR') : ''}</span>
+          </div>
+          ${h.tag ? `<span class="tag" style="margin-top: 6px;">${h.tag}</span>` : ''}
+          ${h.content?.text ? `<div class="quote">"${h.content.text}"</div>` : ''}
+          <p style="font-size: 13px; font-weight: 500; margin: 6px 0 0 0;">${h.comment || ''}</p>
+        </div>
+      `).join('')}
+      <div class="footer">Generado por Glosa App — ${new Date().toLocaleDateString('es-AR')}</div>
+      <script>window.print();</script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+};
+
 // ── Participation Stats ─────────────────────────────────────
 function ParticipationStats({ materia, docId }) {
   const [stats, setStats] = useState(null);
@@ -130,7 +188,14 @@ function ParticipationStats({ materia, docId }) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="text-xs font-medium text-slate-700 truncate">{u.name}</span>
-                  <span className="text-xs text-slate-400 ml-2 flex-shrink-0">{u.count} glosa{u.count !== 1 ? 's' : ''} · {u.pages.size} pág.</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-400 ml-2 flex-shrink-0">{u.count} glosa{u.count !== 1 ? 's' : ''} · {u.pages.size} pág.</span>
+                    <button
+                      onClick={() => printStudentReport(materia, docId, u.name)}
+                      className="text-[10px] bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 font-semibold px-2 py-0.5 rounded border border-slate-200 transition-colors"
+                      title="Imprimir reporte de este estudiante"
+                    >🖨️ Reporte</button>
+                  </div>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5">
                   <div className="bg-indigo-500 h-1.5 rounded-full transition-all" style={{ width: `${(u.count / maxCount) * 100}%` }} />
