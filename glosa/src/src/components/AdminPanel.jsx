@@ -222,11 +222,122 @@ function ParticipationStats({ materia, docId }) {
   );
 }
 
+export async function exportDocPDF(materia, docData) {
+  const hSnap = await getDocs(
+    query(
+      collection(db, `materias/${materia}/documentos/${docData.id}/highlights`),
+      orderBy('createdAt', 'asc')
+    )
+  );
+
+  const items = [];
+  for (const d of hSnap.docs) {
+    const h = d.data();
+    const repliesSnap = await getDocs(
+      query(
+        collection(db, `materias/${materia}/documentos/${docData.id}/highlights/${d.id}/replies`),
+        orderBy('createdAt', 'asc')
+      )
+    );
+    const replies = [];
+    repliesSnap.forEach(r => replies.push(r.data()));
+    items.push({ ...h, replies });
+  }
+
+  items.sort((a, b) => {
+    const pageA = a.position?.pageNumber || a.position?.boundingRect?.pageNumber || 0;
+    const pageB = b.position?.pageNumber || b.position?.boundingRect?.pageNumber || 0;
+    if (pageA !== pageB) return pageA - pageB;
+    return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+  });
+
+  const printWin = window.open('', '_blank');
+  printWin.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Documento y Glosas - ${docData.nombre || docData.id}</title>
+      <style>
+        body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #0f172a; max-width: 850px; margin: 0 auto; line-height: 1.5; }
+        h1 { color: #4338ca; font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+        .materia { font-size: 13px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .consigna-box { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 14px 18px; margin: 20px 0; }
+        .consigna-title { font-size: 11px; font-weight: 800; color: #4338ca; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .consigna-text { font-size: 13px; color: #1e1b4b; }
+        .meta-bar { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 8px; font-size: 12px; color: #475569; margin-bottom: 24px; display: flex; justify-content: space-between; }
+        .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 16px; page-break-inside: avoid; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .author { font-weight: 700; font-size: 13px; color: #1e293b; }
+        .page-tag { font-size: 11px; font-weight: 600; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 99px; }
+        .tag-pill { display: inline-block; font-size: 11px; font-weight: 700; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; }
+        .quote { border-left: 3px solid #6366f1; background: #f8fafc; padding: 8px 12px; font-style: italic; color: #475569; font-size: 12px; margin: 8px 0; border-radius: 0 8px 8px 0; }
+        .img-preview { max-height: 200px; max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; margin: 8px 0; }
+        .comment { font-size: 13px; color: #0f172a; font-weight: 500; margin-top: 6px; }
+        .replies-box { margin-top: 12px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+        .reply-item { background: #f8fafc; border-left: 2px solid #cbd5e1; padding: 6px 10px; font-size: 12px; margin-top: 6px; border-radius: 0 6px 6px 0; }
+        .reply-author { font-weight: 700; color: #334155; font-size: 11px; }
+        .footer { text-align: center; margin-top: 40px; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 16px; }
+        @media print {
+          body { padding: 0; }
+          .card { page-break-inside: avoid; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="materia">Materia: ${materia.replace(/-/g, ' ')}</div>
+      <h1>${docData.nombre || docData.id}</h1>
+      
+      <div class="meta-bar">
+        <span>📄 <strong>${items.length}</strong> glosas registradas</span>
+        <span>📅 Emitido el ${new Date().toLocaleDateString('es-AR')}</span>
+      </div>
+
+      ${docData.consigna ? `
+        <div class="consigna-box">
+          <div class="consigna-title">📌 Consigna de Lectura Docente</div>
+          <div class="consigna-text">${docData.consigna}</div>
+        </div>
+      ` : ''}
+
+      ${items.map((h, i) => `
+        <div class="card">
+          <div class="card-header">
+            <span class="author">${h.user?.name || 'Estudiante'} ${h.isPrivate ? '🔒 (Privada)' : ''}</span>
+            <span class="page-tag">${h.position?.pageNumber ? `Pág. ${h.position.pageNumber}` : `Glosa #${i + 1}`}</span>
+          </div>
+          ${h.tag ? `<span class="tag-pill">${h.tag}</span>` : ''}
+          ${h.content?.text ? `<div class="quote">"${h.content.text}"</div>` : ''}
+          ${h.content?.image ? `<div><img src="${h.content.image}" class="img-preview" /></div>` : ''}
+          <div class="comment">${h.comment || ''}</div>
+          
+          ${h.replies && h.replies.length > 0 ? `
+            <div class="replies-box">
+              ${h.replies.map(r => `
+                <div class="reply-item">
+                  <span class="reply-author">↳ ${r.user?.name || 'Respuesta'}:</span> ${r.text || ''}
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
+
+      <div class="footer">Glosa App — Plataforma de Anotación Colaborativa | Stella Maris Cao</div>
+      <script>
+        setTimeout(() => { window.print(); }, 500);
+      </script>
+    </body>
+    </html>
+  `);
+  printWin.document.close();
+}
+
 // ── Document Card ───────────────────────────────────────────
 function DocCard({ docData, materia, baseUrl }) {
   const [commentCount, setCommentCount] = useState(0);
   const [deleting, setDeleting] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [exportingPdf, setExportingPdf] = useState(false);
   const [showConsigna, setShowConsigna] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [consigna, setConsigna] = useState(docData.consigna || '');
@@ -255,6 +366,7 @@ function DocCard({ docData, materia, baseUrl }) {
   };
 
   const handleExport = async () => { setExporting(true); await exportDocCSV(materia, docData); setExporting(false); };
+  const handleExportPDF = async () => { setExportingPdf(true); await exportDocPDF(materia, docData); setExportingPdf(false); };
 
   const saveConsigna = async () => {
     setSavingConsigna(true);
@@ -275,13 +387,13 @@ function DocCard({ docData, materia, baseUrl }) {
         <div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
           <button onClick={() => window.open(link, '_blank')} className="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg font-medium transition-colors">Abrir</button>
           <button onClick={() => copyToClipboard(link)} className="text-xs bg-green-50 hover:bg-green-100 text-green-700 px-3 py-1.5 rounded-lg font-medium transition-colors">🔗 Enlace</button>
-          <button onClick={handleExport} disabled={exporting} className="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg font-medium transition-colors disabled:opacity-40">{exporting ? '...' : '📥'}</button>
+          <button onClick={handleExport} disabled={exporting} className="text-xs bg-amber-50 hover:bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg font-medium transition-colors disabled:opacity-40" title="Exportar CSV Excel">{exporting ? '...' : '📊 CSV'}</button>
           <button onClick={handleDelete} disabled={deleting} className="text-xs bg-red-50 hover:bg-red-100 text-red-600 px-2 py-1.5 rounded-lg transition-colors">🗑️</button>
         </div>
       </div>
 
       {/* Secondary actions bar */}
-      <div className="border-t border-slate-50 px-4 py-2 flex gap-3 bg-slate-50/50">
+      <div className="border-t border-slate-50 px-4 py-2 flex gap-3 bg-slate-50/50 flex-wrap">
         <button
           onClick={() => { setShowConsigna(v => !v); setShowStats(false); }}
           className={`text-xs font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-lg transition-colors ${showConsigna ? 'bg-indigo-100 text-indigo-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
@@ -293,6 +405,14 @@ function DocCard({ docData, materia, baseUrl }) {
           className={`text-xs font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-lg transition-colors ${showStats ? 'bg-emerald-100 text-emerald-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'}`}
         >
           📊 Participación
+        </button>
+        <button
+          onClick={handleExportPDF}
+          disabled={exportingPdf}
+          className="text-xs font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition-colors disabled:opacity-40"
+          title="Generar e imprimir reporte PDF completo con consigna, glosas, respuestas e imágenes"
+        >
+          🖨️ {exportingPdf ? 'Generando...' : 'Exportar PDF'}
         </button>
       </div>
 
