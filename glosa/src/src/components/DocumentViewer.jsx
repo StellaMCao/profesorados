@@ -120,12 +120,40 @@ function HighlightTip({ onConfirm, onOpen, customTags = [] }) {
 }
 
 export default function DocumentViewer({ url, highlights, addHighlight, scrollRef, user, customTags = [] }) {
+  const [areaMode, setAreaMode] = useState(false);
   const [showTip, setShowTip] = useState(() => {
     return localStorage.getItem('marginalia_hide_student_tip') !== 'true';
   });
 
   return (
     <div className="h-full w-full relative bg-slate-200">
+      {/* Mode Selector Pill Bar */}
+      <div className="absolute top-4 right-4 z-30 flex items-center bg-white/95 backdrop-blur-md p-1 rounded-2xl border border-slate-200/80 shadow-md">
+        <button
+          onClick={() => setAreaMode(false)}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            !areaMode
+              ? 'bg-indigo-600 text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          }`}
+          title="Selección normal de texto"
+        >
+          <span>🔤</span>
+          <span>Texto</span>
+        </button>
+        <button
+          onClick={() => setAreaMode(true)}
+          className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            areaMode
+              ? 'bg-indigo-600 text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          }`}
+          title="Modo imagen: arrastrá un recuadro sobre cualquier imagen, gráfico o esquema"
+        >
+          <span>🖼️</span>
+          <span>Imagen / Área</span>
+        </button>
+      </div>
       {/* Floating student tip banner */}
       {showTip && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-slate-900/90 text-white text-xs px-4 py-2.5 rounded-2xl shadow-xl backdrop-blur-md flex items-center gap-3 border border-slate-700/60 animate-pop max-w-md">
@@ -155,7 +183,7 @@ export default function DocumentViewer({ url, highlights, addHighlight, scrollRe
         {(pdfDocument) => (
           <PdfHighlighter
             pdfDocument={pdfDocument}
-            enableAreaSelection={(event) => event.altKey}
+            enableAreaSelection={(event) => areaMode || event.altKey}
             onScrollChange={() => {}}
             scrollRef={(scrollTo) => {
               if (scrollRef) scrollRef.current = scrollTo;

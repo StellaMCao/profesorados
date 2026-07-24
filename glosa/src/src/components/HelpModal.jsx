@@ -80,6 +80,14 @@ export default function HelpModal({ onClose }) {
               </div>
 
               <div className="flex items-start gap-3 bg-indigo-50/70 p-3 rounded-xl border border-indigo-100">
+                <span className="text-xl">🖼️</span>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-sm mb-0.5">Comentá imágenes, gráficos o esquemas</h4>
+                  <p>Cambiá al modo <strong>🖼️ Imagen / Área</strong> (arriba a la derecha) o mantené la tecla <code>Alt</code> para dibujar un recuadro sobre cualquier ilustración o gráfico del PDF.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 bg-indigo-50/70 p-3 rounded-xl border border-indigo-100">
                 <span className="text-xl">3️⃣</span>
                 <div>
                   <h4 className="font-bold text-slate-800 text-sm mb-0.5">Interactuá en el panel lateral</h4>

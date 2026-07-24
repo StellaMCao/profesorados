@@ -284,6 +284,17 @@ function HighlightCard({ highlight, user, documentId, materia, scrollToHighlight
         </blockquote>
       )}
 
+      {/* Image / Area screenshot preview */}
+      {highlight.content?.image && (
+        <div className="my-2 rounded-xl overflow-hidden border border-slate-200 bg-slate-50 p-1">
+          <img
+            src={highlight.content.image}
+            alt="Captura de imagen o esquema"
+            className="w-full max-h-48 object-contain rounded-lg shadow-xs"
+          />
+        </div>
+      )}
+
       {/* Comment / Edit mode */}
       {isEditing ? (
         <div className="mt-2" onClick={e => e.stopPropagation()}>
