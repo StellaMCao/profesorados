@@ -101,6 +101,11 @@ export default function HelpModal({ onClose }) {
             <>
               <div className="space-y-3">
                 <div className="border border-slate-200 rounded-xl p-3 bg-white">
+                  <span className="font-bold text-slate-800 text-xs block mb-1">🖼️ Anotaciones sobre imágenes y cuadros</span>
+                  <p className="text-slate-600">Usá el selector <strong>"🖼️ Imagen / Área"</strong> (arriba a la derecha) para hacer glosas directamente sobre gráficos, ilustraciones, mapas o esquemas del documento.</p>
+                </div>
+
+                <div className="border border-slate-200 rounded-xl p-3 bg-white">
                   <span className="font-bold text-slate-800 text-xs block mb-1">🔒 Glosas Privadas vs Públicas</span>
                   <p className="text-slate-600">Al crear una glosa podés elegir si es <strong>pública</strong> (toda la clase la ve) o <strong>privada</strong> (únicamente visible para vos y la docente).</p>
                 </div>
