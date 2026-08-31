@@ -514,6 +514,8 @@ function goToScene(sceneId, silent) {
                                 endEl.innerHTML = '<div style="font-size:4em">\\u2705<\\/div><h2 style="font-size:2em;font-weight:bold;margin:0">Actividad finalizada<\\/h2><p style="opacity:0.6;font-size:1.1em;">Pod\\u00e9s cerrar esta pesta\\u00f1a.<\\/p>';
                                 document.body.appendChild(endEl);
                             }, 350);
+                        } else if (btn.targetSceneId && (btn.targetSceneId.startsWith('http://') || btn.targetSceneId.startsWith('https://'))) {
+                            window.open(btn.targetSceneId, '_blank', 'noopener,noreferrer');
                         } else if (btn.targetSceneId) {
                             goToScene(btn.targetSceneId, !!btn.silentNav);
                         }
