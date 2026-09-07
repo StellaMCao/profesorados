@@ -2296,7 +2296,10 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
       resetGame();
     });
 
-    window.addEventListener('resize', renderRoscoLetters);
+    window.addEventListener('resize', () => {
+      renderRoscoLetters();
+      updateActiveTurn();
+    });
 
     // Inicio
     inputTextList.value = PSYCHOLOGY_PRESET;
