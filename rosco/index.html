@@ -57,7 +57,7 @@
     /* Header & Controls */
     header {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -209,11 +209,12 @@
     /* Main Game Layout */
     .game-container {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1200px;
       display: grid;
-      grid-template-columns: 1fr 460px;
-      gap: 1.5rem;
-      align-items: start;
+      grid-template-columns: minmax(360px, 540px) minmax(360px, 1fr);
+      gap: 2rem;
+      align-items: center;
+      margin: 0 auto;
     }
 
     @media (max-width: 950px) {
@@ -221,16 +222,17 @@
         grid-template-columns: 1fr;
         justify-items: center;
         gap: 1.25rem;
+        max-width: 560px;
       }
     }
 
     /* Rosco Container (Circular letters) */
     .rosco-wrapper {
       position: relative;
-      width: min(460px, calc(100vw - 1.5rem));
-      height: min(460px, calc(100vw - 1.5rem));
-      max-width: 460px;
-      max-height: 460px;
+      width: min(530px, calc(100vw - 1.5rem));
+      height: min(530px, calc(100vw - 1.5rem));
+      max-width: 530px;
+      max-height: 530px;
       aspect-ratio: 1 / 1;
       margin: 0 auto;
       display: flex;
@@ -241,8 +243,8 @@
 
     .rosco-center {
       position: absolute;
-      width: 50%;
-      height: 50%;
+      width: 48%;
+      height: 48%;
       border-radius: 50%;
       background: radial-gradient(circle, rgba(27, 38, 59, 0.95), rgba(13, 27, 42, 0.95));
       border: 2px solid rgba(255, 255, 255, 0.15);
@@ -257,7 +259,7 @@
     }
 
     .timer-display {
-      font-size: clamp(1.8rem, 6.5vw, 3.2rem);
+      font-size: clamp(2rem, 7vw, 3.4rem);
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       color: #f8f9fa;
@@ -306,14 +308,14 @@
     /* Circular Letter Badges */
     .rosco-letter {
       position: absolute;
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       background: var(--color-pending);
       border: 2px solid var(--color-pending-border);
       color: #ffffff;
@@ -324,57 +326,19 @@
       touch-action: manipulation;
     }
 
-    /* Responsive adjustments for mobile screens */
-    @media (max-width: 650px) {
-      header {
-        padding: 0.6rem 0.75rem;
-        gap: 0.5rem;
-      }
-      .title-group {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .mode-selector {
-        width: 100%;
-      }
-      .mode-btn {
-        flex: 1;
-        justify-content: center;
-        font-size: 0.75rem;
-        padding: 0.35rem 0.4rem;
-      }
-      .top-actions {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        gap: 0.3rem;
-      }
-      .top-actions .btn {
-        flex: 1 1 auto;
-        padding: 0.4rem 0.35rem;
-        font-size: 0.74rem;
-        justify-content: center;
-      }
-      .play-panel {
-        width: 100%;
-        min-height: auto !important;
-        padding: 1.25rem 1rem !important;
-      }
-    }
-
     .rosco-letter.state-current {
       background: var(--color-current);
       border-color: var(--color-current-border);
       color: #111;
-      transform: scale(1.35) !important;
+      transform: scale(1.32) !important;
       box-shadow: 0 0 25px rgba(255, 183, 3, 0.9), 0 0 10px #ffffff;
       z-index: 20;
       animation: bounce 0.6s infinite alternate ease-in-out;
     }
 
     @keyframes bounce {
-      from { transform: scale(1.3); }
-      to { transform: scale(1.42); }
+      from { transform: scale(1.28); }
+      to { transform: scale(1.38); }
     }
 
     .rosco-letter.state-success {
@@ -438,8 +402,10 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 480px;
-      gap: 1rem;
+      min-height: 500px;
+      gap: 1.2rem;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .question-header {
@@ -517,7 +483,7 @@
       font-size: 1.2rem;
       line-height: 1.55;
       color: #ffffff;
-      min-height: 105px;
+      min-height: 115px;
       display: flex;
       align-items: center;
       word-break: break-word;
@@ -560,6 +526,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.9rem;
+      width: 100%;
     }
 
     .input-wrapper {
@@ -593,23 +560,37 @@
       letter-spacing: normal;
     }
 
+    /* Standard action buttons */
     .action-buttons {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 0.75rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .btn-respond {
       background: linear-gradient(135deg, #2a9d8f, #21867a);
       color: white;
-      font-size: 1.05rem;
-      padding: 0.85rem;
+      font-size: clamp(0.85rem, 1vw, 1.05rem);
+      padding: 0.85rem 0.5rem;
       border: 1px solid #52b788;
       border-radius: 12px;
       cursor: pointer;
       font-weight: 700;
       box-shadow: 0 4px 15px rgba(42, 157, 143, 0.4);
       transition: all 0.2s;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
     }
 
     .btn-respond:hover {
@@ -620,14 +601,25 @@
     .btn-pasapalabra {
       background: linear-gradient(135deg, #3a86ff, #0077b6);
       color: white;
-      font-size: 1.05rem;
-      padding: 0.85rem;
+      font-size: clamp(0.85rem, 1vw, 1.05rem);
+      padding: 0.85rem 0.5rem;
       border: 1px solid #90e0ef;
       border-radius: 12px;
       cursor: pointer;
       font-weight: 700;
       box-shadow: 0 4px 15px rgba(58, 134, 255, 0.4);
       transition: all 0.2s;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
     }
 
     .btn-pasapalabra:hover {
@@ -635,11 +627,13 @@
       transform: translateY(-2px);
     }
 
-    /* Teacher / Manual Judge Buttons */
+    /* Teacher / Manual Judge Buttons (Guaranteed No-Overflow) */
     .moderator-controls {
       display: none;
-      grid-template-columns: 1.2fr 1.2fr 1fr;
-      gap: 0.6rem;
+      width: 100%;
+      box-sizing: border-box;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
     }
 
     .moderator-controls.active {
@@ -647,16 +641,23 @@
     }
 
     .btn-mod-action {
-      padding: 0.9rem;
-      font-size: 1rem;
+      padding: 0.8rem 0.35rem;
+      font-size: clamp(0.75rem, 0.95vw, 0.92rem);
       font-weight: 800;
       border-radius: 12px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
+      gap: 0.3rem;
       transition: all 0.2s ease;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
     }
 
     .btn-mod-action:hover {
@@ -665,10 +666,14 @@
 
     .hotkey-hints {
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem 0.8rem;
       font-size: 0.75rem;
       color: var(--text-muted);
-      padding: 0 0.5rem;
+      padding: 0.2rem 0.25rem;
+      text-align: center;
+      line-height: 1.4;
     }
 
     .hotkey-hints kbd {
@@ -760,43 +765,32 @@
       border-radius: 14px;
       text-align: center;
       border: 2px solid transparent;
-      margin-bottom: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
     }
 
     .result-banner.perfect {
-      background: linear-gradient(135deg, rgba(255, 183, 3, 0.25), rgba(42, 157, 143, 0.35));
+      background: linear-gradient(135deg, rgba(255, 183, 3, 0.2), rgba(251, 133, 0, 0.2));
       border-color: #ffb703;
-      box-shadow: 0 0 25px rgba(255, 183, 3, 0.4);
+      box-shadow: 0 0 30px rgba(255, 183, 3, 0.4);
+    }
+
+    .result-banner.perfect h3 {
+      font-size: 1.6rem;
+      color: #ffb703;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .result-banner.imperfect {
-      background: rgba(0, 180, 216, 0.12);
-      border-color: var(--accent-blue);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--card-border);
     }
 
-    .result-banner h3 {
-      font-size: 1.5rem;
-      font-weight: 900;
-      margin-bottom: 0.35rem;
-    }
-
-    .result-banner p {
-      font-size: 1rem;
-      color: #e2eafc;
-    }
-
-    .notice-box {
-      background: rgba(0, 180, 216, 0.1);
-      border-left: 4px solid var(--accent-blue);
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-      font-size: 0.88rem;
-      color: #d9ed92;
-      line-height: 1.45;
-    }
-
-    .notice-box strong {
-      color: #52b788;
+    .result-banner.imperfect h3 {
+      font-size: 1.4rem;
+      color: #90e0ef;
     }
 
     .form-group {
@@ -853,6 +847,16 @@
       height: 18px;
       accent-color: var(--accent-blue);
       cursor: pointer;
+    }
+
+    .notice-box {
+      background: rgba(0, 180, 216, 0.12);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 0 8px 8px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      color: #caf0f8;
+      line-height: 1.45;
     }
 
     .help-section {
@@ -992,6 +996,60 @@
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
+
+    /* Responsive adjustments for mobile screens */
+    @media (max-width: 650px) {
+      header {
+        padding: 0.6rem 0.75rem;
+        gap: 0.5rem;
+      }
+      .title-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .mode-selector {
+        width: 100%;
+      }
+      .mode-btn {
+        flex: 1;
+        justify-content: center;
+        font-size: 0.75rem;
+        padding: 0.35rem 0.4rem;
+      }
+      .top-actions {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.3rem;
+      }
+      .top-actions .btn {
+        flex: 1 1 auto;
+        padding: 0.4rem 0.35rem;
+        font-size: 0.74rem;
+        justify-content: center;
+      }
+      .play-panel {
+        width: 100%;
+        min-height: auto !important;
+        padding: 1.25rem 1rem !important;
+        border-radius: 16px;
+      }
+      .current-letter-badge {
+        width: 46px;
+        height: 46px;
+        font-size: 1.6rem;
+      }
+      .definition-box {
+        font-size: 1.05rem;
+        padding: 1rem;
+        min-height: 85px;
+      }
+      .btn-mod-action {
+        padding: 0.75rem 0.2rem;
+        font-size: 0.76rem;
+        gap: 0.2rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -999,103 +1057,107 @@
   <!-- Confetti Canvas for Perfect Score & Particle Bursts -->
   <canvas id="confettiCanvas"></canvas>
 
-  <!-- Header -->
+  <!-- Top Navigation & Controls Bar -->
   <header>
     <div class="title-group">
-      <h1>Rosco</h1>
+      <h1>El Rosco</h1>
       <span id="topicBadge" class="badge-category">Psicología</span>
     </div>
 
-    <!-- Mode Selector: Auto (Teclado) vs Docente / Manual -->
+    <!-- Mode Selector (Auto / Oral Teacher) -->
     <div class="mode-selector">
-      <button id="modeAutoBtn" class="mode-btn active" title="El alumno responde escribiendo en el teclado">
-        <span>⌨️</span> Automático (Escribiendo)
+      <button id="modeAutoBtn" class="mode-btn active" title="El participante escribe las respuestas por teclado">
+        ⌨️ Automático
       </button>
-      <button id="modeTeacherBtn" class="mode-btn" title="El docente o moderador marca acierto, fallo o pasapalabra manualmente">
-        <span>🎓</span> Modo Docente (Oral / Manual)
+      <button id="modeTeacherBtn" class="mode-btn" title="El alumno responde oralmente y el docente califica">
+        🎓 Modo Docente
       </button>
     </div>
 
     <div class="top-actions">
-      <button id="btnHelp" class="btn btn-help" title="Ver guía de ayuda y atajos">
-        <span>❓</span>
-        <span>Ayuda</span>
-      </button>
-      <button id="btnSound" class="btn btn-icon" title="Activar/Silenciar sonido">
+      <button id="btnSound" class="btn btn-icon" title="Activar/Silenciar efectos de sonido">
         <svg id="soundIconOn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-        <svg id="soundIconOff" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+        <svg id="soundIconOff" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><line x1="1" y1="1" x2="23" y2="23"></line><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg>
       </button>
-      <button id="btnPause" class="btn" title="Pausar / Reanudar partida">
+      <button id="btnPause" class="btn" title="Pausar el tiempo y juego">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
         <span>Pausar</span>
       </button>
-      <button id="btnRestart" class="btn" title="Reiniciar rosco actual">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+      <button id="btnRestart" class="btn" title="Reiniciar partida con el mismo tema">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
         <span>Reiniciar</span>
       </button>
-      <button id="btnSettings" class="btn btn-primary" title="Editar palabras, timer y exportar">
+      <button id="btnSettings" class="btn btn-primary" title="Personalizar tiempo, palabras y exportar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         <span>Personalizar</span>
+      </button>
+      <button id="btnHelp" class="btn btn-help" title="Instrucciones de juego y atajos de teclado">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span>Ayuda</span>
       </button>
     </div>
   </header>
 
-  <!-- Main Game Workspace -->
+  <!-- Main Game Stage -->
   <main class="game-container">
-    <!-- Circular Rosco -->
-    <div class="rosco-wrapper" id="roscoWrapper">
+
+    <!-- Rosco Column (Left) -->
+    <section class="rosco-wrapper" id="roscoWrapper">
+      <!-- Center Circle: Timer and Scores -->
       <div class="rosco-center">
         <div id="timerDisplay" class="timer-display">150</div>
         <div class="scoreboard">
-          <div class="score-item">
+          <div class="score-item" title="Aciertos">
             <span id="scoreSuccess" class="count count-success">0</span>
             <span class="label">Aciertos</span>
           </div>
-          <div class="score-item">
+          <div class="score-item" title="Fallos">
             <span id="scoreError" class="count count-error">0</span>
             <span class="label">Fallos</span>
           </div>
-          <div class="score-item">
+          <div class="score-item" title="Pendientes">
             <span id="scorePending" class="count count-pending">26</span>
-            <span class="label">Restantes</span>
+            <span class="label">Restan</span>
           </div>
         </div>
       </div>
-    </div>
+      <!-- 26 Letter Badges injected dynamically by JS -->
+    </section>
 
-    <!-- Play Interaction Panel -->
+    <!-- Play Interaction Panel (Right) -->
     <section class="play-panel">
       <div class="question-header">
         <div class="letter-info">
           <div id="currentLetterBadge" class="current-letter-badge">A</div>
-          <div>
-            <div id="letterRule" class="letter-rule">Empieza por la <span>A</span></div>
-            <small style="color: var(--text-muted);">Rosco de Pasapalabra</small>
+          <div class="letter-rule">
+            <span id="rulePrefix">CONTIENE LA</span>
+            <strong id="ruleLetter" style="color:#ffb703; font-size:1.3rem;">A</strong>
           </div>
         </div>
-
+        
         <div class="header-buttons-right">
-          <button id="btnPeekSolution" class="btn-small-tool" title="Ver/Ocultar la respuesta correcta (Docente)">
-            <span>👁️</span>
-            <span id="peekLabel">Solución</span>
-          </button>
-          <button id="btnSpeakDefinition" class="btn-small-tool" title="Leer definición en voz alta">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          <button id="btnSpeakDefinition" class="btn-small-tool" title="Escuchar la pista con voz artificial">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
             <span>Escuchar</span>
+          </button>
+          <button id="btnPeekSolution" class="btn-small-tool" title="Solo docente: Ver palabra esperada en secreto">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span id="peekLabel">Solución</span>
           </button>
         </div>
       </div>
 
+      <!-- Definition / Clue Box -->
       <div id="definitionBox" class="definition-box">
         Cargando definición...
       </div>
 
-      <!-- Secret solution peek for teacher -->
+      <!-- Teacher secret solution peek box -->
       <div id="solutionPeekBox" class="solution-peek-box">
-        <strong>Respuesta correcta:</strong> <span id="solutionWordText">---</span>
+        🤫 <strong>Respuesta correcta:</strong> <span id="solutionWordText" style="font-weight:800; text-transform:uppercase;">PALABRA</span>
       </div>
 
-      <!-- Teacher Oral Mode Banner -->
+      <!-- Oral/Teacher mode active banner -->
       <div id="teacherBanner" class="teacher-banner">
         <div>🎓 <strong>Modo Docente:</strong> El alumno responde en voz alta. Califica directamente con los botones de abajo o las teclas <strong>1</strong> (Correcto), <strong>2</strong> (Incorrecto) y <strong>3</strong> (Pasapalabra).</div>
       </div>
@@ -1140,7 +1202,7 @@
 
         <div class="hotkey-hints">
           <span id="hintAuto"><kbd>Enter</kbd> Enviar | <kbd>Espacio</kbd> Pasapalabra</span>
-          <span id="hintTeacher" style="display:none;"><kbd>1</kbd> Correcto | <kbd>2</kbd> Incorrecto | <kbd>3</kbd> o <kbd>Espacio</kbd> Pasapalabra | <kbd>S</kbd> Solución</span>
+          <span id="hintTeacher" style="display:none;"><kbd>1</kbd> Correcto | <kbd>2</kbd> Incorrecto | <kbd>3</kbd> / <kbd>Espacio</kbd> Pasapalabra | <kbd>S</kbd> Solución</span>
         </div>
       </form>
     </section>
@@ -1426,7 +1488,6 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
         const now = this.ctx.currentTime;
         
         if (isPerfect) {
-          // Gran fanfarria de victoria
           const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
           notes.forEach((freq, idx) => {
             const osc = this.ctx.createOscillator();
@@ -1461,14 +1522,14 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
     const sound = new SoundEngine();
 
     /* =========================================================================
-       MOTOR DE CONFETI Y EFECTOS FESTIVOS (Canvas + DOM)
+       SISTEMA DE CONFETI Y PARTICULAS
        ========================================================================= */
-    class ConfettiEffect {
+    class ConfettiController {
       constructor() {
         this.canvas = document.getElementById('confettiCanvas');
         this.ctx = this.canvas.getContext('2d');
         this.particles = [];
-        this.animationId = null;
+        this.animId = null;
         this.resize();
         window.addEventListener('resize', () => this.resize());
       }
@@ -1478,122 +1539,77 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
         this.canvas.height = window.innerHeight;
       }
 
-      burstAt(x, y) {
-        const colors = ['#52b788', '#2a9d8f', '#ffb703', '#ffd166', '#00b4d8', '#ffffff', '#ff4d6d'];
-        for (let i = 0; i < 45; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const speed = Math.random() * 7 + 3;
-          this.particles.push({
-            x: x,
-            y: y,
-            size: Math.random() * 7 + 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            speedX: Math.cos(angle) * speed,
-            speedY: Math.sin(angle) * speed - 2,
-            gravity: 0.18,
-            rotation: Math.random() * 360,
-            rotationSpeed: Math.random() * 14 - 7,
-            alpha: 1,
-            decay: Math.random() * 0.02 + 0.015
-          });
-        }
-        if (!this.animationId) {
-          this.animate();
-        }
-      }
-
       launch() {
+        this.stop();
+        const colors = ['#00b4d8', '#ffb703', '#52b788', '#ff4d6d', '#ffffff', '#7209b7', '#f72585'];
         this.particles = [];
-        const colors = ['#ffb703', '#fb8500', '#00b4d8', '#52b788', '#ff4d6d', '#ffffff'];
-        for (let i = 0; i < 180; i++) {
+        for (let i = 0; i < 200; i++) {
           this.particles.push({
-            x: Math.random() * this.canvas.width,
-            y: Math.random() * this.canvas.height - this.canvas.height,
-            size: Math.random() * 9 + 4,
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            vx: (Math.random() - 0.5) * 22,
+            vy: (Math.random() - 0.7) * 22,
+            size: Math.random() * 9 + 5,
             color: colors[Math.floor(Math.random() * colors.length)],
-            speedY: Math.random() * 3.5 + 2,
-            speedX: Math.random() * 2 - 1,
-            gravity: 0,
             rotation: Math.random() * 360,
-            rotationSpeed: Math.random() * 10 - 5,
-            alpha: 1,
-            decay: 0
+            rotSpeed: (Math.random() - 0.5) * 12,
+            gravity: 0.35,
+            drag: 0.96,
+            alpha: 1
           });
         }
-        if (!this.animationId) {
-          this.animate();
-        }
+        this.animate();
       }
 
       animate() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        let activeParticles = false;
+        let activeCount = 0;
 
-        for (let i = this.particles.length - 1; i >= 0; i--) {
-          const p = this.particles[i];
-          p.x += p.speedX;
-          p.y += p.speedY;
-          p.speedY += (p.gravity || 0);
-          p.rotation += p.rotationSpeed;
+        for (let p of this.particles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.vx *= p.drag;
+          p.vy *= p.drag;
+          p.rotation += p.rotSpeed;
+          p.alpha -= 0.0035;
 
-          if (p.decay > 0) {
-            p.alpha -= p.decay;
+          if (p.alpha > 0) {
+            activeCount++;
+            this.ctx.save();
+            this.ctx.globalAlpha = Math.max(0, p.alpha);
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate((p.rotation * Math.PI) / 180);
+            this.ctx.fillStyle = p.color;
+            this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            this.ctx.restore();
           }
-
-          if (p.alpha <= 0 || p.y > this.canvas.height + 50) {
-            this.particles.splice(i, 1);
-            continue;
-          }
-
-          activeParticles = true;
-
-          this.ctx.save();
-          this.ctx.globalAlpha = Math.max(0, p.alpha);
-          this.ctx.translate(p.x, p.y);
-          this.ctx.rotate((p.rotation * Math.PI) / 180);
-          this.ctx.fillStyle = p.color;
-          this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-          this.ctx.restore();
         }
 
-        if (activeParticles) {
-          this.animationId = requestAnimationFrame(() => this.animate());
+        if (activeCount > 0) {
+          this.animId = requestAnimationFrame(() => this.animate());
         } else {
-          cancelAnimationFrame(this.animationId);
-          this.animationId = null;
-          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.stop();
         }
       }
 
       stop() {
-        if (this.animationId) {
-          cancelAnimationFrame(this.animationId);
-          this.animationId = null;
+        if (this.animId) {
+          cancelAnimationFrame(this.animId);
+          this.animId = null;
         }
-        this.particles = [];
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.particles = [];
       }
     }
 
-    const confetti = new ConfettiEffect();
+    const confetti = new ConfettiController();
 
-    function triggerCelebration(letterIndex) {
-      const node = document.getElementById(`letterNode-${letterIndex}`);
-      let x = window.innerWidth / 2;
-      let y = window.innerHeight / 2;
+    function triggerCelebrationPop(letterElement) {
+      letterElement.classList.add('celebrate-pop');
+      setTimeout(() => letterElement.classList.remove('celebrate-pop'), 700);
 
-      if (node) {
-        node.classList.add('celebrate-pop');
-        setTimeout(() => node.classList.remove('celebrate-pop'), 700);
-
-        const rect = node.getBoundingClientRect();
-        x = rect.left + rect.width / 2;
-        y = rect.top + rect.height / 2;
-      }
-
-      confetti.burstAt(x, y);
-
-      const phrases = ['✨ ¡CORRECTO! ✨', '🎉 ¡GENIAL!', '⭐ ¡EXCELENTE!', '🔥 ¡ACERTASTE!', '🎯 ¡BRAVO!', '👏 ¡MUY BIEN!'];
+      const phrases = ['¡Excelente!', '¡Correcto!', '¡Brillante!', '¡Muy bien!', '¡Genial!', '¡Punto!', '¡Así se hace!'];
       const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
 
       const floater = document.createElement('div');
@@ -1726,13 +1742,14 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
         .trim()
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[̀-ͯ]/g, '')
         .replace(/[^a-z0-9]/g, '');
     }
 
     // Parser de "Palabra: Definición"
     function parseWordList(rawText) {
-      const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const lines = rawText.split('
+').map(l => l.trim()).filter(l => l.length > 0);
       const parsedItems = [];
 
       for (let line of lines) {
@@ -1790,13 +1807,28 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
 
       const count = questions.length;
       const rect = roscoWrapper.getBoundingClientRect();
-      const size = rect.width > 0 ? rect.width : Math.min(window.innerWidth - 24, 460);
+      const size = rect.width > 0 ? rect.width : Math.min(window.innerWidth - 24, 530);
       const centerOffset = size / 2;
 
       // Dynamic radius and letter sizing based on measured container size
-      const radius = size * 0.405;
-      const letterSize = size < 360 ? 28 : (size < 430 ? 32 : 42);
-      const fontSize = size < 360 ? '0.75rem' : (size < 430 ? '0.85rem' : '1.1rem');
+      let radius, letterSize, fontSize;
+      if (size >= 480) {
+        radius = size * 0.415;
+        letterSize = 44;
+        fontSize = '1.15rem';
+      } else if (size >= 400) {
+        radius = size * 0.41;
+        letterSize = 38;
+        fontSize = '1.02rem';
+      } else if (size >= 340) {
+        radius = size * 0.405;
+        letterSize = 32;
+        fontSize = '0.85rem';
+      } else {
+        radius = size * 0.40;
+        letterSize = 27;
+        fontSize = '0.72rem';
+      }
 
       questions.forEach((q, index) => {
         const el = document.createElement('div');
@@ -1839,25 +1871,29 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
         currentIndex = nextPending;
       }
 
-      const q = questions[currentIndex];
-
-      questions.forEach((item, idx) => {
-        const node = document.getElementById(`letterNode-${idx}`);
-        if (node) {
-          node.className = `rosco-letter state-${item.status}`;
-          if (idx === currentIndex) {
-            node.classList.add('state-current');
-          }
-        }
+      document.querySelectorAll('.rosco-letter').forEach((el, idx) => {
+        el.classList.toggle('state-current', idx === currentIndex);
       });
 
+      const q = questions[currentIndex];
       currentLetterBadge.textContent = q.letter;
-      letterRule.innerHTML = q.type === 'empieza' 
-        ? `Empieza por la letra <span>${q.letter}</span>` 
-        : `Contiene la letra <span>${q.letter}</span>`;
-      
+      currentLetterBadge.style.color = '#0d1b2a';
+
+      const rulePrefix = document.getElementById('rulePrefix');
+      const ruleLetter = document.getElementById('ruleLetter');
+      if (q.type === 'empieza') {
+        rulePrefix.textContent = "EMPIEZA POR LA";
+      } else {
+        rulePrefix.textContent = "CONTIENE LA";
+      }
+      ruleLetter.textContent = q.letter;
+
       definitionBox.textContent = q.definition;
       solutionWordText.textContent = q.word;
+
+      if (gameConfig.autoSpeak) {
+        speech.speakCurrentQuestion();
+      }
 
       answerInput.value = '';
       if (gameConfig.mode === 'auto') {
@@ -1865,18 +1901,14 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       }
 
       updateScoreCounters();
-
-      if (gameConfig.autoSpeak && !isPaused && !isGameOver) {
-        speech.speakCurrentQuestion();
-      }
     }
 
-    function findNextAvailableIndex(startIndex) {
-      const len = questions.length;
-      for (let i = 1; i <= len; i++) {
-        const idx = (startIndex + i) % len;
-        if (questions[idx].status === 'pending' || questions[idx].status === 'pasapalabra') {
-          return idx;
+    function findNextAvailableIndex(fromIndex) {
+      const count = questions.length;
+      for (let i = 1; i <= count; i++) {
+        const nextIdx = (fromIndex + i) % count;
+        if (questions[nextIdx].status === 'pending' || questions[nextIdx].status === 'pasapalabra') {
+          return nextIdx;
         }
       }
       return -1;
@@ -1892,62 +1924,82 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       scorePending.textContent = pending;
     }
 
-    // Responder (Modo Auto)
+    // Procesar respuesta (Modo Automático)
     function submitAnswer() {
-      if (isGameOver || isPaused) return;
-      const current = questions[currentIndex];
-      const given = answerInput.value;
-      const isCorrect = cleanString(given) === cleanString(current.word);
+      if (isPaused || isGameOver) return;
 
-      current.userAnswer = given;
+      const rawInput = answerInput.value.trim();
+      if (!rawInput) return;
 
-      if (isCorrect) {
-        current.status = 'success';
-        sound.playSuccess();
-        triggerCelebration(currentIndex);
+      const userAnsClean = cleanString(rawInput);
+      const targetAnsClean = cleanString(questions[currentIndex].word);
+
+      questions[currentIndex].userAnswer = rawInput;
+
+      if (userAnsClean === targetAnsClean) {
+        handleTurnResult(true);
       } else {
-        current.status = 'error';
-        sound.playError();
+        handleTurnResult(false);
       }
-
-      advanceTurn();
     }
 
-    // Calificar Manualmente (Modo Docente)
+    // Forzar resultado manual (Modo Docente)
     function forceManualResult(isSuccess) {
-      if (isGameOver || isPaused) return;
-      const current = questions[currentIndex];
-      current.userAnswer = isSuccess ? current.word : 'Marcado incorrecto por docente';
+      if (isPaused || isGameOver) return;
+      questions[currentIndex].userAnswer = isSuccess ? questions[currentIndex].word : "(Evaluado incorrecto por docente)";
+      handleTurnResult(isSuccess);
+    }
+
+    function handleTurnResult(isSuccess) {
+      const q = questions[currentIndex];
+      const letterNode = document.getElementById(`letterNode-${currentIndex}`);
 
       if (isSuccess) {
-        current.status = 'success';
+        q.status = 'success';
+        if (letterNode) {
+          letterNode.className = 'rosco-letter state-success';
+          triggerCelebrationPop(letterNode);
+        }
         sound.playSuccess();
-        triggerCelebration(currentIndex);
-        showToast(`✓ [${current.letter}] Correcto`);
       } else {
-        current.status = 'error';
+        q.status = 'error';
+        if (letterNode) {
+          letterNode.className = 'rosco-letter state-error';
+        }
         sound.playError();
-        showToast(`✗ [${current.letter}] Incorrecto (Era: ${current.word})`);
       }
-      advanceTurn();
-    }
 
-    function doPasapalabra() {
-      if (isGameOver || isPaused) return;
-      const current = questions[currentIndex];
-      current.status = 'pasapalabra';
-      sound.playPasapalabra();
-      showToast(`↻ [${current.letter}] Pasapalabra`);
-      advanceTurn();
-    }
-
-    function advanceTurn() {
-      const next = findNextAvailableIndex(currentIndex);
-      if (next === -1) {
+      const nextIdx = findNextAvailableIndex(currentIndex);
+      if (nextIdx === -1) {
         updateScoreCounters();
         finishGame();
       } else {
-        currentIndex = next;
+        currentIndex = nextIdx;
+        updateActiveTurn();
+      }
+    }
+
+    function doPasapalabra() {
+      if (isPaused || isGameOver) return;
+
+      const q = questions[currentIndex];
+      const letterNode = document.getElementById(`letterNode-${currentIndex}`);
+
+      if (q.status === 'pending') {
+        q.status = 'pasapalabra';
+        if (letterNode) {
+          letterNode.className = 'rosco-letter state-pasapalabra';
+        }
+      }
+
+      sound.playPasapalabra();
+
+      const nextIdx = findNextAvailableIndex(currentIndex);
+      if (nextIdx === -1) {
+        updateScoreCounters();
+        finishGame();
+      } else {
+        currentIndex = nextIdx;
         updateActiveTurn();
       }
     }
@@ -1964,14 +2016,10 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
 
           if (timer <= 15) {
             timerDisplay.classList.add('low-time');
-          } else {
-            timerDisplay.classList.remove('low-time');
           }
 
           if (timer <= 0) {
             clearInterval(timerInterval);
-            timer = 0;
-            timerDisplay.textContent = 0;
             finishGame();
           }
         }
@@ -1981,72 +2029,27 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
     function togglePause() {
       if (isGameOver) return;
       isPaused = !isPaused;
+
       if (isPaused) {
         btnPause.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Reanudar</span>`;
-        definitionBox.textContent = "Partida en pausa. Haz clic en 'Reanudar' para continuar.";
+        btnPause.classList.add('btn-primary');
         answerInput.disabled = true;
-        window.speechSynthesis && window.speechSynthesis.cancel();
+        showToast('Juego en pausa');
       } else {
         btnPause.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg><span>Pausar</span>`;
+        btnPause.classList.remove('btn-primary');
         answerInput.disabled = false;
-        updateActiveTurn();
+        if (gameConfig.mode === 'auto') answerInput.focus();
+        showToast('Juego reanudado');
       }
     }
 
-    // Renderizar la lista de resultados con filtro
-    function renderResultList() {
-      wordResultList.innerHTML = '';
-      
-      const filtered = questions.filter(q => {
-        if (currentResultFilter === 'errors') return q.status === 'error' || q.status === 'pending' || q.status === 'pasapalabra';
-        if (currentResultFilter === 'successes') return q.status === 'success';
-        return true;
-      });
-
-      if (filtered.length === 0) {
-        wordResultList.innerHTML = `<div style="padding:1.5rem; text-align:center; color:var(--text-muted);">No hay palabras en esta categoría.</div>`;
-        return;
-      }
-
-      filtered.forEach(q => {
-        const item = document.createElement('div');
-        item.className = 'word-result-item';
-
-        let badgeClass = 'badge-pend';
-        let badgeText = 'Sin responder';
-        let detailHtml = '';
-
-        if (q.status === 'success') {
-          badgeClass = 'badge-ok';
-          badgeText = '✓ Correcta';
-          detailHtml = `<div style="color:#52b788; font-size:0.8rem; font-weight:600;">Respuesta acertada: ${q.word}</div>`;
-        } else if (q.status === 'error') {
-          badgeClass = 'badge-err';
-          badgeText = `✗ Fallo`;
-          const userAnsText = q.userAnswer ? `Tu respuesta: "${q.userAnswer}"` : 'Sin respuesta';
-          detailHtml = `<div style="color:#ff4d6d; font-size:0.8rem; font-weight:600;">${userAnsText} — Correcta: <strong style="color:#fff;">${q.word}</strong></div>`;
-        } else {
-          badgeClass = 'badge-pend';
-          badgeText = '⏳ No respondida';
-          detailHtml = `<div style="color:#90e0ef; font-size:0.8rem;">Palabra esperada: <strong>${q.word}</strong></div>`;
-        }
-
-        item.innerHTML = `
-          <div class="result-row-top">
-            <strong>Letra [ ${q.letter} ] — ${q.word}</strong>
-            <span class="result-badge ${badgeClass}">${badgeText}</span>
-          </div>
-          ${detailHtml}
-          <div style="color:var(--text-muted); font-size:0.75rem; margin-top:2px;">${q.definition}</div>
-        `;
-        wordResultList.appendChild(item);
-      });
-    }
-
+    // Fin de partida
     function finishGame() {
       isGameOver = true;
       clearInterval(timerInterval);
       window.speechSynthesis && window.speechSynthesis.cancel();
+      answerInput.disabled = true;
 
       const total = questions.length;
       const successes = questions.filter(q => q.status === 'success').length;
@@ -2085,6 +2088,53 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       filterAll.classList.toggle('active', currentResultFilter === 'all');
       filterErrors.classList.toggle('active', currentResultFilter === 'errors');
       filterSuccesses.classList.toggle('active', currentResultFilter === 'successes');
+    }
+
+    function renderResultList() {
+      wordResultList.innerHTML = '';
+
+      let filtered = questions;
+      if (currentResultFilter === 'errors') {
+        filtered = questions.filter(q => q.status === 'error');
+      } else if (currentResultFilter === 'successes') {
+        filtered = questions.filter(q => q.status === 'success');
+      }
+
+      if (filtered.length === 0) {
+        wordResultList.innerHTML = `<div style="padding:1.5rem; text-align:center; color:var(--text-muted);">No hay elementos en esta categoría.</div>`;
+        return;
+      }
+
+      filtered.forEach(q => {
+        const item = document.createElement('div');
+        item.className = 'word-result-item';
+
+        let badgeHtml = '';
+        if (q.status === 'success') {
+          badgeHtml = `<span class="result-badge badge-ok">✓ ACIERTO</span>`;
+        } else if (q.status === 'error') {
+          badgeHtml = `<span class="result-badge badge-err">✗ FALLO</span>`;
+        } else {
+          badgeHtml = `<span class="result-badge badge-pend">⏳ PENDIENTE</span>`;
+        }
+
+        const rulePrefix = q.type === 'empieza' ? 'Empieza por' : 'Contiene';
+
+        item.innerHTML = `
+          <div class="result-row-top">
+            <div>
+              <strong style="color:#ffb703; font-size:1rem;">${q.letter}:</strong> 
+              <strong style="color:#fff; text-transform:uppercase; letter-spacing:0.5px;">${q.word}</strong>
+              <small style="color:var(--text-muted); margin-left:0.5rem;">(${rulePrefix} ${q.letter})</small>
+            </div>
+            ${badgeHtml}
+          </div>
+          <div style="color:#cbd5e1; font-size:0.83rem;">${q.definition}</div>
+          ${q.userAnswer && q.status === 'error' ? `<div style="color:#ff8fa3; font-size:0.8rem;">Tu respuesta: <em>${q.userAnswer}</em></div>` : ''}
+        `;
+
+        wordResultList.appendChild(item);
+      });
     }
 
     // Alternar modo de juego
@@ -2186,7 +2236,8 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       const oldLetters = document.querySelectorAll('.rosco-letter');
       oldLetters.forEach(el => el.remove());
 
-      let fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      let fullHtml = '<!DOCTYPE html>
+' + document.documentElement.outerHTML;
 
       // Re-renderizar en la pantalla actual
       renderRoscoLetters();
