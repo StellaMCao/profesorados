@@ -1130,7 +1130,7 @@
         <div class="letter-info">
           <div id="currentLetterBadge" class="current-letter-badge">A</div>
           <div class="letter-rule">
-            <span id="rulePrefix">CONTIENE LA</span>
+            <span id="rulePrefix">EMPIEZA POR LA</span>
             <strong id="ruleLetter" style="color:#ffb703; font-size:1.3rem;">A</strong>
           </div>
         </div>
@@ -1636,7 +1636,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       speakCurrentQuestion() {
         const q = questions[currentIndex];
         if (!q) return;
-        const prefix = q.type === 'empieza' ? `Empieza por la ${q.letter}. ` : `Contiene la ${q.letter}. `;
+        const prefix = q.type === 'empieza' ? ('Empieza por la ' + q.letter + '. ') : ('Contiene la ' + q.letter + '. ');
         this.speak(prefix + q.definition);
       }
     }
@@ -1653,7 +1653,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       timerSeconds: 150,
       noTimer: false,
       autoSpeak: false,
-      mode: 'auto', // 'auto' o 'teacher'
+      mode: 'auto',
       rawText: PSYCHOLOGY_PRESET
     };
 
@@ -1748,8 +1748,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
 
     // Parser de "Palabra: Definición"
     function parseWordList(rawText) {
-      const lines = rawText.split('
-').map(l => l.trim()).filter(l => l.length > 0);
+      const lines = (rawText || '').split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
       const parsedItems = [];
 
       for (let line of lines) {
@@ -1790,7 +1789,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
             letter: letter,
             type: 'empieza',
             word: letter,
-            definition: `No se especificó definición para la letra ${letter}.`,
+            definition: ('No se especificó definición para la letra ' + letter + '.'),
             status: 'pending',
             userAnswer: ''
           });
@@ -1832,22 +1831,22 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
 
       questions.forEach((q, index) => {
         const el = document.createElement('div');
-        el.className = `rosco-letter state-${q.status}`;
+        el.className = 'rosco-letter state-' + q.status;
         if (index === currentIndex) {
           el.classList.add('state-current');
         }
-        el.id = `letterNode-${index}`;
+        el.id = 'letterNode-' + index;
         el.textContent = q.letter;
-        el.style.width = `${letterSize}px`;
-        el.style.height = `${letterSize}px`;
+        el.style.width = letterSize + 'px';
+        el.style.height = letterSize + 'px';
         el.style.fontSize = fontSize;
 
         const angle = (index / count) * 2 * Math.PI - Math.PI / 2;
         const x = centerOffset + radius * Math.cos(angle) - (letterSize / 2);
         const y = centerOffset + radius * Math.sin(angle) - (letterSize / 2);
 
-        el.style.left = `${Math.round(x)}px`;
-        el.style.top = `${Math.round(y)}px`;
+        el.style.left = Math.round(x) + 'px';
+        el.style.top = Math.round(y) + 'px';
 
         el.addEventListener('click', () => {
           if (!isGameOver && !isPaused && (q.status === 'pending' || q.status === 'pasapalabra')) {
@@ -1952,7 +1951,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
 
     function handleTurnResult(isSuccess) {
       const q = questions[currentIndex];
-      const letterNode = document.getElementById(`letterNode-${currentIndex}`);
+      const letterNode = document.getElementById('letterNode-' + currentIndex);
 
       if (isSuccess) {
         q.status = 'success';
@@ -1983,7 +1982,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       if (isPaused || isGameOver) return;
 
       const q = questions[currentIndex];
-      const letterNode = document.getElementById(`letterNode-${currentIndex}`);
+      const letterNode = document.getElementById('letterNode-' + currentIndex);
 
       if (q.status === 'pending') {
         q.status = 'pasapalabra';
@@ -2031,12 +2030,12 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       isPaused = !isPaused;
 
       if (isPaused) {
-        btnPause.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Reanudar</span>`;
+        btnPause.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Reanudar</span>';
         btnPause.classList.add('btn-primary');
         answerInput.disabled = true;
         showToast('Juego en pausa');
       } else {
-        btnPause.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg><span>Pausar</span>`;
+        btnPause.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg><span>Pausar</span>';
         btnPause.classList.remove('btn-primary');
         answerInput.disabled = false;
         if (gameConfig.mode === 'auto') answerInput.focus();
@@ -2066,14 +2065,14 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       if (isPerfect) {
         resultBanner.className = 'result-banner perfect';
         resultBannerTitle.innerHTML = '🏆 ¡¡IMPECABLE!! ¡ROSCO PERFECTO!';
-        const timeNote = gameConfig.noTimer ? '¡Completado sin límite de tiempo!' : `Te sobraron <strong>${timer} segundos</strong>.`;
-        resultBannerDesc.innerHTML = `¡Has acertado las <strong>${total} de ${total} palabras</strong> sin ningún fallo! ${timeNote}`;
+        const timeNote = gameConfig.noTimer ? '¡Completado sin límite de tiempo!' : ('Te sobraron <strong>' + timer + ' segundos</strong>.');
+        resultBannerDesc.innerHTML = '¡Has acertado las <strong>' + total + ' de ' + total + ' palabras</strong> sin ningún fallo! ' + timeNote;
         confetti.launch();
       } else {
         resultBanner.className = 'result-banner imperfect';
         const percent = Math.round((successes / total) * 100);
-        resultBannerTitle.innerHTML = `👏 ¡Fin de la partida! (${percent}% de Acierto)`;
-        resultBannerDesc.innerHTML = `Completaste <strong>${successes} aciertos</strong> de ${total}. Revisa los fallos abajo para seguir aprendiendo.`;
+        resultBannerTitle.innerHTML = '👏 ¡Fin de la partida! (' + percent + '% de Acierto)';
+        resultBannerDesc.innerHTML = 'Completaste <strong>' + successes + ' aciertos</strong> de ' + total + '. Revisa los fallos abajo para seguir aprendiendo.';
         confetti.stop();
       }
 
@@ -2101,7 +2100,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       }
 
       if (filtered.length === 0) {
-        wordResultList.innerHTML = `<div style="padding:1.5rem; text-align:center; color:var(--text-muted);">No hay elementos en esta categoría.</div>`;
+        wordResultList.innerHTML = '<div style="padding:1.5rem; text-align:center; color:var(--text-muted);">No hay elementos en esta categoría.</div>';
         return;
       }
 
@@ -2111,27 +2110,27 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
 
         let badgeHtml = '';
         if (q.status === 'success') {
-          badgeHtml = `<span class="result-badge badge-ok">✓ ACIERTO</span>`;
+          badgeHtml = '<span class="result-badge badge-ok">✓ ACIERTO</span>';
         } else if (q.status === 'error') {
-          badgeHtml = `<span class="result-badge badge-err">✗ FALLO</span>`;
+          badgeHtml = '<span class="result-badge badge-err">✗ FALLO</span>';
         } else {
-          badgeHtml = `<span class="result-badge badge-pend">⏳ PENDIENTE</span>`;
+          badgeHtml = '<span class="result-badge badge-pend">⏳ PENDIENTE</span>';
         }
 
         const rulePrefix = q.type === 'empieza' ? 'Empieza por' : 'Contiene';
 
-        item.innerHTML = `
-          <div class="result-row-top">
-            <div>
-              <strong style="color:#ffb703; font-size:1rem;">${q.letter}:</strong> 
-              <strong style="color:#fff; text-transform:uppercase; letter-spacing:0.5px;">${q.word}</strong>
-              <small style="color:var(--text-muted); margin-left:0.5rem;">(${rulePrefix} ${q.letter})</small>
-            </div>
-            ${badgeHtml}
-          </div>
-          <div style="color:#cbd5e1; font-size:0.83rem;">${q.definition}</div>
-          ${q.userAnswer && q.status === 'error' ? `<div style="color:#ff8fa3; font-size:0.8rem;">Tu respuesta: <em>${q.userAnswer}</em></div>` : ''}
-        `;
+        item.innerHTML = [
+          '<div class="result-row-top">',
+          '  <div>',
+          '    <strong style="color:#ffb703; font-size:1rem;">' + q.letter + ':</strong>',
+          '    <strong style="color:#fff; text-transform:uppercase; letter-spacing:0.5px;">' + q.word + '</strong>',
+          '    <small style="color:var(--text-muted); margin-left:0.5rem;">(' + rulePrefix + ' ' + q.letter + ')</small>',
+          '  </div>',
+          '  ' + badgeHtml,
+          '</div>',
+          '<div style="color:#cbd5e1; font-size:0.83rem;">' + q.definition + '</div>',
+          (q.userAnswer && q.status === 'error' ? '<div style="color:#ff8fa3; font-size:0.8rem;">Tu respuesta: <em>' + q.userAnswer + '</em></div>' : '')
+        ].join('');
 
         wordResultList.appendChild(item);
       });
@@ -2203,7 +2202,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       updateActiveTurn();
       startTimer();
       answerInput.disabled = false;
-      btnPause.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg><span>Pausar</span>`;
+      btnPause.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg><span>Pausar</span>';
     }
 
     function showToast(msg) {
@@ -2236,21 +2235,20 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       const oldLetters = document.querySelectorAll('.rosco-letter');
       oldLetters.forEach(el => el.remove());
 
-      let fullHtml = '<!DOCTYPE html>
-' + document.documentElement.outerHTML;
+      let fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 
       // Re-renderizar en la pantalla actual
       renderRoscoLetters();
       if (wasSettingsActive && !directMode) settingsModal.classList.add('active');
 
-      const newConfigScript = `let gameConfig = {
-      title: ${JSON.stringify(currentCategory)},
-      timerSeconds: ${currentTimer},
-      noTimer: ${currentNoTimer},
-      autoSpeak: ${currentAutoSpeak},
-      mode: 'auto',
-      rawText: ${JSON.stringify(currentText)}
-    };`;
+      const newConfigScript = 'let gameConfig = ' + JSON.stringify({
+        title: currentCategory,
+        timerSeconds: currentTimer,
+        noTimer: currentNoTimer,
+        autoSpeak: currentAutoSpeak,
+        mode: 'auto',
+        rawText: currentText
+      }, null, 2) + ';';
 
       fullHtml = fullHtml.replace(/let gameConfig = \{[\s\S]*?\};/, newConfigScript);
 
@@ -2258,7 +2256,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       const suffix = directMode ? '_Alumnos_JuegoDirecto' : '';
-      const safeFilename = `Rosco_${currentCategory.replace(/[^a-zA-Z0-9]/g, '_')}${suffix}.html`;
+      const safeFilename = 'Rosco_' + currentCategory.replace(/[^a-zA-Z0-9]/g, '_') + suffix + '.html';
       a.href = url;
       a.download = safeFilename;
       document.body.appendChild(a);
@@ -2266,7 +2264,7 @@ Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia 
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      showToast(`Rosco exportado: "${safeFilename}"`);
+      showToast('Rosco exportado: "' + safeFilename + '"');
     }
 
     /* =========================================================================
