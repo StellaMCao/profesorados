@@ -1216,7 +1216,10 @@
         <div class="form-group">
           <label for="inputTimer">Tiempo de partida (segundos)</label>
           <input type="number" id="inputTimer" class="form-input" min="20" max="999" value="150">
-          <small>Recomendado: 120s a 180s para partidas dinámicas.</small>
+          <label class="checkbox-group" style="margin-top: 0.35rem;">
+            <input type="checkbox" id="checkNoTimer">
+            <span><strong>Sin límite de tiempo</strong> (Tiempo infinito / Modo práctica)</span>
+          </label>
         </div>
 
         <div class="form-group">
@@ -1235,14 +1238,20 @@
           <textarea id="inputTextList" class="form-input" placeholder="Ansiedad: Estado de inquietud o agitación del ánimo...&#10;Bipolar: Trastorno caracterizado por fluctuaciones..."></textarea>
         </div>
       </div>
-      <div class="modal-footer">
-        <button id="btnExportHtml" class="btn btn-success" title="Descargar este rosco como archivo HTML independiente">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span>Exportar como HTML</span>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+        <button id="btnExportHtmlDirect" class="btn btn-success" title="Descargar archivo HTML listo para que los estudiantes jueguen directo sin pantallas intermedias">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>Exportar Juego Directo (Alumnos)</span>
         </button>
-        <button id="btnApplySettings" class="btn btn-primary">
-          Guardar y Jugar
-        </button>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btnExportHtml" class="btn" title="Descargar archivo HTML editable">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Exportar Editable</span>
+          </button>
+          <button id="btnApplySettings" class="btn btn-primary">
+            Guardar y Jugar
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1307,32 +1316,32 @@
     /* =========================================================================
        EJEMPLO DEMOSTRATIVO DE PSICOLOGÍA (26 Letras: A - Z sin Ñ)
        ========================================================================= */
-    const PSYCHOLOGY_PRESET = `Ansiedad: Estado emocional displacentero acompañado de cambios somáticos y psíquicos, caracterizado por una sensación difusa de inquietud o aprensión ante un peligro futuro.
-Bipolar: Trastorno del estado de ánimo caracterizado por la alternancia periódica de fases maníacas (o hipomaníacas) y episodios depresivos.
-Conductismo: Corriente de la psicología inaugurada por John B. Watson que prioriza el estudio experimental objetivo de la conducta observable frente a la introspección.
-Disonancia: Conflicto o tensión interna que experimenta una persona al sostener simultáneamente dos creencias, ideas o valores incompatibles entre sí (cognitiva).
-Empatía: Capacidad cognitiva y afectiva de comprender y compartir el estado emocional o la perspectiva subjetiva de otra persona.
-Freud: Médico neurólogo austriaco, considerado el padre del psicoanálisis y una de las figuras más influyentes del pensamiento contemporáneo.
-Gestalt: Escuela psicológica surgida en Alemania que postula que la mente configura los elementos que percibe a través de principios de organización perceptual: 'el todo es más que la suma de sus partes'.
-Hipnosis: Estado alterado de conciencia focalizada y relajación profunda caracterizado por una mayor sugestionabilidad y concentración receptiva.
-Inconsciente: Nivel o conjunto de contenidos psíquicos, recuerdos, impulsos y deseos reprimidos que escapan a la conciencia activa pero influyen en el comportamiento.
-Jung: Médico psiquiatra y psicólogo suizo, fundador de la psicología analítica, creador de los conceptos de inconsciente colectivo y arquetipos.
-Kinesia: Rama del estudio conductual que analiza el significado expresivo o comunicativo de los movimientos corporales, posturas y gestos no verbales.
-Libido: En la teoría psicoanalítica de Freud, energía psíquica pulsional primaria asociada a los instintos vitales y de conservación o búsqueda de placer.
-Motivación: Conjunto de procesos psicofisiológicos que inician, guían y mantienen la conducta orientada hacia la consecución de una meta o necesidad.
-Neurosis: Trastorno mental sin base orgánica demostrable que no produce una ruptura radical con la realidad (a diferencia de la psicosis), caracterizado por angustia y dificultades adaptativas.
-Obsesión: Idea, pensamiento, impulso o imagen mental intrusiva, recurrente y persistente que genera marcada ansiedad o malestar en el sujeto.
-Psicoanálisis: Teoría de la personalidad y método psicoterapéutico fundado por Sigmund Freud basado en la investigación del inconsciente y la interpretación de asociaciones libres.
-Quimera: En psicología cognitiva y del desarrollo, ilusión o producto de la imaginación sin base real consistente; fantasía inalcanzable.
-Resiliencia: Capacidad psíquica del ser humano para sobreponerse a períodos de dolor emocional, traumas o situaciones de adversidad extrema y salir fortalecido.
-Sinapsis: Zona o estructura de contacto funcional especializada entre dos neuronas a través de la cual se transmiten los impulsos electroquímicos mediante neurotransmisores.
-Trauma: Impacto emocional intenso o daño psíquico profundo causado por un acontecimiento violento, inesperado o perturbador que desborda la capacidad de afrontamiento del sujeto.
-Umbral: Magnitud o nivel mínimo de estimulación física o sensorial necesario para que un estímulo sea detectado por los órganos de los sentidos o active una respuesta.
-Vulnerabilidad: Disposición innata o adquirida que aumenta el riesgo o susceptibilidad de un individuo a desarrollar trastornos psicológicos o verse afectado negativamente por el estrés.
-Watson: Psicólogo estadounidense fundador de la escuela psicológica del conductismo (Behaviorism) que popularizó el experimento con el 'pequeño Albert'.
-Xenofobia: Miedo, aversión, rechazo o prejuicio irracional y hostil hacia las personas extranjeras o de culturas diferentes.
-Yo: En el modelo estructural del aparato psíquico de Freud (Ego), instancia reguladora regida por el principio de realidad que media entre los impulsos del Ello y las exigencias morales del Superyó.
-Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con animales para mejorar la salud física, emocional, social y cognitiva de las personas.`;
+    const PSYCHOLOGY_PRESET = `Asimilación: Proceso cognitivo mediante el cual el sujeto incorpora nueva información a los esquemas mentales ya existentes, según la teoría psicogenética de Jean Piaget.
+Bandura: Apellido del psicólogo creador de la teoría del aprendizaje social y del famoso experimento del muñeco Bobo.
+Complejo: Conjunto organizado de recuerdos, emociones y pensamientos inconscientes con fuerte carga afectiva que influyen en la conducta (famoso en el psicoanálisis por Edipo o Electra).
+Defensa: Mecanismo o proceso inconsciente que utiliza el psiquismo para protegerse de la angustia y mantener el equilibrio psicológico.
+Ello: Instancia del aparato psíquico freudiano compuesta íntegramente por pulsiones innatas, regida exclusivamente por el principio de placer.
+Freud: Apellido del médico neurólogo vienés considerado el padre y creador del psicoanálisis.
+Gestalt: Corriente psicológica de origen alemán cuyo principio rector postula que "el todo es más que la suma de sus partes".
+Hábito: Pauta de conducta adquirida y automatizada mediante el entrenamiento, la práctica o la repetición constante.
+Inconsciente: Conjunto de contenidos, representaciones y deseos no accesibles a la consciencia actual, reprimidos pero con eficacia psíquica.
+Jung: Apellido del psiquiatra suizo, fundador de la psicología analítica, que teorizó sobre los arquetipos y el inconsciente colectivo.
+Klein: Apellido de la psicoanalista pionera en el psicoanálisis infantil y la teoría de las relaciones objetales.
+Lacan: Apellido del psicoanalista francés que promovió el "retorno a Freud" y afirmó que el inconsciente está estructurado como un lenguaje.
+Maslow: Apellido del psicólogo exponente del humanismo, conocido por su pirámide sobre la jerarquía de las necesidades humanas.
+Neurosis: Cuadro o afección psíquica originada en un conflicto entre el Yo y las pulsiones, donde el sujeto mantiene intacto el contacto con la realidad externa.
+Oral: Primera fase de la evolución psicosexual descripta por Freud, donde la boca y la succión constituyen la principal fuente de placer y exploración.
+Proyección: Mecanismo de defensa por el cual un sujeto atribuye a otros u objetos externos deseos, afectos o cualidades propias que rechaza de sí mismo.
+Esquema: Modelo o estructura mental interna que organiza y guía la asimilación del conocimiento y la comprensión del entorno.
+Represión: Mecanismo de defensa fundamental que expulsa y mantiene fuera del campo de la consciencia representaciones ligadas a una pulsión generadora de displacer.
+Sublimación: Proceso o destino pulsional en el que la energía libidinosa se redirige hacia fines culturalmente constructivos, artísticos o de investigación.
+Transferencia: Proceso terapéutico donde el paciente proyecta o actualiza sobre el analista sentimientos, figuras y deseos de su infancia.
+Superyó: Instancia psíquica heredera del complejo de Edipo que internaliza las normas culturales, la ley parental y actúa como juez moral de la conducta.
+Vigotsky: Apellido del psicólogo ruso pionero del enfoque histórico-cultural que destacó la mediación semiótica y el papel de la cultura en el desarrollo.
+Wundt: Apellido del filósofo y fisiólogo considerado fundador de la psicología experimental moderna tras inaugurar el laboratorio de Leipzig en 1879.
+Exposición: Técnica conductual que consiste en confrontar al sujeto de manera directa y progresiva con el estímulo temido para reducir la respuesta fóbica.
+Yo: Instancia psíquica que funciona bajo el principio de realidad, encargada de mediar entre las pulsiones internas y las exigencias del mundo exterior.
+Zona de desarrollo próximo: En la teoría sociohistórica, espacio o distancia entre el nivel real de desarrollo autónomo y el potencial guiado por un docente o par más capaz.`;
 
     /* =========================================================================
        MOTOR DE SONIDO SINTETIZADO (Web Audio API)
@@ -1626,6 +1635,7 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     let gameConfig = {
       title: "Psicología",
       timerSeconds: 150,
+      noTimer: false,
       autoSpeak: false,
       mode: 'auto', // 'auto' o 'teacher'
       rawText: PSYCHOLOGY_PRESET
@@ -1691,6 +1701,7 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     const btnLoadPsychPreset = document.getElementById('btnLoadPsychPreset');
     const inputCategory = document.getElementById('inputCategory');
     const inputTimer = document.getElementById('inputTimer');
+    const checkNoTimer = document.getElementById('checkNoTimer');
     const checkAutoSpeak = document.getElementById('checkAutoSpeak');
     const inputTextList = document.getElementById('inputTextList');
 
@@ -1944,6 +1955,8 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     // Temporizador
     function startTimer() {
       clearInterval(timerInterval);
+      if (gameConfig.noTimer) return;
+
       timerInterval = setInterval(() => {
         if (!isPaused && !isGameOver) {
           timer--;
@@ -2050,7 +2063,8 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
       if (isPerfect) {
         resultBanner.className = 'result-banner perfect';
         resultBannerTitle.innerHTML = '🏆 ¡¡IMPECABLE!! ¡ROSCO PERFECTO!';
-        resultBannerDesc.innerHTML = `¡Has acertado las <strong>${total} de ${total} palabras</strong> sin ningún fallo! Te sobraron <strong>${timer} segundos</strong>.`;
+        const timeNote = gameConfig.noTimer ? '¡Completado sin límite de tiempo!' : `Te sobraron <strong>${timer} segundos</strong>.`;
+        resultBannerDesc.innerHTML = `¡Has acertado las <strong>${total} de ${total} palabras</strong> sin ningún fallo! ${timeNote}`;
         confetti.launch();
       } else {
         resultBanner.className = 'result-banner imperfect';
@@ -2118,9 +2132,18 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
       confetti.stop();
       isPaused = false;
       isGameOver = false;
-      timer = gameConfig.timerSeconds;
-      timerDisplay.textContent = timer;
-      timerDisplay.classList.remove('low-time');
+
+      if (gameConfig.noTimer) {
+        timerDisplay.textContent = '∞';
+        timerDisplay.style.fontSize = '2.8rem';
+        timerDisplay.classList.remove('low-time');
+      } else {
+        timer = gameConfig.timerSeconds;
+        timerDisplay.textContent = timer;
+        timerDisplay.style.fontSize = '';
+        timerDisplay.classList.remove('low-time');
+      }
+
       topicBadge.textContent = gameConfig.title;
 
       questions = parseWordList(gameConfig.rawText);
@@ -2142,28 +2165,39 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     }
 
     /* =========================================================================
-       EXPORTACIÓN A HTML INDEPENDIENTE
+       EXPORTACIÓN A HTML INDEPENDIENTE (2 OPCIONES: DIRECTA / EDITABLE)
        ========================================================================= */
-    function exportToStandaloneHtml() {
-      const currentCategory = inputCategory.value.trim() || "Rosco";
+    const btnExportHtmlDirect = document.getElementById('btnExportHtmlDirect');
+
+    function exportToStandaloneHtml(directMode = false) {
+      const currentCategory = inputCategory.value.trim() || "Psicología";
       const currentTimer = parseInt(inputTimer.value, 10) || 150;
+      const currentNoTimer = checkNoTimer.checked;
       const currentAutoSpeak = checkAutoSpeak.checked;
       const currentText = inputTextList.value.trim() || PSYCHOLOGY_PRESET;
 
-      // Temporarily remove letters so exported HTML doesn't bake in old coordinates
+      // Cerrar modales temporalmente para que el HTML descargado no abra con modales activos
+      const wasSettingsActive = settingsModal.classList.contains('active');
+      helpModal.classList.remove('active');
+      settingsModal.classList.remove('active');
+      resultModal.classList.remove('active');
+
+      // Remover letras renderizadas para que se calculen dinámicamente al abrir en cualquier pantalla
       const oldLetters = document.querySelectorAll('.rosco-letter');
       oldLetters.forEach(el => el.remove());
 
       let fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
 
-      // Re-render immediately on current device
+      // Re-renderizar en la pantalla actual
       renderRoscoLetters();
+      if (wasSettingsActive && !directMode) settingsModal.classList.add('active');
 
       const newConfigScript = `let gameConfig = {
       title: ${JSON.stringify(currentCategory)},
       timerSeconds: ${currentTimer},
+      noTimer: ${currentNoTimer},
       autoSpeak: ${currentAutoSpeak},
-      mode: ${JSON.stringify(gameConfig.mode)},
+      mode: 'auto',
       rawText: ${JSON.stringify(currentText)}
     };`;
 
@@ -2172,7 +2206,8 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
       const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const safeFilename = `Rosco_${currentCategory.replace(/[^a-zA-Z0-9]/g, '_')}.html`;
+      const suffix = directMode ? '_Alumnos_JuegoDirecto' : '';
+      const safeFilename = `Rosco_${currentCategory.replace(/[^a-zA-Z0-9]/g, '_')}${suffix}.html`;
       a.href = url;
       a.download = safeFilename;
       document.body.appendChild(a);
@@ -2180,7 +2215,7 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      showToast(`Rosco exportado como "${safeFilename}"`);
+      showToast(`Rosco exportado: "${safeFilename}"`);
     }
 
     /* =========================================================================
@@ -2291,10 +2326,18 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     });
 
     // Configuración
+    checkNoTimer.addEventListener('change', () => {
+      inputTimer.disabled = checkNoTimer.checked;
+      inputTimer.style.opacity = checkNoTimer.checked ? '0.45' : '1';
+    });
+
     btnSettings.addEventListener('click', () => {
       if (!isPaused && !isGameOver) togglePause();
       inputCategory.value = gameConfig.title;
       inputTimer.value = gameConfig.timerSeconds;
+      checkNoTimer.checked = !!gameConfig.noTimer;
+      inputTimer.disabled = checkNoTimer.checked;
+      inputTimer.style.opacity = checkNoTimer.checked ? '0.45' : '1';
       checkAutoSpeak.checked = gameConfig.autoSpeak;
       inputTextList.value = gameConfig.rawText;
       settingsModal.classList.add('active');
@@ -2305,6 +2348,9 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     btnLoadPsychPreset.addEventListener('click', () => {
       inputCategory.value = "Psicología";
       inputTimer.value = 150;
+      checkNoTimer.checked = false;
+      inputTimer.disabled = false;
+      inputTimer.style.opacity = '1';
       inputTextList.value = PSYCHOLOGY_PRESET;
       showToast('Ejemplo de Psicología cargado');
     });
@@ -2312,6 +2358,7 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     btnApplySettings.addEventListener('click', () => {
       const newCat = inputCategory.value.trim() || "Rosco";
       const newTimer = parseInt(inputTimer.value, 10) || 150;
+      const newNoTimer = checkNoTimer.checked;
       const newText = inputTextList.value.trim();
 
       if (!newText) {
@@ -2321,6 +2368,7 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
 
       gameConfig.title = newCat;
       gameConfig.timerSeconds = newTimer;
+      gameConfig.noTimer = newNoTimer;
       gameConfig.autoSpeak = checkAutoSpeak.checked;
       gameConfig.rawText = newText;
 
@@ -2329,7 +2377,9 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
       resetGame();
     });
 
-    btnExportHtml.addEventListener('click', exportToStandaloneHtml);
+    btnExportHtmlDirect.addEventListener('click', () => exportToStandaloneHtml(true));
+    btnExportHtml.addEventListener('click', () => exportToStandaloneHtml(false));
+
     btnCloseResult.addEventListener('click', () => {
       confetti.stop();
       resultModal.classList.remove('active');
@@ -2354,7 +2404,7 @@ Zooterapia: Enfoque terapéutico complementario que utiliza la interacción con 
     }
 
     // Inicio automático
-    inputTextList.value = PSYCHOLOGY_PRESET;
+    inputTextList.value = gameConfig.rawText || PSYCHOLOGY_PRESET;
     resetGame();
     
     // Doble verificación al terminar de cargar estilos en móviles
