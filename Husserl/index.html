@@ -11,12 +11,16 @@
       --ink: #253c3d;
       --green: #25565a;
       --green-light: #eaf0eb;
+      --green-glow: rgba(37, 86, 90, 0.12);
       --green-dark: #19464a;
       --muted: #596968;
       --line: #d4ddd7;
       --gold: #a85636;
       --gold-light: #f4ecdf;
+      --gold-glow: rgba(168, 86, 54, 0.14);
       --accent-highlight: #d97843;
+      --card-shadow: 0 4px 20px rgba(37,60,61,0.06), 0 1px 3px rgba(37,60,61,0.04);
+      --card-shadow-hover: 0 8px 26px rgba(37,60,61,0.10);
     }
 
     * { box-sizing: border-box; }
@@ -129,7 +133,7 @@
       padding: 8px 12px;
       color: var(--ink);
       background: #fffefa;
-      transition: background .15s, color .15s, border-color .15s;
+      transition: background .15s, color .15s, border-color .15s, transform .1s;
     }
 
     select { width: 100%; max-width: 480px; min-width: 0; flex: 1; border-color: #a7b7ad; }
@@ -223,10 +227,11 @@
     /* Tabla comparativa estilizada */
     .compare-table-wrap {
       overflow-x: auto;
-      margin: 24px 0;
+      margin: 28px 0;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 12px;
       background: #fff;
+      box-shadow: var(--card-shadow);
     }
     .compare-table {
       width: 100%;
@@ -235,180 +240,335 @@
       text-align: left;
     }
     .compare-table th {
-      background: var(--green-light);
+      background: linear-gradient(180deg, #f0f5f1 0%, #e6efe8 100%);
       color: var(--green-dark);
-      padding: 14px 18px;
+      padding: 16px 20px;
       font-family: Georgia, serif;
       font-weight: 600;
-      font-size: 17px;
+      font-size: 18px;
       border-bottom: 2px solid var(--line);
     }
     .compare-table td {
-      padding: 14px 18px;
+      padding: 16px 20px;
       border-bottom: 1px solid var(--line);
       vertical-align: top;
-      line-height: 1.5;
+      line-height: 1.55;
     }
     .compare-table tr:last-child td { border-bottom: none; }
-    .compare-table tr:nth-child(even) { background: var(--paper); }
+    .compare-table tr:nth-child(even) { background: #faf8f3; }
+    .compare-table tr:hover { background: #f4f8f5; }
 
-    /* Componentes visuales interactivos */
+    /* ==========================================================================
+       ESTÉTICA REFINADA DE ESQUEMAS INTERACTIVOS
+       ========================================================================== */
     .interactive-schema {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 24px;
-      margin: 28px 0;
-      box-shadow: 0 2px 10px rgba(37,60,61,0.04);
+      background: linear-gradient(180deg, #ffffff 0%, #fcfbf8 100%);
+      border: 1px solid #d0ded4;
+      border-radius: 14px;
+      padding: 26px 28px;
+      margin: 32px 0;
+      box-shadow: var(--card-shadow);
+      position: relative;
     }
     .schema-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       border-bottom: 1px solid var(--line);
-      padding-bottom: 10px;
+      padding-bottom: 12px;
     }
-    .schema-title { font-weight: 700; font-size: 17px; color: var(--green); }
-    .schema-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .schema-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: var(--green-light);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .schema-title { font-size: 15px; color: var(--muted); font-weight: 500; }
+    .schema-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 16px 0 20px;
+    }
     .schema-btn {
       font-size: 14px;
-      padding: 6px 12px;
-      min-height: 36px;
-      border-radius: 20px;
-      border: 1px solid var(--line);
-      background: var(--paper);
+      padding: 8px 16px;
+      min-height: 38px;
+      border-radius: 30px;
+      border: 1px solid #cbdcd0;
+      background: #ffffff;
+      color: var(--ink);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all .2s ease;
+    }
+    .schema-btn:hover:not(.active) {
+      background: var(--green-light);
+      border-color: var(--green);
+      transform: translateY(-1px);
     }
     .schema-btn.active {
       background: var(--green);
-      color: white;
+      color: #ffffff;
       border-color: var(--green);
       font-weight: 600;
+      box-shadow: 0 4px 12px rgba(37,86,90,0.25);
+      transform: translateY(-1px);
     }
 
-    /* Diagrama Noesis-Noema */
+    /* Esquema 1: Noesis ↔ Noema */
     .diagram-correl {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 16px;
-      background: var(--paper);
-      padding: 18px;
-      border-radius: 8px;
+      align-items: stretch;
+      gap: 20px;
+      background: radial-gradient(circle at 50% 50%, #f4f8f5 0%, #edf3ef 100%);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #d3e2d7;
       margin-top: 10px;
     }
     .correl-box {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 16px;
+      background: #ffffff;
+      border: 1px solid #d4ddd7;
+      border-radius: 12px;
+      padding: 20px;
       text-align: center;
-      transition: all .2s;
+      transition: all .25s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .correl-box.highlight { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-light); }
-    .correl-label { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; }
-    .correl-term { font-family: Georgia, serif; font-size: 20px; color: var(--gold); margin: 4px 0 8px; }
-    .correl-desc { font-size: 15px; line-height: 1.4; color: var(--ink); }
-    .correl-arrow {
+    .correl-box.box-noesis {
+      border-top: 4px solid var(--green);
+    }
+    .correl-box.box-noema {
+      border-top: 4px solid var(--gold);
+    }
+    .correl-box:hover {
+      box-shadow: var(--card-shadow);
+      transform: translateY(-2px);
+    }
+    .correl-pill {
+      display: inline-block;
+      align-self: center;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+    .box-noesis .correl-pill { background: var(--green-light); color: var(--green); }
+    .box-noema .correl-pill { background: var(--gold-light); color: var(--gold); }
+    .correl-term {
+      font-family: Georgia, serif;
+      font-size: 22px;
+      color: var(--ink);
+      margin: 4px 0 10px;
+      font-weight: 600;
+    }
+    .correl-desc { font-size: 15px; line-height: 1.45; color: var(--muted); }
+    .correl-arrow-wrap {
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 24px;
+      justify-content: center;
+      padding: 0 5px;
+    }
+    .correl-arrow-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
       color: var(--green);
-      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(37,86,90,0.15);
+      margin-bottom: 6px;
     }
-    .arrow-caption { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: .05em; margin-top: 2px; }
-
-    /* Diagrama Epojé */
-    .epoje-display {
-      background: var(--paper);
-      padding: 20px;
-      border-radius: 8px;
+    .arrow-caption {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: .08em;
+      font-weight: 750;
       text-align: center;
-      transition: all .3s;
     }
-    .epoje-world {
-      display: inline-block;
-      padding: 12px 24px;
-      border-radius: 8px;
-      background: #fff;
-      border: 2px dashed #9cb0a2;
-      font-size: 19px;
-      margin: 10px 0;
-      transition: all .3s;
+
+    /* Esquema 2: Epojé y Reducción */
+    .epoje-stage {
+      background: radial-gradient(circle at center, #ffffff 0%, #f6f8f5 100%);
+      border: 1px solid #d4ddd7;
+      padding: 26px;
+      border-radius: 12px;
+      text-align: center;
+      transition: all .3s ease;
     }
-    .epoje-world.bracketed {
+    .epoje-card-view {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 28px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 2px solid #a4bbae;
+      font-size: 20px;
+      margin: 12px 0;
+      transition: all .3s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+    .epoje-card-view.bracketed {
       border-color: var(--gold);
-      background: #fdf6ec;
-      position: relative;
+      background: linear-gradient(180deg, #fffbf6 0%, #fdf4e9 100%);
+      box-shadow: 0 6px 20px var(--gold-glow);
     }
     .bracket-sign {
-      font-size: 32px;
+      font-family: Georgia, serif;
+      font-size: 40px;
       font-weight: 300;
       color: var(--gold);
-      vertical-align: middle;
       line-height: 0;
+      animation: popBracket .3s ease;
+    }
+    @keyframes popBracket {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .epoje-status-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      background: var(--green-light);
+      color: var(--green);
+    }
+    .epoje-status-badge.bracketed {
+      background: var(--gold-light);
+      color: var(--gold);
     }
     .epoje-explanation {
-      font-size: 15px;
+      font-size: 16px;
       color: var(--ink);
-      max-width: 620px;
-      margin: 12px auto 0;
-      min-height: 48px;
+      max-width: 650px;
+      margin: 14px auto 0;
+      min-height: 52px;
       line-height: 1.5;
+      background: #ffffff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
     }
 
-    /* Diagrama del Tiempo (Retención - Impresión - Protención) */
-    .time-diagram {
-      background: var(--paper);
-      padding: 20px;
-      border-radius: 8px;
+    /* Esquema 3: Temporalidad de la Conciencia */
+    .time-diagram-wrap {
+      background: linear-gradient(180deg, #f5f8f6 0%, #edf3ef 100%);
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #d4ded7;
       margin-top: 10px;
+    }
+    .time-track {
+      height: 8px;
+      background: linear-gradient(to right, var(--gold) 0%, var(--green) 50%, #9cb8a5 100%);
+      border-radius: 4px;
+      margin: 24px 15px 28px;
+      position: relative;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .time-indicator {
+      position: absolute;
+      left: 15%;
+      top: -10px;
+      width: 28px;
+      height: 28px;
+      background: var(--green);
+      border: 4px solid #ffffff;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 2px 10px rgba(37,86,90,0.4);
+      transition: left .35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .time-indicator::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 50%;
     }
     .time-axis {
       display: grid;
       grid-template-columns: 1fr 1.2fr 1fr;
-      gap: 12px;
-      margin: 15px 0;
+      gap: 16px;
     }
     .time-node {
-      background: #fff;
+      background: #ffffff;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 14px;
+      border-radius: 12px;
+      padding: 18px 16px;
       text-align: center;
-      transition: all .2s;
+      transition: all .25s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .time-node.past {
+      border-top: 4px solid var(--gold);
+      background: #fdfaf6;
     }
     .time-node.center {
       border-top: 4px solid var(--green);
-      background: #edf5ee;
+      background: #ffffff;
+      box-shadow: 0 6px 20px var(--green-glow);
+      transform: scale(1.02);
     }
-    .time-node.past { border-top: 4px solid var(--gold); }
-    .time-node.future { border-top: 4px solid var(--muted); border-style: dashed; }
-    .time-tag { font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: .06em; }
+    .time-node.future {
+      border-top: 4px dashed #8aa393;
+      background: #fafbf9;
+    }
+    .time-tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+    }
     .time-node.past .time-tag { color: var(--gold); }
     .time-node.center .time-tag { color: var(--green); }
     .time-node.future .time-tag { color: var(--muted); }
-    .time-concept { font-family: Georgia, serif; font-size: 18px; margin: 4px 0; }
-    .time-note { font-size: 14px; color: var(--ink); line-height: 1.35; }
-    .time-stream-visual {
-      height: 6px;
-      background: linear-gradient(to right, var(--gold), var(--green) 50%, #b8c8bc 100%);
-      border-radius: 3px;
-      margin: 15px 10px;
-      position: relative;
+    .time-concept {
+      font-family: Georgia, serif;
+      font-size: 19px;
+      margin: 4px 0 8px;
+      color: var(--ink);
+      font-weight: 600;
     }
-    .time-indicator {
-      position: absolute;
-      left: 50%;
-      top: -6px;
-      width: 18px;
-      height: 18px;
-      background: var(--green);
-      border: 3px solid #fff;
-      border-radius: 50%;
-      transform: translateX(-50%);
-      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    .time-note {
+      font-size: 14px;
+      color: var(--ink);
+      line-height: 1.45;
     }
 
     /* Práctica / Quiz */
@@ -589,9 +749,11 @@
       .overview-actions { width: 100%; justify-content: space-between; }
       .concepts { grid-template-columns: 1fr; gap: 16px; }
       .concept { padding: 19px; }
-      .diagram-correl { grid-template-columns: 1fr; }
-      .correl-arrow { transform: rotate(90deg); margin: 6px 0; }
-      .time-axis { grid-template-columns: 1fr; gap: 10px; }
+      .interactive-schema { padding: 20px 16px; }
+      .diagram-correl { grid-template-columns: 1fr; gap: 14px; padding: 16px; }
+      .correl-arrow-wrap { transform: rotate(90deg); margin: 8px 0; }
+      .time-axis { grid-template-columns: 1fr; gap: 12px; }
+      .time-node.center { transform: none; }
       .history-intro { grid-template-columns: 1fr; gap: 20px; }
       .date-mark {
         border-right: none;
@@ -884,31 +1046,31 @@
         </article>
       </div>
 
-      <!-- Esquema visual interactivo 1 -->
+      <!-- Esquema visual interactivo 1: Noesis / Noema -->
       <div class="interactive-schema" id="schema-noesis-noema">
         <div class="schema-header">
-          <span class="schema-title">⚡ Esquema interactivo: La correlación Noesis ↔ Noema</span>
-          <span class="small">Probá cada modalidad</span>
+          <span class="schema-badge">⚡ Esquema interactivo</span>
+          <span class="schema-title">La correlación Noesis ↔ Noema</span>
         </div>
-        <p class="small">Seleccioná cómo se dirige la conciencia hacia la taza para observar cómo cambia el acto (Noesis) y el sentido del objeto (Noema):</p>
+        <p class="small">Elegí una modalidad noética para ver cómo se transforma el modo de conciencia y el sentido del objeto:</p>
         <div class="schema-controls">
           <button type="button" class="schema-btn active" data-mode="percepcion">👁️ Percibir</button>
-          <button type="button" class="schema-btn" data-mode="recuerdo">🧠 Recordar</button>
+          <button type="button" class="schema-btn" data-mode="recuerdo">💭 Recordar</button>
           <button type="button" class="schema-btn" data-mode="fantasia">✨ Imaginar</button>
-          <button type="button" class="schema-btn" data-mode="temor">⚠️ Temer</button>
+          <button type="button" class="schema-btn" data-mode="temor">⚡ Temer</button>
         </div>
         <div class="diagram-correl">
-          <div class="correl-box highlight" id="box-noesis">
-            <div class="correl-label">Polo subjetivo · Noesis (Acto)</div>
+          <div class="correl-box box-noesis" id="box-noesis">
+            <span class="correl-pill">🧠 Polo subjetivo (Noesis)</span>
             <div class="correl-term" id="text-noesis">Acto de percibir</div>
             <div class="correl-desc" id="desc-noesis">La conciencia aprehende sensorialmente el objeto presente aquí y ahora.</div>
           </div>
-          <div class="correl-arrow">
-            <span>⟷</span>
-            <span class="arrow-caption">Intencionalidad</span>
+          <div class="correl-arrow-wrap">
+            <div class="correl-arrow-circle">⇄</div>
+            <span class="arrow-caption">Correlación<br>Intencional</span>
           </div>
-          <div class="correl-box highlight" id="box-noema">
-            <div class="correl-label">Polo objetivo · Noema (Sentido)</div>
+          <div class="correl-box box-noema" id="box-noema">
+            <span class="correl-pill">🎯 Polo objetivo (Noema)</span>
             <div class="correl-term" id="text-noema">La taza «en persona»</div>
             <div class="correl-desc" id="desc-noema">Dada corporalmente como un objeto físico real sobre la mesa, con peso y brillo.</div>
           </div>
@@ -1055,8 +1217,8 @@
         <table class="compare-table">
           <thead>
             <tr>
-              <th>En la actitud natural cotidiana</th>
-              <th>En la investigación que abre la <em>epojé</em></th>
+              <th>🌱 En la actitud natural cotidiana</th>
+              <th>🔍 En la investigación que abre la <em>epojé</em></th>
             </tr>
           </thead>
           <tbody>
@@ -1079,21 +1241,23 @@
       <!-- Esquema visual interactivo 2: Epojé -->
       <div class="interactive-schema" id="schema-epoje">
         <div class="schema-header">
-          <span class="schema-title">⚡ Esquema interactivo: El gesto de la <em>epojé</em></span>
-          <span class="small">Cambio de mirada</span>
+          <span class="schema-badge">⚡ Esquema interactivo</span>
+          <span class="schema-title">El gesto de la <em>epojé</em> y el cambio de mirada</span>
         </div>
         <div class="schema-controls">
-          <button type="button" class="schema-btn active" id="btn-natural">1. Actitud natural cotidiana</button>
-          <button type="button" class="schema-btn" id="btn-epoje">2. <em>Epojé</em> y Reducción Fenomenológica</button>
+          <button type="button" class="schema-btn active" id="btn-natural">🌍 1. Actitud natural cotidiana</button>
+          <button type="button" class="schema-btn" id="btn-epoje">🔍 2. <em>Epojé</em> y Reducción Fenomenológica</button>
         </div>
-        <div class="epoje-display">
-          <div class="epoje-world" id="epoje-box">
+        <div class="epoje-stage">
+          <span class="epoje-status-badge" id="epoje-badge">Estado: Creencia espontánea activa</span>
+          <br>
+          <div class="epoje-card-view" id="epoje-box">
             <span class="bracket-sign" id="br-left" style="display:none;">[ </span>
             <strong id="world-text">El mundo y sus cosas existen ahí afuera</strong>
             <span class="bracket-sign" id="br-right" style="display:none;"> ]</span>
           </div>
           <div class="epoje-explanation" id="epoje-desc">
-            En la vida diaria damos por sentada la realidad de las cosas sin cuestionarla: miramos directo a los objetos.
+            En la actitud natural cotidiana damos por sentada la realidad de las cosas sin cuestionarla: miramos directo a los objetos.
           </div>
         </div>
       </div>
@@ -1236,30 +1400,30 @@
       <!-- Esquema visual interactivo 3: Diagrama de la conciencia del tiempo -->
       <div class="interactive-schema" id="schema-tiempo">
         <div class="schema-header">
-          <span class="schema-title">⚡ Esquema interactivo: El espesor temporal de una melodía</span>
-          <span class="small">Simulador del flujo de la conciencia</span>
+          <span class="schema-badge">⚡ Esquema interactivo</span>
+          <span class="schema-title">El flujo temporal de la melodía (Husserl)</span>
         </div>
-        <p class="small">Hacé clic en los pasos de la melodía para ver cómo opera la retención de lo recién sonado y la protención de lo que sigue:</p>
+        <p class="small">Probá cada paso para ver cómo la retención sostiene el pasado y la protención abre el futuro:</p>
         <div class="schema-controls">
-          <button type="button" class="schema-btn active" data-step="0">1. Escuchando "DO"</button>
-          <button type="button" class="schema-btn" data-step="1">2. Pasa a "RE"</button>
-          <button type="button" class="schema-btn" data-step="2">3. Suena "MI"</button>
+          <button type="button" class="schema-btn active" data-step="0">🎵 Paso 1: Suena "DO"</button>
+          <button type="button" class="schema-btn" data-step="1">🎵 Paso 2: Pasa a "RE"</button>
+          <button type="button" class="schema-btn" data-step="2">🎵 Paso 3: Cierra en "MI"</button>
         </div>
-        <div class="time-diagram">
-          <div class="time-stream-visual"><div class="time-indicator"></div></div>
+        <div class="time-diagram-wrap">
+          <div class="time-track"><div class="time-indicator"></div></div>
           <div class="time-axis">
             <div class="time-node past" id="node-retencion">
-              <div class="time-tag">Pasado inmediato</div>
+              <div class="time-tag">⏳ Pasado inmediato</div>
               <div class="time-concept">Retención</div>
               <div class="time-note" id="text-retencion">Aún no hay notas previas: silencio anterior.</div>
             </div>
             <div class="time-node center" id="node-impresion">
-              <div class="time-tag">Punto ahora</div>
+              <div class="time-tag">✨ Punto ahora</div>
               <div class="time-concept">Impresión originaria</div>
-              <div class="time-note" id="text-impresion"><strong>Suena la nota DO</strong> en el presente originario.</div>
+              <div class="time-note" id="text-impresion"><strong>Suena la nota DO</strong> en carne y hueso.</div>
             </div>
             <div class="time-node future" id="node-protencion">
-              <div class="time-tag">Futuro inminente</div>
+              <div class="time-tag">🔮 Futuro inminente</div>
               <div class="time-concept">Protención</div>
               <div class="time-note" id="text-protencion">Apertura anticipatoria a la nota siguiente de la frase.</div>
             </div>
@@ -1601,6 +1765,7 @@
     const btnNatural = document.getElementById('btn-natural');
     const btnEpoje = document.getElementById('btn-epoje');
     const epojeBox = document.getElementById('epoje-box');
+    const epojeBadge = document.getElementById('epoje-badge');
     const brLeft = document.getElementById('br-left');
     const brRight = document.getElementById('br-right');
     const worldText = document.getElementById('world-text');
@@ -1611,6 +1776,10 @@
         btnNatural.classList.add('active');
         btnEpoje.classList.remove('active');
         epojeBox.classList.remove('bracketed');
+        if (epojeBadge) {
+          epojeBadge.classList.remove('bracketed');
+          epojeBadge.textContent = "Estado: Creencia espontánea activa";
+        }
         brLeft.style.display = 'none';
         brRight.style.display = 'none';
         worldText.textContent = "El mundo y sus cosas existen ahí afuera";
@@ -1621,6 +1790,10 @@
         btnEpoje.classList.add('active');
         btnNatural.classList.remove('active');
         epojeBox.classList.add('bracketed');
+        if (epojeBadge) {
+          epojeBadge.classList.add('bracketed');
+          epojeBadge.textContent = "Estado: Tesis de existencia suspendida [en corchetes]";
+        }
         brLeft.style.display = 'inline';
         brRight.style.display = 'inline';
         worldText.textContent = "Existencia fáctica del mundo";
