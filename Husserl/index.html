@@ -220,6 +220,38 @@
     }
     .date-mark strong { font: 47px/1.16 Georgia, serif; color: var(--gold); }
 
+    /* Tabla comparativa estilizada */
+    .compare-table-wrap {
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      text-align: left;
+    }
+    .compare-table th {
+      background: var(--green-light);
+      color: var(--green-dark);
+      padding: 14px 18px;
+      font-family: Georgia, serif;
+      font-weight: 600;
+      font-size: 17px;
+      border-bottom: 2px solid var(--line);
+    }
+    .compare-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:nth-child(even) { background: var(--paper); }
+
     /* Componentes visuales interactivos */
     .interactive-schema {
       background: #fff;
@@ -320,9 +352,10 @@
     .epoje-explanation {
       font-size: 15px;
       color: var(--ink);
-      max-width: 600px;
+      max-width: 620px;
       margin: 12px auto 0;
       min-height: 48px;
+      line-height: 1.5;
     }
 
     /* Diagrama del Tiempo (Retención - Impresión - Protención) */
@@ -576,7 +609,7 @@
 
     @media print {
       body { background: white; color: black; font-size: 11pt; }
-      .bar, .bottom-nav, .footer-tools, .skip, .overview, .interactive-schema, .modal-overlay { display: none !important; }
+      .bar, .bottom-nav, .footer-tools, .skip, .overview, .interactive-schema, .modal-overlay, .compare-table-wrap { display: none !important; }
       .slide[hidden] { display: block !important; }
       .slide { break-before: page; padding: 15px 0; }
       header, main, footer { padding: 10px; }
@@ -606,7 +639,7 @@
       <h1>Husserl<br><em>La experiencia<br>y su sentido</em></h1>
     </div>
     <p class="lead">Una introducción a la fenomenología trascendental y sus aportes para comprender la experiencia humana.</p>
-    <p class="small">9 temas (una apertura histórica y ocho núcleos conceptuales). Explicaciones, ejemplos, esquemas interactivos y práctica para orientar la lectura.</p>
+    <p class="small">10 temas (una apertura histórica y nueve núcleos conceptuales). Explicaciones, ejemplos, esquemas interactivos y práctica para orientar la lectura.</p>
   </header>
 
   <div class="bar">
@@ -618,11 +651,12 @@
         <option value="1">Tema 02 · 2. De la conducta a la experiencia</option>
         <option value="2">Tema 03 · 3. Dos críticas diferentes</option>
         <option value="3">Tema 04 · 4. La conciencia es conciencia de algo</option>
-        <option value="4">Tema 05 · 5. Cambiar la dirección de la mirada</option>
-        <option value="5">Tema 06 · 6. Un objeto, muchas apariciones</option>
-        <option value="6">Tema 07 · 7. El presente tiene espesor</option>
-        <option value="7">Tema 08 · 8. Un mundo compartido</option>
-        <option value="8">Tema 09 · 9. Husserl y la tradición comprensiva</option>
+        <option value="4">Tema 05 · 5. La actitud natural: vivir dando por existente el mundo</option>
+        <option value="5">Tema 06 · 6. La epojé y la reducción: cambiar la dirección de la mirada</option>
+        <option value="6">Tema 07 · 7. Un objeto, muchas apariciones</option>
+        <option value="7">Tema 08 · 8. El presente tiene espesor</option>
+        <option value="8">Tema 09 · 9. Un mundo compartido</option>
+        <option value="9">Tema 10 · 10. Husserl y la tradición comprensiva</option>
       </select>
       <button type="button" data-next aria-label="Tema siguiente">→</button>
     </div>
@@ -630,7 +664,7 @@
 
   <main id="contenido">
     <div class="overview">
-      <span class="overview-label" id="counter-top">Lectura guiada · 9 temas</span>
+      <span class="overview-label" id="counter-top">Lectura guiada · 10 temas</span>
       <div class="overview-actions">
         <button type="button" class="outline-btn" id="open-glossary">📖 Glosario</button>
         <button type="button" id="mode" aria-pressed="false">Ver todo seguido</button>
@@ -927,37 +961,130 @@
 
     <!-- TEMA 5 -->
     <section class="slide" id="tema-5" aria-labelledby="title-5">
-      <div class="eyebrow">Tema 05 · pp. 7–8 del texto de base</div>
-      <h2 id="title-5">Cambiar la dirección de la mirada</h2>
-      <p class="subtitle">De la actitud natural a la pregunta trascendental</p>
+      <div class="eyebrow">Tema 05 · p. 7 del texto de base</div>
+      <h2 id="title-5">La actitud natural</h2>
+      <p class="subtitle">Vivir dando por existente el mundo</p>
 
       <div class="concepts">
         <article class="concept">
-          <h3>Actitud natural</h3>
-          <p>Es nuestra relación cotidiana con el mundo, cuya existencia damos por sentada. No es un error ni equivale a tener prejuicios: es el modo habitual en que vivimos y actuamos.</p>
-          <p>La fenomenología propone un cambio de actitud para investigar lo que habitualmente queda implícito en esa familiaridad con las cosas.</p>
+          <h3>La tesis general de la actitud natural</h3>
+          <p>En nuestra vida cotidiana nos encontramos constantemente con personas, objetos y situaciones cuya existencia damos por sentada. Entramos al aula, buscamos un banco y saludamos al profesor: no necesitamos demostrar primero que el aula existe para movernos y actuar en ella.</p>
+          <p>Esta aceptación habitual, espontánea e implícita es lo que Husserl llama <strong>tesis general de la actitud natural</strong>. “Natural” no significa biológica ni instintiva: designa nuestra orientación ordinaria hacia las cosas del mundo.</p>
         </article>
         <article class="concept">
-          <h3>Epojé y reducción</h3>
-          <p>La epojé suspende la toma de posición sobre la existencia del mundo propia de la actitud natural. La reducción reconduce la investigación hacia la correlación entre lo que aparece y sus modos de darse.</p>
-          <p>Son operaciones relacionadas, pero distinguibles: la suspensión abre el camino; la reducción cambia la dirección de la investigación. “Reducción” no quiere decir simplificar ni reducir todo a procesos cerebrales.</p>
+          <h3>Dudar de algo no suspende la actitud natural</h3>
+          <p>Adolfo Carpio utiliza un ejemplo muy esclarecedor: al atardecer, podemos confundir un árbol lejano con una persona. Al acercarnos y advertir el error, corregimos nuestra percepción (“es un árbol, no una persona”), pero seguimos dando por existente el mundo circundante.</p>
+          <p>La duda o el error sobre un objeto particular ocurren siempre <em>dentro</em> de la actitud natural: corregimos un dato particular sin poner en cuestión la existencia del suelo que pisamos ni del entorno en el que estamos.</p>
         </article>
         <article class="concept">
-          <h3>Trascendental</h3>
-          <p>Designa la investigación de las condiciones de posibilidad de la experiencia. La subjetividad trascendental no es la personalidad de un individuo: remite al ámbito desde el cual puede darse un mundo significativo.</p>
-          <p>La pregunta no es qué personalidad tiene alguien, sino cómo puede haber para la conciencia objetos reconocibles, temporalidad y un mundo compartido. Se trata de un nivel diferente del estudio psicológico de un individuo.</p>
+          <h3>Actitud natural y horizonte perceptivo</h3>
+          <p>Es importante no confundir la actitud natural con los mecanismos propios de la percepción. Anticipar los lados no visibles de una taza o la continuación de un pasillo corresponde a la estructura del horizonte perceptivo.</p>
+          <p>Esa estructura perceptiva no desaparece; seguirá siendo objeto de examen sistemático una vez que suspendamos la actitud natural.</p>
         </article>
+      </div>
+
+      <aside class="example">
+        <div class="eyebrow">Un ejemplo paso a paso</div>
+        <h3>El árbol al atardecer y el aula cotidiana</h3>
+        <p>Vas caminando al atardecer y ves una silueta: creés ver a una persona, pero al acercarte descubrís que era un árbol. Corregís tu juicio, pero en ningún momento dudás de la existencia del parque, del camino ni del suelo sobre el que pisás.</p>
+        <div class="reading">
+          <strong>Cómo leer el ejemplo</strong>
+          <p>Dudar de una cosa puntual no es salir de la actitud natural: la certeza tácita de que hay un mundo real subsiste intacta. La actitud natural no es un error que haya que corregir, sino el suelo cotidiano en el que transcurre toda nuestra vida práctica.</p>
+        </div>
+      </aside>
+
+      <div class="deeper">
+        <h3>¿Por qué la actitud natural no es un defecto?</h3>
+        <p>La actitud natural es indispensable para la vida humana y para la docencia: nos permite comunicarnos, planificar una clase y responder a las necesidades cotidianas de los estudiantes. Lo que Husserl señala es que esta actitud se mantiene en un nivel acrítico que da por obvio lo que la filosofía busca fundamentar: qué estructuras hacen posible que experimentemos un mundo significativo.</p>
+      </div>
+
+      <div class="precision">
+        <strong>Para distinguir</strong>
+        <p>La actitud natural no equivale a "tener prejuicios" ni a un "defecto de razonamiento". Es nuestra manera espontánea e inevitable de estar volcados hacia los objetos del mundo.</p>
+      </div>
+
+      <div class="synthesis">
+        <span class="eyebrow">La idea central</span>
+        <p>En la actitud natural vivimos volcados hacia las cosas, dando por sentada la realidad del mundo sin detenernos a examinar cómo se nos da en la experiencia.</p>
+      </div>
+
+      <details class="practice">
+        <summary>
+          <span><span class="eyebrow">Orientación y primera práctica</span><strong>Comprobá esta idea</strong></span>
+          <span class="plus" aria-hidden="true">＋</span>
+        </summary>
+        <div class="practice-body">
+          <p class="practice-intro">Elegí una opción y revisá la explicación. Podés cambiar tu elección y volver a intentar.</p>
+          <fieldset data-quiz="4">
+            <legend>Cuando corregimos una ilusión (por ejemplo, confundir un árbol con una persona al atardecer), ¿qué ocurre con la actitud natural?</legend>
+            <label class="choice"><input type="radio" name="practice-4" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Se suspende por completo la creencia espontánea en la existencia del mundo.</span></label>
+            <label class="choice"><input type="radio" name="practice-4" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Se corrige un dato particular, pero se sigue dando por sentada la existencia del mundo.</span></label>
+            <label class="choice"><input type="radio" name="practice-4" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Se realiza automáticamente la reducción trascendental.</span></label>
+            <button class="check primary" type="button">Ver devolución</button>
+            <div class="feedback" aria-live="polite"></div>
+          </fieldset>
+        </div>
+      </details>
+    </section>
+
+    <!-- TEMA 6 -->
+    <section class="slide" id="tema-6" aria-labelledby="title-6">
+      <div class="eyebrow">Tema 06 · pp. 7–8 del texto de base</div>
+      <h2 id="title-6">La <em>epojé</em> y la reducción</h2>
+      <p class="subtitle">Suspender una aceptación para investigar la experiencia</p>
+
+      <div class="concepts">
+        <article class="concept">
+          <h3>La <em>epojé</em> (ἐποχή)</h3>
+          <p>Consiste en <strong>suspender</strong> el uso de la creencia en la existencia del mundo como fundamento de nuestra investigación. No significa dudar (a la manera escéptica o cartesiana), ni negar la realidad, ni convencerse de que nada existe.</p>
+          <p>Carpio explica que el mundo permanece intacto como <strong>fenómeno</strong>; lo que se modifica es nuestra postura: ponemos «entre paréntesis» la tesis de la actitud natural para considerar la experiencia en su pureza descriptiva.</p>
+        </article>
+        <article class="concept">
+          <h3>La reducción fenomenológica</h3>
+          <p>Si la <em>epojé</em> es el gesto de suspensión que abre el espacio, la <strong>reducción</strong> reconduce (<em>re-ducere</em>) la mirada hacia la correlación entre las cosas que aparecen y los actos de conciencia mediante los cuales se nos presentan.</p>
+          <p>“Reducción” no quiere decir simplificar ni reducir la experiencia a procesos neuronales: significa reconducir la atención hacia las condiciones de sentido y donación.</p>
+        </article>
+        <article class="concept">
+          <h3>La subjetividad trascendental</h3>
+          <p>El ámbito al que arriba la reducción no es la psicología individual de una persona biográfica (el yo empírico), sino la <strong>subjetividad trascendental</strong>: la dimensión de la conciencia en tanto condición de posibilidad de que haya objetos reconocibles, tiempo y sentido.</p>
+        </article>
+      </div>
+
+      <!-- Tabla comparativa didáctica -->
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>En la actitud natural cotidiana</th>
+              <th>En la investigación que abre la <em>epojé</em></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Me ocupo de las cosas que encuentro en el mundo.</td>
+              <td>Investigo cómo esas cosas se me presentan en la experiencia.</td>
+            </tr>
+            <tr>
+              <td>Doy por válida su existencia como punto de partida obvio.</td>
+              <td>Pongo entre paréntesis esa aceptación para examinar su aparecer.</td>
+            </tr>
+            <tr>
+              <td>La mirada va directamente al objeto («hacia afuera»).</td>
+              <td>La mirada se vuelve reflexiva: atiende a la correlación intencional.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <!-- Esquema visual interactivo 2: Epojé -->
       <div class="interactive-schema" id="schema-epoje">
         <div class="schema-header">
-          <span class="schema-title">⚡ Esquema interactivo: El gesto de la Epojé</span>
+          <span class="schema-title">⚡ Esquema interactivo: El gesto de la <em>epojé</em></span>
           <span class="small">Cambio de mirada</span>
         </div>
         <div class="schema-controls">
           <button type="button" class="schema-btn active" id="btn-natural">1. Actitud natural cotidiana</button>
-          <button type="button" class="schema-btn" id="btn-epoje">2. Epojé y Reducción Fenomenológica</button>
+          <button type="button" class="schema-btn" id="btn-epoje">2. <em>Epojé</em> y Reducción Fenomenológica</button>
         </div>
         <div class="epoje-display">
           <div class="epoje-world" id="epoje-box">
@@ -972,28 +1099,32 @@
       </div>
 
       <aside class="example">
-        <div class="eyebrow">Un ejemplo paso a paso</div>
-        <h3>De usar una taza a estudiar su aparición</h3>
-        <p>En la vida cotidiana tomás la taza y bebés: das por supuesta su existencia. La indagación fenomenológica pone entre paréntesis esa toma de posición y examina cómo la taza se da en la experiencia.</p>
+        <div class="eyebrow">Un ejemplo didáctico</div>
+        <h3>El teléfono sobre el escritorio</h3>
+        <p>En la actitud natural, querés saber si el teléfono tiene batería: lo encendés y mirás la pantalla. Estás investigando una propiedad física de un objeto cuya existencia das por sentada.</p>
+        <p>Para ilustrar el cambio fenomenológico, ponés entre paréntesis esa afirmación de existencia y considerás el teléfono tal como se te da en la experiencia:</p>
+        <p>• Ves la pantalla iluminada, mientras la parte posterior permanece fuera de tu vista.<br>
+           • Lo girás: cambia su aspecto visual, pero lo reconocés como el mismo teléfono.<br>
+           • Lo guardás en el bolsillo: ya no lo percibís, pero podés recordarlo.</p>
         <div class="reading">
           <strong>Cómo leer el ejemplo</strong>
-          <p>El movimiento no consiste en afirmar que la taza no existe. La mirada se orienta hacia los modos de aparición: se presenta desde un ángulo, como una unidad, con lados aún no vistos. Estas descripciones abren la pregunta por las condiciones que hacen posible la experiencia del objeto.</p>
+          <p>Girar o guardar el teléfono no es hacer <em>epojé</em>. La <em>epojé</em> es la suspensión reflexiva que permite investigar cómo se distingue percibir de recordar, cómo anticipamos aspectos no visibles y cómo reconocemos una unidad a través de múltiples apariciones.</p>
         </div>
       </aside>
 
       <div class="deeper">
-        <h3>Del yo empírico a la subjetividad trascendental</h3>
-        <p>El yo empírico tiene una biografía, hábitos y rasgos que pueden estudiarse psicológicamente. La investigación trascendental no busca otro individuo oculto: cambia el nivel de la pregunta para examinar las condiciones bajo las cuales puede haber experiencia de objetos y de mundo. Por eso no debe confundirse con una introspección sobre la personalidad.</p>
+        <h3>¿Para qué sirve este cambio de actitud?</h3>
+        <p>Sirve para estudiar una relación que habitualmente dejamos sin examinar: la relación entre los objetos y los actos de conciencia mediante los cuales se nos presentan. El «extrañamiento» inicial ayuda a dar el primer paso, pero la tarea rigurosa consiste en describir, distinguir y analizar las estructuras de la experiencia.</p>
       </div>
 
       <div class="precision">
         <strong>Para distinguir</strong>
-        <p>Suspender no es negar. Trascendental no significa sobrenatural. Demorar un juicio docente puede inspirarse en esta perspectiva, pero no equivale a realizar la reducción trascendental.</p>
+        <p>Suspender no es negar. Trascendental no significa sobrenatural. La <em>epojé</em> no destruye el mundo: lo transforma en campo de investigación pura.</p>
       </div>
 
       <div class="synthesis">
         <span class="eyebrow">La idea central</span>
-        <p>La fenomenología trascendental investiga las condiciones de posibilidad de la experiencia, no una realidad sobrenatural.</p>
+        <p>La <em>epojé</em> pone entre paréntesis nuestra aceptación habitual del mundo para investigar cómo lo experimentamos: la suspensión no es el destino final, sino la apertura a una investigación rigurosa.</p>
       </div>
 
       <details class="practice">
@@ -1003,11 +1134,11 @@
         </summary>
         <div class="practice-body">
           <p class="practice-intro">Elegí una opción y revisá la explicación. Podés cambiar tu elección y volver a intentar.</p>
-          <fieldset data-quiz="4">
-            <legend>¿Qué pregunta es propiamente trascendental?</legend>
-            <label class="choice"><input type="radio" name="practice-4" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>¿Cuántos objetos recuerda un alumno?</span></label>
-            <label class="choice"><input type="radio" name="practice-4" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>¿Qué estructuras hacen posible experimentar algo como objeto?</span></label>
-            <label class="choice"><input type="radio" name="practice-4" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>¿Qué realidad sobrenatural causa la experiencia?</span></label>
+          <fieldset data-quiz="5">
+            <legend>¿Cuál es la finalidad principal de la <em>epojé</em> en la fenomenología de Husserl?</legend>
+            <label class="choice"><input type="radio" name="practice-5" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Demostrar que los objetos del mundo exterior son ficciones engañosas.</span></label>
+            <label class="choice"><input type="radio" name="practice-5" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Suspender la tesis de existencia para examinar rigurosamente cómo se da el mundo en la experiencia.</span></label>
+            <label class="choice"><input type="radio" name="practice-5" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Hacer una introspección sobre los estados emocionales del individuo.</span></label>
             <button class="check primary" type="button">Ver devolución</button>
             <div class="feedback" aria-live="polite"></div>
           </fieldset>
@@ -1015,16 +1146,16 @@
       </details>
     </section>
 
-    <!-- TEMA 6 -->
-    <section class="slide" id="tema-6" aria-labelledby="title-6">
-      <div class="eyebrow">Tema 06 · pp. 8–10 del texto de base</div>
-      <h2 id="title-6">Un objeto, muchas apariciones</h2>
+    <!-- TEMA 7 -->
+    <section class="slide" id="tema-7" aria-labelledby="title-7">
+      <div class="eyebrow">Tema 07 · pp. 8–10 del texto de base</div>
+      <h2 id="title-7">Un objeto, muchas apariciones</h2>
       <p class="subtitle">Constitución y horizonte</p>
 
       <div class="concepts">
         <article class="concept">
           <h3>Constitución</h3>
-          <p>Es la articulación de múltiples apariciones como experiencia de un objeto unitario y significativo. La unidad de la taza no se reduce a una sola vista: se constituye a través de una síntesis de perspectivas.</p>
+          <p>Es la articulación de múltiples apariciones como experiencia de un objeto unitario y significativo. La unidad de la taza o del teléfono no se reduce a una sola vista: se constituye a través de una síntesis de perspectivas.</p>
           <p>La identidad del objeto se mantiene a través de sus cambios de aparición. Reconocer esa unidad no significa inventar libremente lo que el objeto es: nuevas experiencias pueden corregir lo anticipado.</p>
         </article>
         <article class="concept">
@@ -1066,11 +1197,11 @@
         </summary>
         <div class="practice-body">
           <p class="practice-intro">Elegí una opción y revisá la explicación. Podés cambiar tu elección y volver a intentar.</p>
-          <fieldset data-quiz="5">
+          <fieldset data-quiz="6">
             <legend>¿Qué ilustra más directamente el horizonte perceptivo?</legend>
-            <label class="choice"><input type="radio" name="practice-5" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Suponer que la taza tiene una cara posterior aunque todavía no la vea.</span></label>
-            <label class="choice"><input type="radio" name="practice-5" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Fabricar una taza de cerámica.</span></label>
-            <label class="choice"><input type="radio" name="practice-5" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Afirmar que todas las perspectivas son igualmente acertadas.</span></label>
+            <label class="choice"><input type="radio" name="practice-6" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Suponer que la taza tiene una cara posterior aunque todavía no la vea.</span></label>
+            <label class="choice"><input type="radio" name="practice-6" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Fabricar una taza de cerámica.</span></label>
+            <label class="choice"><input type="radio" name="practice-6" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Afirmar que todas las perspectivas son igualmente acertadas.</span></label>
             <button class="check primary" type="button">Ver devolución</button>
             <div class="feedback" aria-live="polite"></div>
           </fieldset>
@@ -1078,10 +1209,10 @@
       </details>
     </section>
 
-    <!-- TEMA 7 -->
-    <section class="slide" id="tema-7" aria-labelledby="title-7">
-      <div class="eyebrow">Tema 07 · pp. 10–11 del texto de base</div>
-      <h2 id="title-7">El presente tiene espesor</h2>
+    <!-- TEMA 8 -->
+    <section class="slide" id="tema-8" aria-labelledby="title-8">
+      <div class="eyebrow">Tema 08 · pp. 10–11 del texto de base</div>
+      <h2 id="title-8">El presente tiene espesor</h2>
       <p class="subtitle">La temporalidad de la conciencia</p>
 
       <div class="concepts">
@@ -1168,11 +1299,11 @@
         </summary>
         <div class="practice-body">
           <p class="practice-intro">Elegí una opción y revisá la explicación. Podés cambiar tu elección y volver a intentar.</p>
-          <fieldset data-quiz="6">
+          <fieldset data-quiz="7">
             <legend>¿Cuál es un ejemplo de retención en sentido estricto?</legend>
-            <label class="choice"><input type="radio" name="practice-6" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Recordar unas vacaciones de la infancia.</span></label>
-            <label class="choice"><input type="radio" name="practice-6" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Planificar el próximo cuatrimestre.</span></label>
-            <label class="choice"><input type="radio" name="practice-6" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Mantener en la experiencia la nota que acaba de sonar.</span></label>
+            <label class="choice"><input type="radio" name="practice-7" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Recordar unas vacaciones de la infancia.</span></label>
+            <label class="choice"><input type="radio" name="practice-7" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Planificar el próximo cuatrimestre.</span></label>
+            <label class="choice"><input type="radio" name="practice-7" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Mantener en la experiencia la nota que acaba de sonar.</span></label>
             <button class="check primary" type="button">Ver devolución</button>
             <div class="feedback" aria-live="polite"></div>
           </fieldset>
@@ -1180,10 +1311,10 @@
       </details>
     </section>
 
-    <!-- TEMA 8 -->
-    <section class="slide" id="tema-8" aria-labelledby="title-8">
-      <div class="eyebrow">Tema 08 · pp. 11–14 del texto de base</div>
-      <h2 id="title-8">Un mundo compartido</h2>
+    <!-- TEMA 9 -->
+    <section class="slide" id="tema-9" aria-labelledby="title-9">
+      <div class="eyebrow">Tema 09 · pp. 11–14 del texto de base</div>
+      <h2 id="title-9">Un mundo compartido</h2>
       <p class="subtitle">Intersubjetividad, vida cotidiana y ciencia</p>
 
       <div class="concepts">
@@ -1193,7 +1324,7 @@
           <p>Encontramos a los demás como sujetos que perciben y actúan, no simplemente como objetos físicos. El mundo común admite perspectivas diferentes sin convertirse por eso en una suma de mundos incomunicables.</p>
         </article>
         <article class="concept">
-          <h3>Mundo de la vida</h3>
+          <h3>Mundo de la vida (<em>Lebenswelt</em>)</h3>
           <p>Es el mundo cotidiano, práctico y compartido que ya habitamos cuando comenzamos a teorizar. Incluye usos, relaciones y significados, y constituye el suelo de las prácticas científicas.</p>
           <p>“Previo” señala aquí un suelo de sentido, no una época histórica sin ciencia. Nuestra vida cotidiana actual incluye también conocimientos y prácticas que provienen de la investigación científica.</p>
         </article>
@@ -1236,11 +1367,11 @@
         </summary>
         <div class="practice-body">
           <p class="practice-intro">Elegí una opción y revisá la explicación. Podés cambiar tu elección y volver a intentar.</p>
-          <fieldset data-quiz="7">
+          <fieldset data-quiz="8">
             <legend>¿Qué relación hay entre ciencia y mundo de la vida?</legend>
-            <label class="choice"><input type="radio" name="practice-7" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>La ciencia surge en el mundo vivido y sus conceptos pueden transformarlo.</span></label>
-            <label class="choice"><input type="radio" name="practice-7" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Son dos universos sin relación.</span></label>
-            <label class="choice"><input type="radio" name="practice-7" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>El mundo de la vida desaparece cuando aprendemos ciencia.</span></label>
+            <label class="choice"><input type="radio" name="practice-8" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>La ciencia surge en el mundo vivido y sus conceptos pueden transformarlo.</span></label>
+            <label class="choice"><input type="radio" name="practice-8" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Son dos universos sin relación.</span></label>
+            <label class="choice"><input type="radio" name="practice-8" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>El mundo de la vida desaparece cuando aprendemos ciencia.</span></label>
             <button class="check primary" type="button">Ver devolución</button>
             <div class="feedback" aria-live="polite"></div>
           </fieldset>
@@ -1248,10 +1379,10 @@
       </details>
     </section>
 
-    <!-- TEMA 9 -->
-    <section class="slide" id="tema-9" aria-labelledby="title-9">
-      <div class="eyebrow">Tema 09 · pp. 14–17 del texto de base</div>
-      <h2 id="title-9">Husserl y la tradición comprensiva</h2>
+    <!-- TEMA 10 -->
+    <section class="slide" id="tema-10" aria-labelledby="title-10">
+      <div class="eyebrow">Tema 10 · pp. 14–17 del texto de base</div>
+      <h2 id="title-10">Husserl y la tradición comprensiva</h2>
       <p class="subtitle">Husserl, Dilthey y el puente de Ricoeur</p>
 
       <div class="concepts">
@@ -1304,11 +1435,11 @@
         </summary>
         <div class="practice-body">
           <p class="practice-intro">Elegí una opción y revisá la explicación. Podés cambiar tu elección y volver a intentar.</p>
-          <fieldset data-quiz="8">
+          <fieldset data-quiz="9">
             <legend>¿Cuál distingue mejor los proyectos de Dilthey y Husserl?</legend>
-            <label class="choice"><input type="radio" name="practice-8" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Ambos proponen exactamente el mismo método psicológico.</span></label>
-            <label class="choice"><input type="radio" name="practice-8" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Dilthey estudia solo conductas; Husserl, solo emociones.</span></label>
-            <label class="choice"><input type="radio" name="practice-8" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Dilthey se orienta a comprender la vida histórica; Husserl, a las estructuras y condiciones de la experiencia.</span></label>
+            <label class="choice"><input type="radio" name="practice-9" value="0"><span class="choice-letter" aria-hidden="true">A</span><span>Ambos proponen exactamente el mismo método psicológico.</span></label>
+            <label class="choice"><input type="radio" name="practice-9" value="1"><span class="choice-letter" aria-hidden="true">B</span><span>Dilthey estudia solo conductas; Husserl, solo emociones.</span></label>
+            <label class="choice"><input type="radio" name="practice-9" value="2"><span class="choice-letter" aria-hidden="true">C</span><span>Dilthey se orienta a comprender la vida histórica; Husserl, a las estructuras y condiciones de la experiencia.</span></label>
             <button class="check primary" type="button">Ver devolución</button>
             <div class="feedback" aria-live="polite"></div>
           </fieldset>
@@ -1319,7 +1450,7 @@
     <!-- NAVEGACIÓN INFERIOR -->
     <div class="bottom-nav">
       <button type="button" data-prev>← Anterior</button>
-      <span id="counter" aria-live="polite">1 de 9</span>
+      <span id="counter" aria-live="polite">1 de 10</span>
       <button type="button" class="primary" data-next>Siguiente →</button>
     </div>
   </main>
@@ -1356,7 +1487,7 @@
   </footer>
 
   <noscript>
-    <p>Los nueve temas se muestran seguidos. Podés leer todo el contenido sin activar JavaScript.</p>
+    <p>Los diez temas se muestran seguidos. Podés leer todo el contenido sin activar JavaScript.</p>
   </noscript>
 
   <script>
@@ -1374,7 +1505,7 @@
       document.querySelectorAll('[data-prev]').forEach(b => b.disabled = all || current === 0);
       document.querySelectorAll('[data-next]').forEach(b => b.disabled = all || current === slides.length - 1);
       
-      const counterText = all ? 'Los 9 temas' : `Tema ${current + 1} de ${slides.length}`;
+      const counterText = all ? 'Los 10 temas' : `Tema ${current + 1} de ${slides.length}`;
       document.getElementById('counter').textContent = `${current + 1} de ${slides.length}`;
       document.getElementById('counter-top').textContent = counterText;
       
@@ -1475,25 +1606,27 @@
     const worldText = document.getElementById('world-text');
     const epojeDesc = document.getElementById('epoje-desc');
 
-    btnNatural.addEventListener('click', () => {
-      btnNatural.classList.add('active');
-      btnEpoje.classList.remove('active');
-      epojeBox.classList.remove('bracketed');
-      brLeft.style.display = 'none';
-      brRight.style.display = 'none';
-      worldText.textContent = "El mundo y sus cosas existen ahí afuera";
-      epojeDesc.textContent = "En la actitud natural damos por sentada la realidad del mundo: la mirada se dirige directamente a los objetos.";
-    });
+    if (btnNatural && btnEpoje) {
+      btnNatural.addEventListener('click', () => {
+        btnNatural.classList.add('active');
+        btnEpoje.classList.remove('active');
+        epojeBox.classList.remove('bracketed');
+        brLeft.style.display = 'none';
+        brRight.style.display = 'none';
+        worldText.textContent = "El mundo y sus cosas existen ahí afuera";
+        epojeDesc.textContent = "En la actitud natural cotidiana damos por sentada la realidad de las cosas sin cuestionarla: miramos directo a los objetos.";
+      });
 
-    btnEpoje.addEventListener('click', () => {
-      btnEpoje.classList.add('active');
-      btnNatural.classList.remove('active');
-      epojeBox.classList.add('bracketed');
-      brLeft.style.display = 'inline';
-      brRight.style.display = 'inline';
-      worldText.textContent = "Existencia del mundo fáctico";
-      epojeDesc.textContent = "Al poner entre paréntesis la tesis de existencia (Epojé), la mirada se reconduce (Reducción) a cómo se constituye el sentido del mundo en la conciencia.";
-    });
+      btnEpoje.addEventListener('click', () => {
+        btnEpoje.classList.add('active');
+        btnNatural.classList.remove('active');
+        epojeBox.classList.add('bracketed');
+        brLeft.style.display = 'inline';
+        brRight.style.display = 'inline';
+        worldText.textContent = "Existencia fáctica del mundo";
+        epojeDesc.innerHTML = "Al poner entre paréntesis la tesis de existencia (<em>epojé</em>), la mirada se reconduce (reducción) a cómo se constituye el sentido del mundo en los actos de la conciencia.";
+      });
+    }
 
     // Esquema 3: Temporalidad
     const timeSteps = [
@@ -1534,25 +1667,25 @@
        ========================================================================== */
     const glossaryData = [
       { term: "Actitud natural", topic: 4, def: "Modo habitual y cotidiano en que vivimos, dando por sentada la existencia del mundo y de las cosas sin problematizarla." },
-      { term: "Ciencia y mundo vivido", topic: 7, def: "Relación recíproca: las ciencias nacen en el mundo de la vida y sus conceptos regresan a él, enriqueciéndolo o reificándolo." },
-      { term: "Comprensión (Verstehen)", topic: 8, def: "Operación que reconstruye las conexiones de sentido de la vida histórica y humana a partir de sus vivencias y expresiones." },
-      { term: "Constitución", topic: 5, def: "Articulación y síntesis de múltiples apariciones parciales como la experiencia de un objeto unitario e idéntico." },
-      { term: "Epojé", topic: 4, def: "Puesta entre paréntesis o suspensión de la toma de posición sobre la existencia del mundo propia de la actitud natural." },
+      { term: "Ciencia y mundo vivido", topic: 8, def: "Relación recíproca: las ciencias nacen en el mundo de la vida y sus conceptos regresan a él, enriqueciéndolo o reificándolo." },
+      { term: "Comprensión (Verstehen)", topic: 9, def: "Operación que reconstruye las conexiones de sentido de la vida histórica y humana a partir de sus vivencias y expresiones." },
+      { term: "Constitución", topic: 6, def: "Articulación y síntesis de múltiples apariciones parciales como la experiencia de un objeto unitario e idéntico." },
+      { term: "Epojé (ἐποχή)", topic: 5, def: "Puesta entre paréntesis o suspensión metódica de la creencia en la existencia del mundo para examinarlo en su modo de aparecer como fenómeno." },
       { term: "Fenómeno", topic: 1, def: "Aquello que se manifiesta en la experiencia considerado estrictamente en su modo de aparecer para la conciencia." },
       { term: "Fenomenología", topic: 1, def: "Investigación rigurosa de las estructuras de la conciencia y de las condiciones bajo las cuales algo aparece con sentido." },
-      { term: "Horizonte", topic: 5, def: "Conjunto de referencias, aspectos no vistos y posibilidades implícitas que acompañan y abren lo actualmente percibido." },
-      { term: "Impresión originaria", topic: 6, def: "El núcleo viviente del presente inmediato: la fase de la conciencia donde se da el acontecimiento actual." },
+      { term: "Horizonte", topic: 6, def: "Conjunto de referencias, aspectos no vistos y posibilidades implícitas que acompañan y abren lo actualmente percibido." },
+      { term: "Impresión originaria", topic: 7, def: "El núcleo viviente del presente inmediato: la fase de la conciencia donde se da el acontecimiento actual." },
       { term: "Intencionalidad", topic: 3, def: "Estructura fundamental de la conciencia por la cual esta siempre es 'conciencia de algo' (orientada hacia un objeto)." },
-      { term: "Intersubjetividad", topic: 7, def: "Dimensión por la cual experimentamos a otros sujetos y habitamos un mundo común y compartido." },
-      { term: "Mundo de la vida (Lebenswelt)", topic: 7, def: "El mundo práctico, cotidiano y precientífico que habitamos y que constituye el suelo de sentido de la ciencia." },
+      { term: "Intersubjetividad", topic: 8, def: "Dimensión por la cual experimentamos a otros sujetos y habitamos un mundo común y compartido." },
+      { term: "Mundo de la vida (Lebenswelt)", topic: 8, def: "El mundo práctico, cotidiano y precientífico que habitamos y que constituye el suelo de sentido de la ciencia." },
       { term: "Noema", topic: 3, def: "Polo objetivo de la vivencia: el objeto tal como es intencionado, con su sentido y modos de donación." },
       { term: "Noesis", topic: 3, def: "Polo subjetivo de la vivencia: la modalidad del acto de conciencia (percibir, recordar, juzgar, temer, etc.)." },
       { term: "Objetivismo", topic: 2, def: "Posición que absolutiza el modelo científico considerándolo la única realidad y olvidando el suelo de la experiencia vivida." },
-      { term: "Protención", topic: 6, def: "Orientación anticipatoria inmediata hacia el futuro inminente dentro del presente vivo." },
+      { term: "Protención", topic: 7, def: "Orientación anticipatoria inmediata hacia el futuro inminente dentro del presente vivo." },
       { term: "Psicologismo", topic: 2, def: "Reducción errónea de la validez de las verdades lógicas e ideales a meros hechos y procesos psicológicos empíricos." },
-      { term: "Reducción trascendental", topic: 4, def: "Gesto que reconduce la mirada filosófica desde los objetos del mundo hacia las condiciones subjetivas que los constituyen." },
-      { term: "Retención", topic: 6, def: "Permanencia o sostenimiento inmediato en el presente vivido de lo que acaba de acontecer." },
-      { term: "Trascendental", topic: 4, def: "Nivel de indagación que interroga las condiciones de posibilidad que hacen posible la experiencia y el sentido." }
+      { term: "Reducción trascendental", topic: 5, def: "Gesto que reconduce la mirada filosófica desde los objetos del mundo hacia las condiciones subjetivas que los constituyen." },
+      { term: "Retención", topic: 7, def: "Permanencia o sostenimiento inmediato en el presente vivido de lo que acaba de acontecer." },
+      { term: "Trascendental", topic: 5, def: "Nivel de indagación que interroga las condiciones de posibilidad que hacen posible la experiencia y el sentido." }
     ];
 
     const glossaryModal = document.getElementById('glossary-modal');
@@ -1577,7 +1710,7 @@
         card.innerHTML = `
           <div class="glossary-term">
             <span>${item.term}</span>
-            <a class="glossary-topic-link" data-go-topic="${item.topic}">Ir al Tema 0${item.topic + 1}</a>
+            <a class="glossary-topic-link" data-go-topic="${item.topic}">Ir al Tema ${String(item.topic + 1).padStart(2, '0')}</a>
           </div>
           <p class="glossary-def">${item.def}</p>
         `;
@@ -1616,7 +1749,8 @@
       ["¿Cuál de estas frases registra una conducta sin atribuirle un motivo?", ["Matías está desmotivado.", "Matías miró su cuaderno mientras la docente explicaba.", "Matías bajó la vista porque no había estudiado."], 1, ["“Desmotivado” es una interpretación; requiere indagar su experiencia.", "La frase describe una conducta. Su sentido permanece abierto.", "El movimiento de la mirada es observable, pero el motivo atribuido es una hipótesis."]],
       ["¿Cuál expresa mejor la crítica al objetivismo?", ["Los datos cuantitativos siempre son falsos.", "Solo la experiencia personal produce conocimiento.", "La medición puede ser válida sin agotar el sentido de una experiencia."], 2, ["Husserl no rechaza la medición ni la ciencia.", "La crítica no reemplaza el conocimiento científico por opiniones privadas.", "Podemos medir una regularidad y todavía necesitar comprender cómo se vive la situación."]],
       ["Al pasar de percibir al profesor a recordarlo, ¿qué cambia de manera explícita?", ["La modalidad del acto de conciencia.", "La existencia real del profesor.", "La intencionalidad desaparece."], 0, ["Percibir y recordar son modalidades noéticas distintas; el objeto aparece también bajo modos diferentes.", "Recordar a una persona no modifica ni decide su existencia.", "Recordar sigue siendo recordar algo: mantiene su estructura intencional."]],
-      ["¿Qué pregunta es propiamente trascendental?", ["¿Cuántos objetos recuerda un alumno?", "¿Qué estructuras hacen posible experimentar algo como objeto?", "¿Qué realidad sobrenatural causa la experiencia?"], 1, ["Es una pregunta empírica acerca de un rendimiento particular.", "Busca las condiciones de posibilidad de la experiencia, no una característica individual.", "“Trascendental” no designa lo sobrenatural."]],
+      ["Cuando corregimos una ilusión (por ejemplo, confundir un árbol con una persona al atardecer), ¿qué ocurre con la actitud natural?", ["Se suspende por completo la creencia espontánea en la existencia del mundo.", "Se corrige un dato particular, pero se sigue dando por sentada la existencia del mundo.", "Se realiza automáticamente la reducción trascendental."], 1, ["La duda o ilusión sobre un objeto particular no anula la certeza de fondo sobre el mundo.", "Exacto. Corregimos un aspecto puntual (era un árbol, no una persona) mientras la aceptación tácita de la existencia del mundo circundante permanece intacta.", "La reducción trascendental es un acto metódico y voluntario de la filosofía, no una simple corrección perceptiva."]],
+      ["¿Cuál es la finalidad principal de la epojé en la fenomenología de Husserl?", ["Demostrar que los objetos del mundo exterior son ficciones engañosas.", "Suspender la tesis de existencia para examinar rigurosamente cómo se da el mundo en la experiencia.", "Hacer una introspección sobre los estados emocionales del individuo."], 1, ["La epojé no niega la realidad ni afirma que las cosas sean falsas.", "Correcto. Pone entre paréntesis la afirmación espontánea de existencia para estudiar cómo la conciencia experimenta y constituye el sentido de las cosas como fenómeno.", "La epojé no es una introspección psicológica sobre la personalidad individual, sino una investigación de las estructuras de la experiencia."]],
       ["¿Qué ilustra más directamente el horizonte perceptivo?", ["Suponer que la taza tiene una cara posterior aunque todavía no la vea.", "Fabricar una taza de cerámica.", "Afirmar que todas las perspectivas son igualmente acertadas."], 0, ["Lo visible remite a aspectos no dados actualmente, pero anticipados como explorables.", "Fabricar un objeto no es su constitución fenomenológica.", "Las anticipaciones pueden confirmarse o corregirse al continuar la experiencia."]],
       ["¿Cuál es un ejemplo de retención en sentido estricto?", ["Recordar unas vacaciones de la infancia.", "Planificar el próximo cuatrimestre.", "Mantener en la experiencia la nota que acaba de sonar."], 2, ["Es un recuerdo de un acontecimiento pasado, no la permanencia inmediata de lo recién ocurrido.", "Es una planificación explícita de un futuro lejano.", "La nota recién pasada permanece vinculada con la actual en la escucha de la melodía."]],
       ["¿Qué relación hay entre ciencia y mundo de la vida?", ["La ciencia surge en el mundo vivido y sus conceptos pueden transformarlo.", "Son dos universos sin relación.", "El mundo de la vida desaparece cuando aprendemos ciencia."], 0, ["La relación no es unilateral: el conocimiento científico se incorpora a nuestras prácticas y significaciones.", "La práctica científica presupone actividades, lenguaje y experiencias compartidas.", "La elaboración científica no elimina el suelo cotidiano del que parte."]],
