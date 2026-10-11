@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MATE loco — generador de prompts delirantes</title>
+<style>
+:root{
+  --bg:#11131a; --panel:#1a1e29; --panel2:#222838; --text:#f3f4f6;
+  --muted:#aeb6c6; --accent:#ff4f70; --m:#27c2a3; --a:#54a7ff; --t:#b779ff; --e:#ffd24a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:radial-gradient(circle at top,#1d2330 0,#11131a 48%); color:var(--text);
+}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 18px 48px}
+.hero{text-align:center;margin-bottom:22px}
+h1{font-size:clamp(2rem,5vw,4rem);margin:.1em 0;color:var(--accent);letter-spacing:-.03em}
+.subtitle{color:var(--muted);font-size:1.08rem;margin:.35rem auto;max-width:780px}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#2a3042;color:#dfe5f1;font-size:.82rem;font-weight:800}
+.matebar{display:flex;justify-content:center;gap:10px;margin:20px 0 26px;flex-wrap:wrap}
+.letter{
+  width:76px;height:76px;border-radius:18px;display:grid;place-items:center;font-weight:900;
+  font-size:2rem;background:var(--panel2);border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 10px 30px rgba(0,0,0,.25); position:relative; cursor:help
+}
+.letter small{
+  position:absolute;top:83px;white-space:nowrap;font-size:.72rem;font-weight:700;color:var(--muted);
+  opacity:0;transition:.2s;pointer-events:none
+}
+.letter:hover small{opacity:1}
+.m{color:var(--m)} .a{color:var(--a)} .t{color:var(--t)} .e{color:var(--e)}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.letter small{display:none}}
+.card{
+  background:rgba(26,30,41,.95); border:1px solid rgba(255,255,255,.08); border-radius:20px;
+  padding:20px; box-shadow:0 16px 50px rgba(0,0,0,.28)
+}
+.row{display:grid;grid-template-columns:1fr 180px;gap:12px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+label{display:block;font-weight:800;margin-bottom:8px}
+input{
+  width:100%;padding:14px 15px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+  background:#10141e;color:var(--text);font-size:1rem;outline:none
+}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,79,112,.14)}
+button{
+  border:0;border-radius:999px;padding:13px 18px;font-weight:900;cursor:pointer;font-size:1rem
+}
+.primary{background:var(--accent);color:white}
+.secondary{background:#2a3042;color:var(--text)}
+.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,.12)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 0}
+.promptbox{
+  margin-top:18px;background:#0f131d;border-left:5px solid var(--accent);padding:20px;border-radius:14px;
+  font-size:1.16rem;line-height:1.55;min-height:126px;display:flex;align-items:center
+}
+.breakdown{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+@media(max-width:650px){.breakdown{grid-template-columns:1fr}}
+.item{padding:12px;border-radius:12px;background:#131824;border:1px solid rgba(255,255,255,.06)}
+.item b{display:block;margin-bottom:5px}
+.item.mate-m b{color:var(--m)} .item.mate-a b{color:var(--a)}
+.item.mate-t b{color:var(--t)} .item.mate-e b{color:var(--e)}
+.note{color:var(--muted);font-size:.92rem;line-height:1.5}
+.rule{margin-top:18px;padding:14px 16px;border-radius:14px;background:#151a25;border:1px dashed rgba(255,255,255,.14)}
+.rule strong{color:var(--e)}
+.qrwrap{text-align:center}
+#qr{width:210px;height:210px;background:white;border-radius:16px;margin:14px auto;padding:10px;display:none}
+#qr img{width:100%;height:100%;display:block}
+.footer{text-align:center;color:#7f889b;font-size:.86rem;margin-top:22px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="badge">edición stand up</span>
+    <h1>MATE loco</h1>
+    <p class="subtitle">Un generador de prompts absurdos para experimentar con la IA. Un buen prompt puede mejorar mucho una respuesta; no puede convertirla mágicamente en verdadera.</p>
+    <div class="matebar" aria-label="Acrónimo MATE">
+      <div class="letter m">M<small>Meta</small></div>
+      <div class="letter a">A<small>Agente + audiencia</small></div>
+      <div class="letter t">T<small>Tipo de respuesta</small></div>
+      <div class="letter e">E<small>Elementos + extensión</small></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <div class="row">
+        <div>
+          <label for="tema">Tema</label>
+          <input id="tema" placeholder="Ej.: inteligencia, procrastinación, evaluación, IA..." autocomplete="off">
+        </div>
+        <div>
+          <label for="seed">Código (reproduce la misma combinación)</label>
+          <input id="seed" inputmode="numeric" maxlength="5" placeholder="aleatorio">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="generar">🎲 Generar prompt loco</button>
+        <button class="secondary" id="otro">🌀 Otro disparate</button>
+        <button class="secondary" id="copiar">Copiar</button>
+        <button class="ghost" id="reiniciar">Reiniciar</button>
+      </div>
+
+      <div class="promptbox" id="prompt">Escribí un tema y apretá “Generar prompt loco”.</div>
+
+      <div class="breakdown">
+        <div class="item mate-m"><b>M — Meta</b><span id="bm">...</span></div>
+        <div class="item mate-a"><b>A — Agente</b><span id="bag">...</span></div>
+        <div class="item mate-a"><b>A — Audiencia</b><span id="bau">...</span></div>
+        <div class="item mate-t"><b>T — Tipo</b><span id="bt">...</span></div>
+        <div class="item mate-e"><b>E — Elementos / extensión</b><span id="be">...</span></div>
+      </div>
+
+      <div class="rule">
+        <strong>Regla escénica:</strong> respuesta breve, máximo 100 palabras. El disparate es obligatorio; abdicar del criterio, no.
+      </div>
+    </section>
+
+    <aside class="card qrwrap">
+      <span class="badge">modo público</span>
+      <h2>Escaneá y jugá</h2>
+
+      <label for="shareUrl" style="text-align:left">URL del generador</label>
+      <input id="shareUrl" placeholder="https://...">
+
+      <div class="actions" style="justify-content:center">
+        <button class="secondary" id="crearQr">Crear QR</button>
+      </div>
+
+      <div id="qr"><img id="qrImg" alt="QR del generador"></div>
+      <p class="note" id="qrMsg">El QR se genera cuando hay una URL web válida.</p>
+
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:24px 0">
+
+      <h3>Juego relámpago</h3>
+      <p class="note" style="text-align:left">
+        1. Elegí un tema.<br>
+        2. Generá el disparate.<br>
+        3. Pegalo en la IA que tengas a mano.<br>
+        4. Compará con otro participante.<br>
+        5. Preguntate: ¿qué cambió por el prompt y qué depende del modelo?
+      </p>
+    </aside>
+  </div>
+
+  <div class="footer">MATE loco · plausible no significa verdadero.</div>
+</div>
+
+<script>
+const data = {
+  m: [
+    "explicar [TEMA] de manera inolvidable",
+    "defender una opinión impopular sobre [TEMA]",
+    "convencer a alguien de que [TEMA] merece atención",
+    "resumir [TEMA] sin perder la idea central",
+    "convertir [TEMA] en una pregunta incómoda",
+    "explicar por qué [TEMA] importa en la vida cotidiana",
+    "mostrar el lado absurdo de [TEMA]",
+    "transformar [TEMA] en una advertencia",
+    "explicar [TEMA] mediante una comparación inesperada",
+    "hacer que [TEMA] suene sorprendentemente interesante",
+    "demostrar que [TEMA] puede ser más raro de lo que parece",
+    "explicar [TEMA] como si fuera un problema doméstico",
+    "convertir [TEMA] en una discusión imposible de cerrar",
+    "desarmar una creencia común sobre [TEMA]",
+    "hacer una defensa apasionada de [TEMA] sin ponerse solemne",
+    "explicar [TEMA] desde una perspectiva completamente equivocada pero útil",
+    "transformar [TEMA] en una regla de supervivencia cotidiana",
+    "mostrar por qué [TEMA] puede confundirse con otra cosa",
+    "explicar [TEMA] usando una paradoja",
+    "convertir [TEMA] en una sospecha razonable"
+  ],
+
+  ag: [
+    "un carpincho epistemólogo que tomó la Casa Rosada",
+    "un fantasma de biblioteca que cobra por palabra",
+    "una empanada salteña consciente de su mortalidad",
+    "un semáforo porteño que perdió la fe en la humanidad",
+    "un algoritmo jubilado que vive en Mar del Plata",
+    "un loro con Wi-Fi, tres termos de mate y diploma apócrifo",
+    "un colectivo 60 que alcanzó la autoconciencia",
+    "una milanesa napolitana con formación en filosofía analítica",
+    "un ovni estacionado en doble fila en Corrientes y Callao",
+    "un mate que está cansado de que lo antropomorficen",
+    "una estatua de San Martín que empezó a leer memes",
+    "un kiosquero que sospecha que la realidad está mal diseñada",
+    "un taxista porteño que leyó a Kant durante un corte en la General Paz",
+    "un psicoanalista demasiado literal y peligrosamente puntual",
+    "un mozo de bodegón que explica todo con teorías cosmológicas",
+    "una heladera que se considera referente moral del hogar",
+    "un inspector municipal que solo habla en aforismos",
+    "un ascensor antiguo que desarrolló conciencia de clase",
+    "un algoritmo con nostalgia de Windows 95",
+    "una paloma de Plaza de Mayo con formación en semiótica",
+    "un prócer argentino cansado de aparecer en billetes",
+    "un robot que aprendió ironía mirando televisión argentina",
+    "un meteorólogo que interpreta todo como conflicto existencial",
+    "un filósofo estoico atrapado en un grupo de WhatsApp familiar",
+    "una maestra jardinera que perdió la paciencia con Aristóteles"
+  ],
+
+  au: [
+    "tres palomas de Plaza de Mayo con tenure",
+    "un consejo de carpinchos que evalúa a la humanidad",
+    "un grupo de extraterrestres que solo conoce Argentina por audios de WhatsApp",
+    "una comisión internacional de señoras que dicen «yo te lo dije»",
+    "un jurado de robots ofendidos por el término inteligencia artificial",
+    "una reunión de consorcio en estado de máxima hostilidad",
+    "un aula entera que cree que esto no entra en el examen",
+    "cinco próceres revividos contra su voluntad",
+    "una audiencia de algoritmos que sospecha que los humanos alucinan",
+    "un grupo de objetos domésticos que exige derechos civiles",
+    "una asamblea de gatos que ya votó en contra",
+    "un comité que solo aprueba ideas con bizcochitos",
+    "un grupo de turistas perdidos en Once",
+    "docentes que prometieron no usar más PowerPoint",
+    "un jurado compuesto exclusivamente por cuñados opinólogos",
+    "una IA del futuro que cree que nosotros éramos simples",
+    "una familia argentina discutiendo en Navidad",
+    "una delegación de marcianos que exige fuentes APA",
+    "un curso que acaba de descubrir que hay parcial",
+    "un grupo de científicos escépticos que llegó sin café",
+    "una comisión de burócratas que solo entiende formularios",
+    "una audiencia que aplaude antes de entender",
+    "personas que tienen exactamente noventa segundos de paciencia",
+    "un sindicato de electrodomésticos en huelga",
+    "un grupo de abuelas que detecta humo retórico a veinte metros"
+  ],
+
+  t: [
+    "el prospecto de un medicamento prohibido por sentido común",
+    "una cadena de WhatsApp enviada por una paloma",
+    "un parte de guerra entre neuronas",
+    "un menú de bodegón filosófico",
+    "una declaración jurada de una tostadora",
+    "un tango compuesto por un algoritmo despechado",
+    "el manual de instrucciones de un objeto que no existe",
+    "un decreto presidencial de una república imaginaria",
+    "una publicidad televisiva de 1994 con presupuesto dudoso",
+    "una esquela fúnebre para una idea que sigue viva",
+    "un informe meteorológico con alerta existencial",
+    "una receta de cocina que no cocina nada",
+    "un cartel de ascensor escrito por alguien muy ofendido",
+    "un aviso clasificado de diario de 1987",
+    "una audiencia judicial entre conceptos abstractos",
+    "un tutorial de YouTube de cuarenta segundos",
+    "un comunicado sindical de objetos inanimados",
+    "un horóscopo que se arrepiente de sí mismo",
+    "una crónica deportiva de una discusión intelectual",
+    "un mensaje de voz transcripto de una tía",
+    "un boletín escolar redactado por una IA nerviosa",
+    "una etiqueta de advertencia para un producto inexistente",
+    "un parte policial excesivamente solemne",
+    "un telegrama diplomático enviado por error",
+    "un folleto turístico de un lugar conceptual"
+  ],
+
+  e: [
+    "máximo 100 palabras; mencioná un carpincho sin explicar por qué",
+    "máximo 100 palabras; una frase debe incluir una milanesa",
+    "máximo 100 palabras; cerrá con una amenaza burocrática absurda",
+    "máximo 100 palabras; incluí un dato inventado y marcá claramente que es inventado",
+    "máximo 100 palabras; que parezca escrito bajo supervisión de un gato",
+    "máximo 100 palabras; agregá una nota al pie inútil",
+    "máximo 100 palabras; incluí una metáfora con un ascensor roto",
+    "máximo 100 palabras; usá solemnidad excesiva para algo trivial",
+    "máximo 100 palabras; hacé aparecer un objeto doméstico como autoridad moral",
+    "máximo 100 palabras; terminá con «Atentamente, la realidad»",
+    "máximo 100 palabras; incluí una advertencia completamente innecesaria",
+    "máximo 100 palabras; una frase debe sonar como consejo de abuela",
+    "máximo 100 palabras; incluí una referencia argentina reconocible",
+    "máximo 100 palabras; hacé que el texto parezca serio hasta el remate final",
+    "máximo 100 palabras; incluí la frase «esto termina mal»",
+    "máximo 100 palabras; una oración debe parecer extraída de un manual técnico",
+    "máximo 100 palabras; incluí una comparación absurda pero comprensible",
+    "máximo 100 palabras; agregá una observación seca, casi británica",
+    "máximo 100 palabras; incluí una pregunta que nadie había pedido",
+    "máximo 100 palabras; hacé que una silla tenga la última palabra",
+    "máximo 100 palabras; incluí una referencia a un trámite imposible",
+    "máximo 100 palabras; usá una palabra pomposa para describir algo ridículo",
+    "máximo 100 palabras; una frase debe sonar sospechosamente sabia",
+    "máximo 100 palabras; terminá con una moraleja inútil",
+    "máximo 100 palabras; incluí una mini contradicción deliberada"
+  ]
+};
+
+const $ = s => document.querySelector(s);
+
+const replaceTema = (txt, tema) =>
+  txt.replaceAll("[TEMA]", tema);
+
+function randomSeed(){
+  return String(
+    Math.floor(Math.random() * 100000)
+  ).padStart(5,"0");
+}
+
+function currentSeed(){
+  const raw = $("#seed").value.trim();
+
+  if (/^\d{1,5}$/.test(raw)) {
+    return raw.padStart(5,"0");
+  }
+
+  return randomSeed();
+}
+
+function mulberry32(seed){
+  return function(){
+    let t = seed += 0x6D2B79F5;
+
+    t = Math.imul(
+      t ^ t >>> 15,
+      t | 1
+    );
+
+    t ^= t + Math.imul(
+      t ^ t >>> 7,
+      t | 61
+    );
+
+    return (
+      (t ^ t >>> 14) >>> 0
+    ) / 4294967296;
+  };
+}
+
+function generar(forceRandom=false){
+
+  const tema = $("#tema").value.trim();
+
+  if(!tema){
+    $("#tema").focus();
+    $("#tema").style.borderColor = "var(--accent)";
+    return;
+  }
+
+  $("#tema").style.borderColor =
+    "rgba(255,255,255,.12)";
+
+  const s = forceRandom
+    ? randomSeed()
+    : currentSeed();
+
+  $("#seed").value = s;
+
+  const rng =
+    mulberry32(
+      parseInt(s,10) || 1
+    );
+
+  const pick = arr =>
+    arr[
+      Math.floor(
+        rng() * arr.length
+      )
+    ];
+
+  const temaEntreComillas =
+    `"${tema}"`;
+
+  const m =
+    replaceTema(
+      pick(data.m),
+      temaEntreComillas
+    );
+
+  const ag =
+    replaceTema(
+      pick(data.ag),
+      temaEntreComillas
+    );
+
+  const au =
+    replaceTema(
+      pick(data.au),
+      temaEntreComillas
+    );
+
+  const t =
+    replaceTema(
+      pick(data.t),
+      temaEntreComillas
+    );
+
+  const e =
+    replaceTema(
+      pick(data.e),
+      temaEntreComillas
+    );
+
+  const p =
+    `Actuá como ${ag}. ` +
+    `Tu meta es ${m}. ` +
+    `Respondé para ${au}. ` +
+    `Usá ${t}. ` +
+    `Condición: ${e}.`;
+
+  $("#prompt").textContent = p;
+
+  $("#bm").textContent = m;
+  $("#bag").textContent = ag;
+  $("#bau").textContent = au;
+  $("#bt").textContent = t;
+  $("#be").textContent = e;
+}
+
+$("#generar")
+  .addEventListener(
+    "click",
+    ()=>generar(false)
+  );
+
+$("#otro")
+  .addEventListener(
+    "click",
+    ()=>generar(true)
+  );
+
+$("#tema")
+  .addEventListener(
+    "keydown",
+    e=>{
+      if(e.key==="Enter"){
+        generar(false);
+      }
+    }
+  );
+
+$("#seed")
+  .addEventListener(
+    "keydown",
+    e=>{
+      if(e.key==="Enter"){
+        generar(false);
+      }
+    }
+  );
+
+$("#copiar")
+  .addEventListener(
+    "click",
+    async ()=>{
+
+      const txt =
+        $("#prompt").textContent;
+
+      if(
+        !txt ||
+        txt.startsWith("Escribí")
+      ){
+        return;
+      }
+
+      try{
+
+        await navigator.clipboard
+          .writeText(txt);
+
+        const b=$("#copiar");
+        const old=b.textContent;
+
+        b.textContent="¡Copiado!";
+
+        setTimeout(
+          ()=>b.textContent=old,
+          1200
+        );
+
+      }catch(e){
+
+        alert(
+          "No pude copiar automáticamente. " +
+          "Seleccioná el texto manualmente."
+        );
+
+      }
+    }
+  );
+
+$("#reiniciar")
+  .addEventListener(
+    "click",
+    ()=>{
+
+      $("#tema").value="";
+      $("#seed").value="";
+
+      $("#prompt").textContent =
+        "Escribí un tema y apretá “Generar prompt loco”.";
+
+      [
+        "#bm",
+        "#bag",
+        "#bau",
+        "#bt",
+        "#be"
+      ].forEach(
+        id =>
+          $(id).textContent="..."
+      );
+
+      $("#tema").focus();
+    }
+  );
+
+function crearQr(){
+
+  const url =
+    $("#shareUrl").value.trim();
+
+  try{
+
+    const u =
+      new URL(url);
+
+    if(
+      !/^https?:$/
+      .test(u.protocol)
+    ){
+      throw new Error();
+    }
+
+    $("#qrImg").src =
+      "https://api.qrserver.com/v1/create-qr-code/" +
+      "?size=400x400" +
+      "&margin=8" +
+      "&data=" +
+      encodeURIComponent(url);
+
+    $("#qr").style.display =
+      "block";
+
+    $("#qrMsg").textContent =
+      "Listo: este QR abre el generador.";
+
+  }catch(e){
+
+    $("#qr").style.display =
+      "none";
+
+    $("#qrMsg").textContent =
+      "Pegá una URL web válida (http o https).";
+  }
+}
+
+$("#crearQr")
+  .addEventListener(
+    "click",
+    crearQr
+  );
+
+if(
+  location.protocol==="http:" ||
+  location.protocol==="https:"
+){
+  $("#shareUrl").value =
+    location.href.split("#")[0];
+
+  crearQr();
+}
+
+</script>
+</body>
+</html>
