@@ -1,11 +1,21 @@
 <!doctype html>
 <html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Video interactivo sobre fenomenología de Husserl y educación.">
 
-<title>Fenomenología y educación — Husserl</title>
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta
+  name="description"
+  content="Video interactivo sobre fenomenología de Husserl y educación."
+>
+
+<title>
+Fenomenología y educación — Husserl
+</title>
+
 
 <style>
 
@@ -15,6 +25,7 @@
   --ink:#26211d;
   --muted:#756c64;
   --accent:#4f463f;
+  --accent2:#74685f;
   --line:#d8d0c7;
   --ok:#e7f2e8;
   --okline:#7da282;
@@ -27,7 +38,8 @@
   box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
   margin:0;
   padding:0;
   background:var(--bg);
@@ -52,8 +64,13 @@ main{
   padding:30px 18px 70px;
 }
 
-h1,h2,h3{
-  font-family:Georgia,"Times New Roman",serif;
+h1,
+h2,
+h3{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
   font-weight:600;
 }
 
@@ -79,7 +96,9 @@ h1{
 }
 
 
-/* VIDEO */
+/* ======================================================
+   VIDEO
+   ====================================================== */
 
 .player-shell{
   position:relative;
@@ -99,11 +118,13 @@ h1{
 }
 
 
-/* PROGRESO */
+/* ======================================================
+   BARRA DE PROGRESO
+   ====================================================== */
 
 .timeline{
   display:flex;
-  gap:6px;
+  gap:7px;
   margin:16px 0 6px;
 }
 
@@ -126,7 +147,9 @@ h1{
 }
 
 
-/* CONSIGNA */
+/* ======================================================
+   CONSIGNA
+   ====================================================== */
 
 .note{
   margin-top:20px;
@@ -137,7 +160,9 @@ h1{
 }
 
 
-/* INTERACCIONES */
+/* ======================================================
+   CAPA DE INTERACCIONES
+   ====================================================== */
 
 .overlay{
   position:fixed;
@@ -146,7 +171,7 @@ h1{
   display:none;
   align-items:center;
   justify-content:center;
-  padding:22px;
+  padding:24px;
   background:rgba(20,18,16,.84);
 }
 
@@ -155,12 +180,13 @@ h1{
 }
 
 .card{
-  width:min(1080px,96vw);
-  min-height:min(650px,90vh);
-  padding:clamp(22px,3vw,38px);
+  width:min(1060px,96vw);
+  min-height:min(610px,88vh);
+  padding:clamp(24px,3vw,40px);
   background:var(--paper);
   border-radius:22px;
   box-shadow:0 25px 80px rgba(0,0,0,.42);
+
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -170,6 +196,7 @@ h1{
   display:flex;
   justify-content:space-between;
   gap:20px;
+
   color:var(--muted);
   font-size:.77rem;
   text-transform:uppercase;
@@ -178,31 +205,74 @@ h1{
 }
 
 .card h2{
-  font-size:clamp(1.55rem,3vw,2.2rem);
+  font-size:clamp(1.6rem,3vw,2.2rem);
   margin:.3rem 0 .8rem;
 }
 
 .question{
-  font-size:clamp(1rem,1.8vw,1.2rem);
-  max-width:930px;
-  margin-bottom:14px;
+  font-size:clamp(1.03rem,1.8vw,1.2rem);
+  max-width:920px;
+  margin-bottom:15px;
 }
 
 
-/* OPCIONES */
+/* ======================================================
+   TARJETAS EXPLICATIVAS
+   ====================================================== */
+
+.explanation{
+  padding:18px 20px;
+  background:var(--soft);
+  border-radius:14px;
+  max-width:940px;
+}
+
+.explanation p{
+  margin:.3rem 0 .9rem;
+}
+
+.explanation p:last-child{
+  margin-bottom:0;
+}
+
+.think{
+  margin-top:16px;
+  padding:14px 16px;
+  border-left:4px solid var(--accent2);
+  background:#fff;
+  border-radius:0 12px 12px 0;
+}
+
+.think strong{
+  display:block;
+  margin-bottom:4px;
+}
+
+
+/* ======================================================
+   OPCIONES
+   ====================================================== */
 
 .option{
   display:block;
   width:100%;
   text-align:left;
+
   margin:8px 0;
   padding:12px 15px;
+
   background:#fff;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:12px;
+
   color:var(--ink);
   font:inherit;
+
   cursor:pointer;
+
   transition:.12s ease;
 }
 
@@ -222,7 +292,9 @@ h1{
 }
 
 
-/* FEEDBACK */
+/* ======================================================
+   FEEDBACK
+   ====================================================== */
 
 .feedback{
   display:none;
@@ -237,26 +309,43 @@ h1{
 }
 
 
-/* BOTONES */
+/* ======================================================
+   BOTONES
+   ====================================================== */
 
 .actions{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
-  margin-top:16px;
+  margin-top:18px;
 }
 
-button.action{
+button.action,
+a.action{
+  display:inline-block;
+
   border:0;
+
   padding:10px 16px;
+
   border-radius:10px;
+
   background:var(--accent);
+
   color:#fff;
+
   font-weight:700;
+
+  font-family:inherit;
+  font-size:.95rem;
+
+  text-decoration:none;
+
   cursor:pointer;
 }
 
-button.secondary{
+button.secondary,
+a.secondary{
   background:transparent;
   color:var(--ink);
   border:1px solid var(--line);
@@ -268,84 +357,20 @@ button:disabled{
 }
 
 
-/* ESCRITURA */
-
-textarea{
-  width:100%;
-  min-height:135px;
-  padding:13px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:#fff;
-  color:var(--ink);
-  font:inherit;
-  resize:vertical;
-}
-
-.hint{
-  margin-top:6px;
-  color:var(--muted);
-  font-size:.84rem;
-}
-
-
-/* CLASIFICACIÓN */
-
-.classify{
-  display:grid;
-  gap:12px;
-}
-
-.classify-row{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:15px;
-  align-items:center;
-  padding:14px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:12px;
-}
-
-.classify-row.correct{
-  background:var(--ok);
-  border-color:var(--okline);
-}
-
-.classify-row.wrong{
-  background:var(--bad);
-  border-color:var(--badline);
-}
-
-.class-buttons{
-  display:flex;
-  gap:8px;
-}
-
-.class-btn{
-  border:1px solid var(--line);
-  background:#fff;
-  color:var(--ink);
-  padding:8px 11px;
-  border-radius:9px;
-  cursor:pointer;
-}
-
-.class-btn.selected{
-  background:var(--accent);
-  color:#fff;
-  border-color:var(--accent);
-}
-
-
-/* CIERRE */
+/* ======================================================
+   CIERRE
+   ====================================================== */
 
 .final,
 .resources{
   margin-top:24px;
   padding:24px;
+
   background:var(--paper);
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:18px;
 }
 
@@ -361,36 +386,44 @@ textarea{
   display:inline-flex;
   align-items:baseline;
   gap:8px;
+
   margin:5px 0 15px;
+
   padding:10px 14px;
+
   background:var(--soft);
+
   border-radius:12px;
 }
 
 .score strong{
-  font:600 2rem Georgia,serif;
+  font:
+    600 2rem
+    Georgia,
+    serif;
 }
 
-.bitacora{
-  display:grid;
-  gap:12px;
-  margin:18px 0 25px;
-}
 
-.bitacora-item{
-  padding:13px;
+/* ======================================================
+   PREGUNTAS FINALES
+   ====================================================== */
+
+.final-question{
+  margin:12px 0;
+  padding:14px 16px;
   background:#fff;
   border:1px solid var(--line);
   border-radius:12px;
 }
 
-.bitacora-item strong{
-  display:block;
-  margin-bottom:5px;
+.final-question strong{
+  font-family:Georgia,serif;
 }
 
 
-/* RECURSOS */
+/* ======================================================
+   ENLACES
+   ====================================================== */
 
 .resource-grid{
   display:grid;
@@ -400,21 +433,31 @@ textarea{
 
 .resource{
   display:block;
-  padding:15px;
+
+  padding:16px;
+
   background:#fff;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:13px;
+
   color:var(--ink);
+
   text-decoration:none;
+
+  transition:.12s ease;
 }
 
 .resource:hover{
   border-color:#897d73;
+  transform:translateY(-1px);
 }
 
 .resource strong{
   display:block;
-  margin-bottom:5px;
+  margin-bottom:6px;
 }
 
 .resource span{
@@ -429,7 +472,9 @@ footer{
 }
 
 
-/* CELULAR */
+/* ======================================================
+   CELULAR
+   ====================================================== */
 
 @media(max-width:700px){
 
@@ -444,7 +489,7 @@ footer{
   .card{
     width:98vw;
     min-height:94vh;
-    padding:16px;
+    padding:17px;
     border-radius:15px;
   }
 
@@ -466,81 +511,119 @@ footer{
     font-size:.9rem;
   }
 
-  .classify-row{
-    grid-template-columns:1fr;
-  }
-
-  .class-buttons{
-    flex-wrap:wrap;
+  .explanation{
+    font-size:.93rem;
+    padding:13px;
   }
 
   .resource-grid{
     grid-template-columns:1fr;
   }
+
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
 <main>
 
+
 <div class="eyebrow">
+
 Husserl · fenomenología · educación
+
 </div>
 
+
 <h1>
+
 ¿Qué cambia cuando miramos la experiencia antes de explicarla?
+
 </h1>
 
+
 <p class="lead">
+
 Video interactivo basado en
 <em>¿Qué es la fenomenología? Explicación fácil</em>,
 de En Minutos • Educación.
 
-Las actividades aparecen después de que el video presenta cada concepto:
-primero escuchamos; después nos detenemos a pensar.
+Las pausas aparecen al terminar algunos núcleos conceptuales del video.
+No todas son preguntas: algunas simplemente agregan una precisión,
+un vínculo con la educación o una pregunta para seguir pensando.
+
 </p>
 
 
+
 <div class="player-shell">
+
   <div id="player"></div>
+
 </div>
 
 
-<div class="timeline" id="timeline"></div>
 
-<div class="progress" id="progress">
-0 de 7 pausas completadas
+<div
+  class="timeline"
+  id="timeline">
 </div>
+
+
+
+<div
+  class="progress"
+  id="progress">
+
+0 de 6 pausas completadas
+
+</div>
+
 
 
 <div class="note">
 
-<strong>Consigna general.</strong>
+<strong>
+Una indicación antes de empezar.
+</strong>
 
-No alcanza con recordar definiciones.
+La idea no es convertir cinco minutos de video en un examen.
 
-En cada pausa intentá distinguir entre
-<em>describir cómo aparece una experiencia</em>
-y
-<em>explicarla demasiado pronto desde categorías previas</em>.
+Las interrupciones funcionan como pequeños márgenes escritos al costado del video:
+a veces preguntan, a veces aclaran y a veces simplemente abren otra pregunta.
 
 </div>
 
 
 
-<!-- CIERRE -->
+<!-- ====================================================
+     CIERRE
+     ==================================================== -->
 
-<section class="final" id="final">
+
+<section
+  class="final"
+  id="final">
+
 
 <div class="eyebrow">
-Cierre · volver sobre la experiencia
+
+Después del video
+
 </div>
 
-<h2>Tu recorrido fenomenológico</h2>
+
+<h2>
+
+Tres preguntas para llevar a la clase
+
+</h2>
+
 
 <div class="score">
 
@@ -556,84 +639,112 @@ respuestas correctas en el primer intento
 
 
 <p>
-La actividad de escritura no se califica.
-La recuperamos acá como una pequeña bitácora del recorrido.
+
+El puntaje corresponde solamente a las tres preguntas cerradas.
+Las otras pausas no eran evaluativas.
+
 </p>
 
 
-<div class="bitacora" id="bitacora"></div>
-
-
-<h3>
-Una última aplicación
-</h3>
-
-<p>
-Elegí una experiencia educativa concreta:
-<em>
-ser evaluado, no entender una consigna, levantar la mano,
-ser considerado un buen alumno o entrar por primera vez a una clase.
-</em>
-</p>
-
-<p>
+<div class="final-question">
 
 <strong>1.</strong>
-Describí qué aparece en la experiencia, sin explicarlo todavía.
 
-<br>
+¿Qué cambia en nuestra mirada sobre un alumno
+cuando distinguimos entre lo que observamos
+y lo que inferimos acerca de él?
+
+</div>
+
+
+<div class="final-question">
 
 <strong>2.</strong>
-Nombrá una interpretación o etiqueta que convendría poner entre paréntesis.
 
-<br>
+¿Puede una institución educativa conocer algo
+importante sobre sus estudiantes
+que no aparezca en una medición o en una estadística?
+
+</div>
+
+
+<div class="final-question">
 
 <strong>3.</strong>
-Preguntate qué sentido o estructura de esa experiencia empieza a aparecer.
 
-</p>
+¿Qué experiencias educativas merecerían ser estudiadas
+preguntando primero
+<em>cómo se viven</em>
+y no solamente
+<em>qué las causa</em>?
 
-
-<textarea
-  id="finalText"
-  placeholder="Ser evaluado aparece como… / La interpretación que suspendería es… / Al volver a mirar advierto que…">
-</textarea>
+</div>
 
 
 <div class="actions">
 
 <button
   class="action secondary"
-  id="copy">
-Copiar mi bitácora
-</button>
-
-<button
-  class="action secondary"
   id="restart">
-Volver a empezar
+
+Volver a mirar
+
 </button>
 
 </div>
+
 
 </section>
 
 
 
-<!-- RECURSOS -->
+<!-- ====================================================
+     PARA SEGUIR
+     ==================================================== -->
+
 
 <section class="resources">
 
+
 <div class="eyebrow">
+
 Para seguir pensando
+
 </div>
 
+
 <h2>
-Algunas puertas de entrada
+
+Fenomenología y educación
+
 </h2>
 
 
 <div class="resource-grid">
+
+
+<a
+  class="resource"
+  href="https://revistas.um.es/rie/article/view/94001"
+  target="_blank"
+  rel="noopener noreferrer">
+
+<strong>
+
+Fenomenología e investigación educativa
+
+</strong>
+
+<span>
+
+Raquel Ayala Carabajo.
+Una entrada en español al enfoque fenomenológico-hermenéutico
+de la experiencia educativa.
+
+</span>
+
+</a>
+
 
 
 <a
@@ -643,16 +754,21 @@ Algunas puertas de entrada
   rel="noopener noreferrer">
 
 <strong>
+
 Edmund Husserl
+
 </strong>
 
 <span>
+
 Stanford Encyclopedia of Philosophy.
-Para profundizar en intencionalidad,
-conciencia y método fenomenológico.
+Para profundizar en conciencia,
+intencionalidad y método fenomenológico.
+
 </span>
 
 </a>
+
 
 
 <a
@@ -662,30 +778,17 @@ conciencia y método fenomenológico.
   rel="noopener noreferrer">
 
 <strong>
+
 Phenomenology
+
 </strong>
 
 <span>
+
 Internet Encyclopedia of Philosophy.
-Una introducción general a la tradición fenomenológica.
-</span>
+Una introducción general
+a la tradición fenomenológica.
 
-</a>
-
-
-<a
-  class="resource"
-  href="https://www.youtube.com/watch?v=afsiIRm8TsM"
-  target="_blank"
-  rel="noopener noreferrer">
-
-<strong>
-Video original
-</strong>
-
-<span>
-¿Que es la fenomenología? Explicación fácil,
-de En Minutos • Educación.
 </span>
 
 </a>
@@ -693,36 +796,54 @@ de En Minutos • Educación.
 
 </div>
 
+
 </section>
+
 
 
 <footer>
 
+Recurso didáctico de uso educativo.
+
 Las respuestas quedan solamente en este navegador.
-Esta página no envía respuestas ni calificaciones a Google Classroom.
+La página no envía calificaciones ni datos a Google Classroom.
 
 </footer>
+
 
 </main>
 
 
 
-<!-- INTERACCIÓN -->
+<!-- ====================================================
+     OVERLAY DE INTERACCIONES
+     ==================================================== -->
 
-<div class="overlay" id="overlay">
+
+<div
+  class="overlay"
+  id="overlay">
+
 
 <div class="card">
 
+
 <div class="card-head">
 
-<span id="counter"></span>
 
-<span id="time"></span>
+<span id="counter">
+</span>
+
+
+<span id="time">
+</span>
+
 
 </div>
 
 
-<h2 id="title"></h2>
+<h2 id="title">
+</h2>
 
 
 <div
@@ -731,7 +852,8 @@ Esta página no envía respuestas ni calificaciones a Google Classroom.
 </div>
 
 
-<div id="body"></div>
+<div id="body">
+</div>
 
 
 <div
@@ -742,28 +864,42 @@ Esta página no envía respuestas ni calificaciones a Google Classroom.
 
 <div class="actions">
 
-<button
-  class="action"
-  id="check"
+
+<a
+  class="action secondary"
+  id="moreLink"
+  href="#"
+  target="_blank"
+  rel="noopener noreferrer"
   style="display:none">
-Comprobar
-</button>
+
+Leer más
+
+</a>
+
 
 <button
   class="action"
   id="continue"
   disabled>
-Continuar el video
+
+Continuar
+
 </button>
+
 
 <button
   class="action secondary"
   id="retry"
   style="display:none">
+
 Intentar de nuevo
+
 </button>
 
+
 </div>
+
 
 </div>
 
@@ -773,66 +909,93 @@ Intentar de nuevo
 
 <script>
 
+
 /* ======================================================
    VIDEO
    ====================================================== */
 
-const VIDEO_ID = "afsiIRm8TsM";
+
+const VIDEO_ID =
+"afsiIRm8TsM";
+
 
 
 /* ======================================================
-   PAUSAS SINCRONIZADAS
+   SINCRONIZACIÓN
 
-   1:08  termina la presentación general
-   1:59  termina "volver a las cosas mismas"
-   3:20  termina el bloque sobre objetivos
-   3:56  termina la explicación de intencionalidad
-   4:14  termina suspensión del juicio
-   4:29  termina búsqueda de esencias
-   5:22  termina el bloque de críticas
+   Los tiempos son segundos reales del reproductor.
+
+   68.6  = termina la presentación inicial
+   151.2 = termina el separador/promoción y empieza objetivos
+   200.4 = termina objetivos y empieza características
+   238.0 = termina la explicación de intencionalidad
+   270.0 = termina epojé + búsqueda de esencias
+   326.0 = terminan las críticas y empieza la despedida
    ====================================================== */
+
 
 const interactions = [
 
 
-/* 1 — DEFINICIÓN GENERAL */
+
+/* ======================================================
+   PAUSA 1
+   1:08.6
+   FIN DE LA PRESENTACIÓN GENERAL
+   ====================================================== */
 
 {
-  t:68,
 
-  type:"choice",
+  t:68.6,
+
+  type:"info",
 
   title:
-  "¿Qué estudia la fenomenología?",
+  "Una precisión antes de seguir",
 
   question:
-  "Hasta acá el video presentó la fenomenología como estudio de los fenómenos tal como aparecen en la conciencia y como análisis de las estructuras de la experiencia. ¿Cuál de estas formulaciones recoge mejor esa idea?",
+  "El video acaba de definir la fenomenología como estudio de los fenómenos tal como aparecen en la conciencia.",
 
-  options:[
+  html:`
 
-    "Busca explicar la conducta exclusivamente a partir de causas externas.",
+    <div class="explanation">
 
-    "Busca describir cómo los fenómenos se manifiestan en la experiencia y en la conciencia.",
+      <p>
+        <strong>“Fenómeno” no significa aquí “ilusión”.</strong>
+        Es aquello que se nos da o aparece en la experiencia,
+        considerado precisamente en su modo de aparecer.
+      </p>
 
-    "Busca determinar qué percepción del mundo es objetivamente correcta.",
+      <div class="think">
 
-    "Busca reducir la experiencia a los hechos físicamente observables."
+        <strong>Para seguir pensando</strong>
 
-  ],
+        Cuando un alumno dice
+        «esta evaluación fue injusta»,
+        podemos preguntar si la evaluación fue objetivamente injusta.
+        Pero también podemos formular otra pregunta:
+        <em>¿cómo fue vivida esa experiencia como experiencia de injusticia?</em>
 
-  correct:1,
+      </div>
 
-  feedback:
-  "La fenomenología se interesa por cómo algo aparece o se da en la experiencia. El punto de partida no es explicar causalmente el fenómeno, sino atender a su modo de aparición."
+    </div>
+
+  `
 
 },
 
 
 
-/* 2 — VOLVER A LAS COSAS MISMAS */
+/* ======================================================
+   PAUSA 2
+   2:31.2
+   DESPUÉS DE "VOLVER A LAS COSAS MISMAS"
+   Y DEL PEQUEÑO BLOQUE PROMOCIONAL DEL VIDEO
+   ====================================================== */
 
 {
-  t:119,
+
+  t:151.2,
 
   type:"choice",
 
@@ -840,188 +1003,237 @@ const interactions = [
   "Volver a las cosas mismas",
 
   question:
-  "El video acaba de explicar la propuesta de Husserl de analizar los fenómenos tal como se presentan, sin imponer de entrada prejuicios o interpretaciones externas. ¿Cuál sería un movimiento semejante en educación?",
+  "Husserl propone atender a los fenómenos tal como se presentan, antes de imponerles interpretaciones. ¿Cuál de estas formulaciones se aproxima más a ese gesto en una situación educativa?",
 
   options:[
 
-    "Tomás no participa porque es apático.",
+    "Martín no participa porque es apático.",
 
-    "Tomás no participa porque seguramente no estudió.",
+    "Martín no participa porque seguramente no estudió.",
 
-    "Tomás no habló durante la actividad de hoy. Antes de explicar por qué, conviene describir la situación y explorar cómo la vive.",
+    "Martín no intervino durante la actividad de hoy; antes de explicar por qué, conviene describir la situación y explorar cómo la vivió.",
 
-    "Tomás tiene un problema de participación que debemos corregir."
+    "Martín tiene un déficit de participación."
 
   ],
 
   correct:2,
 
   feedback:
-  "La tercera formulación intenta permanecer cerca de aquello que aparece antes de atribuirle una causa o una característica personal. No elimina la interpretación: evita anticiparla."
+  "La tercera formulación diferencia mejor aquello que observamos de aquello que inferimos. La fenomenología no prohíbe interpretar: intenta evitar que la interpretación llegue antes que el fenómeno."
 
 },
 
 
 
-/* 3 — OBJETIVOS: EXPERIENCIA, SENTIDO Y ESTRUCTURA */
+/* ======================================================
+   PAUSA 3
+   3:20.4
+   FIN DEL BLOQUE SOBRE OBJETIVOS
+   ====================================================== */
 
 {
-  t:200,
 
-  type:"choice",
+  t:200.4,
+
+  type:"info",
 
   title:
-  "Experiencia y sentido",
+  "Una pregunta educativa cambia bastante si cambiamos el verbo",
 
   question:
-  "El video acaba de señalar que la fenomenología busca comprender cómo las personas experimentan el mundo, cómo los fenómenos aparecen en la conciencia y cómo damos sentido a lo vivido. Dos estudiantes reciben exactamente la misma devolución escrita. ¿Qué podemos afirmar?",
+  "El video acaba de hablar de experiencia, estructuras y producción de sentido.",
 
-  options:[
+  html:`
 
-    "Como la devolución es idéntica, la experiencia necesariamente también lo es.",
+    <div class="explanation">
 
-    "Uno de los dos debe estar interpretando incorrectamente la devolución.",
+      <p>
+        Comparemos:
+      </p>
 
-    "Una misma situación puede ser vivida y significada de maneras diferentes.",
+      <p>
+        <strong>
+        ¿Qué factores producen ansiedad ante un examen?
+        </strong>
+      </p>
 
-    "La experiencia subjetiva no puede formar parte de una investigación rigurosa."
+      <p>
+        y
+      </p>
 
-  ],
+      <p>
+        <strong>
+        ¿Cómo se vive la experiencia de ser evaluado?
+        </strong>
+      </p>
 
-  correct:2,
+      <p>
+        No son dos maneras de formular la misma pregunta.
+        La primera busca principalmente
+        <em>explicación</em>;
+        la segunda, la estructura y el sentido
+        de una <em>experiencia vivida</em>.
+      </p>
 
-  feedback:
-  "Compartir una situación observable no implica vivirla del mismo modo. La fenomenología se interesa precisamente por esa relación entre experiencia y sentido."
+      <div class="think">
+
+        <strong>Para seguir pensando</strong>
+
+        ¿Qué podríamos conocer con la segunda pregunta
+        que quizá se nos escape si formulamos solamente la primera?
+
+      </div>
+
+    </div>
+
+  `,
+
+  link:
+  "https://revistas.um.es/rie/article/view/94001",
+
+  linkText:
+  "Fenomenología e investigación educativa"
 
 },
 
 
 
-/* 4 — INTENCIONALIDAD */
+/* ======================================================
+   PAUSA 4
+   3:58 aprox.
+   JUSTO DESPUÉS DE INTENCIONALIDAD
+   ====================================================== */
 
 {
-  t:236,
+
+  t:238.0,
 
   type:"choice",
 
   title:
-  "Intencionalidad",
+  "La conciencia es conciencia de algo",
 
   question:
-  "Acabamos de escuchar que toda experiencia está dirigida hacia algo: la conciencia siempre tiene un objeto, real o imaginado. Durante un examen oral, una alumna mira reiteradamente la puerta. ¿Qué podemos afirmar sin adelantarnos demasiado?",
+  "El video acaba de introducir la intencionalidad. Durante un examen oral, una alumna mira repetidamente la puerta. ¿Qué permite afirmar la noción de intencionalidad sin ir más allá de lo que sabemos?",
 
   options:[
 
     "Que quiere abandonar el examen.",
 
-    "Que evita mirar al profesor.",
+    "Que está evitando mirar al profesor.",
 
-    "Que su conciencia está dirigida hacia algo, aunque todavía no sepamos qué sentido tiene para ella.",
+    "Que su conciencia está dirigida hacia algo, aunque todavía no sepamos qué sentido tiene eso para ella.",
 
-    "Que esa conducta demuestra ansiedad."
+    "Que está experimentando ansiedad."
 
   ],
 
   correct:2,
 
   feedback:
-  "La intencionalidad no permite adivinar motivos ocultos. Significa que la conciencia es siempre conciencia de algo: algo percibido, esperado, recordado, imaginado, deseado o temido."
+  "Intencionalidad no significa descubrir una intención psicológica oculta. Significa que la conciencia es siempre conciencia de algo: percibido, recordado, imaginado, esperado, temido o deseado."
 
 },
 
 
 
-/* 5 — SUSPENSIÓN DEL JUICIO */
+/* ======================================================
+   PAUSA 5
+   ~4:30
+   DESPUÉS DE EPOJÉ Y BÚSQUEDA DE ESENCIAS
+   ====================================================== */
 
 {
-  t:254,
 
-  type:"classification",
+  t:270.0,
+
+  type:"info",
 
   title:
-  "Suspender antes de concluir",
+  "Dos ideas que conviene no confundir",
 
   question:
-  "El video acaba de explicar la suspensión del juicio: dejar entre paréntesis juicios previos e interpretaciones para atender a la experiencia. Clasificá estas dos frases.",
+  "En pocos segundos el video acaba de introducir dos operaciones diferentes: suspensión del juicio y búsqueda de esencias.",
 
-  items:[
+  html:`
 
-    {
-      text:
-      "«Durante la explicación miró el teléfono cuatro veces.»",
+    <div class="explanation">
 
-      answer:
-      "Descripción"
-    },
+      <p>
+        <strong>Epojé o suspensión:</strong>
+        poner provisionalmente entre paréntesis
+        algunos supuestos y juicios previos
+        para atender a cómo se da la experiencia.
+      </p>
 
-    {
-      text:
-      "«No respeta la clase.»",
+      <p>
+        <strong>Búsqueda de esencias:</strong>
+        explorar qué estructura permanece reconocible
+        a través de las distintas variaciones
+        de una experiencia.
+      </p>
 
-      answer:
-      "Interpretación"
-    }
+      <div class="think">
 
-  ],
+        <strong>Un ejemplo educativo</strong>
 
-  feedback:
-  "La primera formulación describe algo observado. La segunda ya le atribuye un sentido. Esa interpretación podría resultar razonable, pero necesita argumentos adicionales. La suspensión fenomenológica procura que la inferencia no se disfrace de dato."
+        No es lo mismo preguntar
+        «¿por qué este alumno tiene miedo de rendir?»
+        que preguntarse
+        «¿qué hace que una situación sea vivida como
+        una experiencia de examen?».
+
+      </div>
+
+    </div>
+
+  `,
+
+  link:
+  "https://plato.stanford.edu/entries/husserl/",
+
+  linkText:
+  "Profundizar en Husserl"
 
 },
 
 
 
-/* 6 — ESENCIAS */
+/* ======================================================
+   PAUSA 6
+   ~5:26
+   DESPUÉS DEL BLOQUE DE CRÍTICAS
+   ====================================================== */
 
 {
-  t:269,
+
+  t:326.0,
 
   type:"choice",
 
   title:
-  "Buscar estructuras esenciales",
+  "Una crítica no es todavía una refutación",
 
   question:
-  "El video acaba de decir que la fenomenología busca identificar estructuras esenciales más allá de los detalles particulares de cada experiencia. ¿Qué significa esto?",
+  "El video acaba de mencionar subjetividad, dificultades de verificación y abstracción como críticas a la fenomenología. ¿Cuál de estas conclusiones sería demasiado fuerte?",
 
   options:[
 
-    "Calcular aquello que sucede con mayor frecuencia.",
+    "La experiencia subjetiva plantea problemas metodológicos específicos.",
 
-    "Encontrar una explicación causal que valga para todas las personas.",
+    "La fenomenología responde preguntas diferentes de muchas investigaciones experimentales.",
 
-    "Preguntarse qué estructura hace reconocible una experiencia pese a las variaciones entre casos particulares.",
+    "Como estudia la experiencia subjetiva, la fenomenología obliga a rechazar todo conocimiento científico objetivo.",
 
-    "Eliminar las diferencias individuales para obtener un promedio."
+    "Una investigación educativa puede necesitar distinguir entre explicar causalmente algo y comprender cómo se vive."
 
   ],
 
   correct:2,
 
   feedback:
-  "La búsqueda fenomenológica de esencias no equivale a buscar promedios ni causas universales. Se pregunta por estructuras relativamente invariantes que podemos reconocer a través de las variaciones de la experiencia."
-
-},
-
-
-
-/* 7 — CRÍTICAS Y APLICACIÓN */
-
-{
-  t:322,
-
-  type:"reflection",
-
-  title:
-  "¿Demasiado abstracta? Probemos.",
-
-  question:
-  "El video termina mencionando una crítica: que la fenomenología puede resultar abstracta y difícil de aplicar a problemas cotidianos. Hagamos precisamente la prueba contraria. Elegí una pregunta educativa habitual y reformulala para que interrogue la experiencia vivida.",
-
-  placeholder:
-  "Ejemplo: «¿Por qué los estudiantes abandonan?» → «¿Cómo se va configurando, para un estudiante, la experiencia de dejar de asistir a clases?»",
-
-  min:12
+  "La tercera conclusión va demasiado lejos. Describir una experiencia y explicar causalmente un fenómeno son operaciones distintas; reconocer esa diferencia no obliga a elegir una y expulsar la otra."
 
 }
 
@@ -1033,95 +1245,178 @@ const interactions = [
    ESTADO
    ====================================================== */
 
-let player = null;
 
-let timer = null;
+let player =
+null;
 
-let current = null;
 
-const fired = new Set();
+let timer =
+null;
 
-const firstAttempts = {};
 
-const reflections = {};
+let current =
+null;
 
-const classifications = {};
 
-let correctFirst = 0;
+const fired =
+new Set();
 
-let closedQuestions = 0;
+
+const firstAttempts =
+{};
+
+
+let correctFirst =
+0;
+
+
+let closedQuestions =
+0;
+
 
 
 /* ======================================================
-   DOM
+   ELEMENTOS
    ====================================================== */
+
 
 const overlay =
-document.getElementById("overlay");
+document.getElementById(
+  "overlay"
+);
+
 
 const body =
-document.getElementById("body");
+document.getElementById(
+  "body"
+);
+
 
 const feedback =
-document.getElementById("feedback");
+document.getElementById(
+  "feedback"
+);
+
 
 const continueButton =
-document.getElementById("continue");
+document.getElementById(
+  "continue"
+);
+
 
 const retryButton =
-document.getElementById("retry");
+document.getElementById(
+  "retry"
+);
 
-const checkButton =
-document.getElementById("check");
+
+const moreLink =
+document.getElementById(
+  "moreLink"
+);
 
 
 
 /* ======================================================
-   BARRA DE PROGRESO
+   CREAR BARRA DE PROGRESO
    ====================================================== */
 
-interactions.forEach((item,index)=>{
 
-  const step =
-  document.createElement("div");
+interactions.forEach(
+  (
+    item,
+    index
+  )=>{
 
-  step.className =
-  "step";
-
-  step.id =
-  "step-" + index;
-
-  document
-  .getElementById("timeline")
-  .appendChild(step);
-
-});
+    const step =
+    document.createElement(
+      "div"
+    );
 
 
-function formatTime(seconds){
+    step.className =
+    "step";
+
+
+    step.id =
+    "step-" + index;
+
+
+    document
+    .getElementById(
+      "timeline"
+    )
+    .appendChild(
+      step
+    );
+
+  }
+);
+
+
+
+/* ======================================================
+   FORMATEAR TIEMPO
+   ====================================================== */
+
+
+function formatTime(
+  seconds
+){
+
+  const total =
+  Math.floor(
+    seconds
+  );
+
 
   const minutes =
-  Math.floor(seconds / 60);
+  Math.floor(
+    total / 60
+  );
+
 
   const secs =
-  String(seconds % 60)
-  .padStart(2,"0");
+  String(
+    total % 60
+  )
+  .padStart(
+    2,
+    "0"
+  );
 
-  return minutes + ":" + secs;
+
+  return(
+    minutes +
+    ":" +
+    secs
+  );
 
 }
+
+
+
+/* ======================================================
+   PROGRESO
+   ====================================================== */
 
 
 function updateProgress(){
 
   const completed =
   document
-  .querySelectorAll(".step.done")
+  .querySelectorAll(
+    ".step.done"
+  )
   .length;
 
+
   document
-  .getElementById("progress")
+  .getElementById(
+    "progress"
+  )
   .textContent =
+
   completed +
   " de " +
   interactions.length +
@@ -1130,16 +1425,30 @@ function updateProgress(){
 }
 
 
-function markDone(index){
+
+function markDone(
+  index
+){
 
   document
-  .getElementById("step-" + index)
+  .getElementById(
+    "step-" + index
+  )
   .classList
-  .add("done");
+  .add(
+    "done"
+  );
+
 
   updateProgress();
 
 }
+
+
+
+/* ======================================================
+   RESETEAR CONTROLES
+   ====================================================== */
 
 
 function resetControls(){
@@ -1147,14 +1456,18 @@ function resetControls(){
   continueButton.disabled =
   true;
 
+
   retryButton.style.display =
   "none";
 
-  checkButton.style.display =
+
+  moreLink.style.display =
   "none";
+
 
   feedback.className =
   "feedback";
+
 
   feedback.innerHTML =
   "";
@@ -1167,61 +1480,108 @@ function resetControls(){
    MOSTRAR INTERACCIÓN
    ====================================================== */
 
-function showInteraction(index){
+
+function showInteraction(
+  index
+){
 
   current =
   index;
 
+
   const item =
   interactions[index];
 
-  if(player){
+
+  if(
+    player
+  ){
+
     player.pauseVideo();
+
   }
 
+
   document
-  .getElementById("counter")
+  .getElementById(
+    "counter"
+  )
   .textContent =
+
   "Pausa " +
   (index + 1) +
   " de " +
   interactions.length;
 
-  document
-  .getElementById("time")
-  .textContent =
-  formatTime(item.t);
 
   document
-  .getElementById("title")
+  .getElementById(
+    "time"
+  )
   .textContent =
+
+  formatTime(
+    item.t
+  );
+
+
+  document
+  .getElementById(
+    "title"
+  )
+  .textContent =
+
   item.title;
 
+
   document
-  .getElementById("question")
+  .getElementById(
+    "question"
+  )
   .textContent =
+
   item.question;
+
 
   body.innerHTML =
   "";
 
+
   resetControls();
 
-  if(item.type === "choice"){
-    renderChoice(item,index);
+
+  if(
+    item.type ===
+    "choice"
+  ){
+
+    renderChoice(
+      item,
+      index
+    );
+
   }
 
-  if(item.type === "reflection"){
-    renderReflection(item,index);
+
+  if(
+    item.type ===
+    "info"
+  ){
+
+    renderInfo(
+      item,
+      index
+    );
+
   }
 
-  if(item.type === "classification"){
-    renderClassification(item,index);
-  }
 
   overlay
   .classList
-  .add("show");
+  .add(
+    "show"
+  );
+
 
   document
   .body
@@ -1234,35 +1594,101 @@ function showInteraction(index){
 
 
 /* ======================================================
+   TARJETA INFORMATIVA
+   ====================================================== */
+
+
+function renderInfo(
+  item,
+  index
+){
+
+  body.innerHTML =
+  item.html;
+
+
+  continueButton.disabled =
+  false;
+
+
+  markDone(
+    index
+  );
+
+
+  if(
+    item.link
+  ){
+
+    moreLink.href =
+    item.link;
+
+
+    moreLink.textContent =
+    item.linkText ||
+    "Leer más";
+
+
+    moreLink.style.display =
+    "inline-block";
+
+  }
+
+}
+
+
+
+/* ======================================================
    OPCIÓN MÚLTIPLE
    ====================================================== */
 
-function renderChoice(item,index){
 
-  item.options.forEach(
-    (text,optionIndex)=>{
+function renderChoice(
+  item,
+  index
+){
+
+  item
+  .options
+  .forEach(
+    (
+      text,
+      optionIndex
+    )=>{
 
       const button =
       document
-      .createElement("button");
+      .createElement(
+        "button"
+      );
+
 
       button.className =
       "option";
 
+
       button.textContent =
       text;
 
-      button.addEventListener(
+
+      button
+      .addEventListener(
         "click",
         ()=>{
+
           answerChoice(
             index,
             optionIndex
           );
+
         }
       );
 
-      body.appendChild(button);
+
+      body
+      .appendChild(
+        button
+      );
 
     }
   );
@@ -1270,20 +1696,37 @@ function renderChoice(item,index){
 }
 
 
-function answerChoice(index,chosen){
+
+/* ======================================================
+   RESPONDER
+   ====================================================== */
+
+
+function answerChoice(
+  index,
+  chosen
+){
 
   const item =
   interactions[index];
 
+
   const buttons =
   [
     ...body
-    .querySelectorAll(".option")
+    .querySelectorAll(
+      ".option"
+    )
   ];
 
-  buttons.forEach(
+
+  buttons
+  .forEach(
     button=>{
-      button.disabled = true;
+
+      button.disabled =
+      true;
+
     }
   );
 
@@ -1296,13 +1739,17 @@ function answerChoice(index,chosen){
     firstAttempts[index] =
     chosen;
 
+
     closedQuestions++;
+
 
     if(
       chosen ===
       item.correct
     ){
+
       correctFirst++;
+
     }
 
   }
@@ -1313,11 +1760,17 @@ function answerChoice(index,chosen){
     item.correct
   ){
 
-    buttons[chosen]
+    buttons[
+      chosen
+    ]
     .classList
-    .add("correct");
+    .add(
+      "correct"
+    );
+
 
     feedback.innerHTML =
+
     "<strong>Bien.</strong> " +
     item.feedback;
 
@@ -1325,21 +1778,31 @@ function answerChoice(index,chosen){
 
   else{
 
-    buttons[chosen]
+    buttons[
+      chosen
+    ]
     .classList
-    .add("wrong");
+    .add(
+      "wrong"
+    );
 
-    buttons[item.correct]
+
+    buttons[
+      item.correct
+    ]
     .classList
-    .add("correct");
+    .add(
+      "correct"
+    );
+
 
     feedback.innerHTML =
+
     "<strong>Revisemos.</strong> " +
     item.feedback;
 
-    retryButton
-    .style
-    .display =
+
+    retryButton.style.display =
     "inline-block";
 
   }
@@ -1347,20 +1810,27 @@ function answerChoice(index,chosen){
 
   feedback
   .classList
-  .add("show");
+  .add(
+    "show"
+  );
+
 
   continueButton.disabled =
   false;
 
-  markDone(index);
+
+  markDone(
+    index
+  );
 
 }
 
 
 
 /* ======================================================
-   REINTENTO
+   REINTENTAR
    ====================================================== */
+
 
 retryButton
 .addEventListener(
@@ -1370,22 +1840,29 @@ retryButton
     const item =
     interactions[current];
 
+
     if(
       item.type !==
       "choice"
     ){
+
       return;
+
     }
+
 
     [
       ...body
-      .querySelectorAll(".option")
+      .querySelectorAll(
+        ".option"
+      )
     ]
     .forEach(
       button=>{
 
         button.disabled =
         false;
+
 
         button
         .classList
@@ -1397,14 +1874,18 @@ retryButton
       }
     );
 
+
     feedback.className =
     "feedback";
+
 
     feedback.innerHTML =
     "";
 
+
     continueButton.disabled =
     true;
+
 
     retryButton.style.display =
     "none";
@@ -1415,345 +1896,12 @@ retryButton
 
 
 /* ======================================================
-   REFLEXIÓN
-   ====================================================== */
-
-function renderReflection(item,index){
-
-  const textarea =
-  document
-  .createElement("textarea");
-
-  textarea.placeholder =
-  item.placeholder;
-
-  textarea.value =
-  reflections[index] || "";
-
-  const hint =
-  document
-  .createElement("div");
-
-  hint.className =
-  "hint";
-
-  hint.textContent =
-  "Escribí al menos " +
-  item.min +
-  " caracteres para continuar.";
-
-
-  textarea.addEventListener(
-    "input",
-    ()=>{
-
-      reflections[index] =
-      textarea
-      .value
-      .trim();
-
-      continueButton.disabled =
-      reflections[index].length <
-      item.min;
-
-      if(
-        !continueButton.disabled
-      ){
-        markDone(index);
-      }
-
-    }
-  );
-
-
-  body.appendChild(textarea);
-
-  body.appendChild(hint);
-
-
-  continueButton.disabled =
-  (reflections[index] || "").length <
-  item.min;
-
-
-  if(
-    !continueButton.disabled
-  ){
-    markDone(index);
-  }
-
-}
-
-
-
-/* ======================================================
-   CLASIFICACIÓN
-   ====================================================== */
-
-function renderClassification(item,index){
-
-  if(
-    !classifications[index]
-  ){
-    classifications[index] = {};
-  }
-
-
-  const wrapper =
-  document
-  .createElement("div");
-
-  wrapper.className =
-  "classify";
-
-
-  item.items.forEach(
-    (statement,rowIndex)=>{
-
-      const row =
-      document
-      .createElement("div");
-
-      row.className =
-      "classify-row";
-
-
-      const label =
-      document
-      .createElement("div");
-
-      label.textContent =
-      statement.text;
-
-
-      const controls =
-      document
-      .createElement("div");
-
-      controls.className =
-      "class-buttons";
-
-
-      [
-        "Descripción",
-        "Interpretación"
-      ]
-      .forEach(
-        value=>{
-
-          const button =
-          document
-          .createElement("button");
-
-          button.className =
-          "class-btn";
-
-          button.textContent =
-          value;
-
-
-          if(
-            classifications[index][rowIndex] ===
-            value
-          ){
-            button
-            .classList
-            .add("selected");
-          }
-
-
-          button.addEventListener(
-            "click",
-            ()=>{
-
-              classifications[index][rowIndex] =
-              value;
-
-              [
-                ...controls.children
-              ]
-              .forEach(
-                b=>{
-                  b
-                  .classList
-                  .remove("selected");
-                }
-              );
-
-              button
-              .classList
-              .add("selected");
-
-
-              const complete =
-              Object
-              .keys(
-                classifications[index]
-              )
-              .length ===
-              item.items.length;
-
-
-              checkButton.style.display =
-              complete
-              ?
-              "inline-block"
-              :
-              "none";
-
-            }
-          );
-
-
-          controls
-          .appendChild(button);
-
-        }
-      );
-
-
-      row.appendChild(label);
-
-      row.appendChild(controls);
-
-      wrapper.appendChild(row);
-
-    }
-  );
-
-
-  body.appendChild(wrapper);
-
-}
-
-
-
-/* ======================================================
-   COMPROBAR CLASIFICACIÓN
-   ====================================================== */
-
-checkButton
-.addEventListener(
-  "click",
-  ()=>{
-
-    const item =
-    interactions[current];
-
-    if(
-      item.type !==
-      "classification"
-    ){
-      return;
-    }
-
-
-    let allCorrect =
-    true;
-
-
-    const rows =
-    [
-      ...document
-      .querySelectorAll(".classify-row")
-    ];
-
-
-    rows.forEach(
-      (row,index)=>{
-
-        const chosen =
-        classifications[current][index];
-
-        const correct =
-        item.items[index].answer;
-
-        row
-        .classList
-        .remove(
-          "correct",
-          "wrong"
-        );
-
-
-        if(
-          chosen ===
-          correct
-        ){
-
-          row
-          .classList
-          .add("correct");
-
-        }
-
-        else{
-
-          row
-          .classList
-          .add("wrong");
-
-          allCorrect =
-          false;
-
-        }
-
-      }
-    );
-
-
-    if(
-      firstAttempts[current] ===
-      undefined
-    ){
-
-      firstAttempts[current] =
-      allCorrect;
-
-      closedQuestions++;
-
-      if(allCorrect){
-        correctFirst++;
-      }
-
-    }
-
-
-    feedback.innerHTML =
-    (
-      allCorrect
-      ?
-      "<strong>Bien.</strong> "
-      :
-      "<strong>Revisemos.</strong> "
-    )
-    +
-    item.feedback;
-
-
-    feedback
-    .classList
-    .add("show");
-
-
-    continueButton.disabled =
-    false;
-
-
-    markDone(current);
-
-  }
-);
-
-
-
-/* ======================================================
    CONTINUAR
 
-   IMPORTANTE:
-   NO hacemos seekTo().
-   Continúa exactamente desde donde se pausó.
+   No hacemos seek.
+   El video sigue exactamente desde donde quedó pausado.
    ====================================================== */
+
 
 continueButton
 .addEventListener(
@@ -1762,7 +1910,10 @@ continueButton
 
     overlay
     .classList
-    .remove("show");
+    .remove(
+      "show"
+    );
+
 
     document
     .body
@@ -1770,8 +1921,13 @@ continueButton
     .overflow =
     "";
 
-    if(player){
+
+    if(
+      player
+    ){
+
       player.playVideo();
+
     }
 
   }
@@ -1780,17 +1936,24 @@ continueButton
 
 
 /* ======================================================
-   CONTROL DE TIEMPO
+   CONTROL DEL TIEMPO
+
+   50 ms permite que la pausa quede mucho más cerca
+   del segundo indicado.
    ====================================================== */
+
 
 function checkVideoTime(){
 
   if(
-    !player ||
+    !player
+    ||
     typeof player.getCurrentTime !==
     "function"
   ){
+
     return;
+
   }
 
 
@@ -1810,18 +1973,32 @@ function checkVideoTime(){
 
 
     if(
+
       !fired.has(i)
+
       &&
-      now >= item.t
+
+      now >=
+      item.t
+
       &&
-      now < item.t + 1
+
+      now <
+      item.t + .8
+
     ){
 
-      fired.add(i);
+      fired.add(
+        i
+      );
 
-      showInteraction(i);
 
-      break;
+      showInteraction(
+        i
+      );
+
+
+      return;
 
     }
 
@@ -1835,26 +2012,34 @@ function checkVideoTime(){
    ESTADO DEL VIDEO
    ====================================================== */
 
-function onPlayerStateChange(event){
+
+function onPlayerStateChange(
+  event
+){
 
   if(
     event.data ===
     YT.PlayerState.PLAYING
   ){
 
-    clearInterval(timer);
+    clearInterval(
+      timer
+    );
+
 
     timer =
     setInterval(
       checkVideoTime,
-      100
+      50
     );
 
   }
 
   else{
 
-    clearInterval(timer);
+    clearInterval(
+      timer
+    );
 
   }
 
@@ -1873,89 +2058,46 @@ function onPlayerStateChange(event){
 
 
 /* ======================================================
-   CIERRE
+   MOSTRAR CIERRE
    ====================================================== */
+
 
 function showFinal(){
 
   document
-  .getElementById("score")
+  .getElementById(
+    "score"
+  )
   .textContent =
+
   correctFirst +
   "/" +
   closedQuestions;
 
 
-  const bitacora =
-  document
-  .getElementById("bitacora");
-
-
-  bitacora.innerHTML =
-  "";
-
-
-  interactions.forEach(
-    (item,index)=>{
-
-      if(
-        item.type !==
-        "reflection"
-      ){
-        return;
-      }
-
-
-      const box =
-      document
-      .createElement("div");
-
-      box.className =
-      "bitacora-item";
-
-
-      const title =
-      document
-      .createElement("strong");
-
-      title.textContent =
-      item.title;
-
-
-      const answer =
-      document
-      .createElement("div");
-
-      answer.textContent =
-      reflections[index]
-      ||
-      "No escribiste una respuesta.";
-
-
-      box.appendChild(title);
-
-      box.appendChild(answer);
-
-      bitacora.appendChild(box);
-
-    }
-  );
-
-
   const final =
   document
-  .getElementById("final");
+  .getElementById(
+    "final"
+  );
 
 
   final
   .classList
-  .add("show");
+  .add(
+    "show"
+  );
 
 
   final
   .scrollIntoView({
-    behavior:"smooth",
-    block:"start"
+
+    behavior:
+    "smooth",
+
+    block:
+    "start"
+
   });
 
 }
@@ -1963,108 +2105,14 @@ function showFinal(){
 
 
 /* ======================================================
-   COPIAR BITÁCORA
-   ====================================================== */
-
-document
-.getElementById("copy")
-.addEventListener(
-  "click",
-  async()=>{
-
-    const parts = [];
-
-
-    interactions.forEach(
-      (item,index)=>{
-
-        if(
-          item.type ===
-          "reflection"
-        ){
-
-          parts.push(
-            item.title +
-            "\n" +
-            (
-              reflections[index]
-              ||
-              "(sin respuesta)"
-            )
-          );
-
-        }
-
-      }
-    );
-
-
-    const finalText =
-    document
-    .getElementById("finalText")
-    .value
-    .trim();
-
-
-    if(finalText){
-
-      parts.push(
-        "Aplicación final\n" +
-        finalText
-      );
-
-    }
-
-
-    const text =
-    parts.join("\n\n");
-
-
-    try{
-
-      await navigator
-      .clipboard
-      .writeText(text);
-
-
-      const button =
-      document
-      .getElementById("copy");
-
-
-      button.textContent =
-      "Copiado";
-
-
-      setTimeout(
-        ()=>{
-          button.textContent =
-          "Copiar mi bitácora";
-        },
-        1500
-      );
-
-    }
-
-    catch(error){
-
-      alert(
-        "No pude copiar automáticamente. Podés seleccionar y copiar el texto manualmente."
-      );
-
-    }
-
-  }
-);
-
-
-
-/* ======================================================
    REINICIAR
    ====================================================== */
 
+
 document
-.getElementById("restart")
+.getElementById(
+  "restart"
+)
 .addEventListener(
   "click",
   ()=>{
@@ -2073,44 +2121,40 @@ document
 
 
     Object
-    .keys(firstAttempts)
+    .keys(
+      firstAttempts
+    )
     .forEach(
       key=>{
-        delete firstAttempts[key];
+
+        delete
+        firstAttempts[key];
+
       }
     );
 
 
-    Object
-    .keys(reflections)
-    .forEach(
-      key=>{
-        delete reflections[key];
-      }
-    );
+    correctFirst =
+    0;
 
 
-    Object
-    .keys(classifications)
-    .forEach(
-      key=>{
-        delete classifications[key];
-      }
-    );
-
-
-    correctFirst = 0;
-
-    closedQuestions = 0;
+    closedQuestions =
+    0;
 
 
     document
-    .querySelectorAll(".step")
+    .querySelectorAll(
+      ".step"
+    )
     .forEach(
       step=>{
+
         step
         .classList
-        .remove("done");
+        .remove(
+          "done"
+        );
+
       }
     );
 
@@ -2119,23 +2163,24 @@ document
 
 
     document
-    .getElementById("final")
+    .getElementById(
+      "final"
+    )
     .classList
-    .remove("show");
+    .remove(
+      "show"
+    );
 
 
-    document
-    .getElementById("finalText")
-    .value =
-    "";
-
-
-    if(player){
+    if(
+      player
+    ){
 
       player.seekTo(
         0,
         true
       );
+
 
       player.playVideo();
 
@@ -2143,8 +2188,12 @@ document
 
 
     window.scrollTo({
+
       top:0,
-      behavior:"smooth"
+
+      behavior:
+      "smooth"
+
     });
 
   }
@@ -2155,6 +2204,7 @@ document
 /* ======================================================
    YOUTUBE
    ====================================================== */
+
 
 function onYouTubeIframeAPIReady(){
 
@@ -2172,9 +2222,15 @@ function onYouTubeIframeAPIReady(){
 
 
   if(
-    location.protocol === "https:"
+
+    location.protocol ===
+    "https:"
+
     ||
-    location.protocol === "http:"
+
+    location.protocol ===
+    "http:"
+
   ){
 
     vars.origin =
@@ -2185,21 +2241,28 @@ function onYouTubeIframeAPIReady(){
 
   player =
   new YT.Player(
+
     "player",
+
     {
 
       videoId:
       VIDEO_ID,
 
+
       playerVars:
       vars,
 
+
       events:{
+
         onStateChange:
         onPlayerStateChange
+
       }
 
     }
+
   );
 
 }
@@ -2210,6 +2273,7 @@ function onYouTubeIframeAPIReady(){
    CARGAR API
    ====================================================== */
 
+
 window
 .addEventListener(
   "load",
@@ -2217,19 +2281,28 @@ window
 
     const script =
     document
-    .createElement("script");
+    .createElement(
+      "script"
+    );
+
 
     script.src =
     "https://www.youtube.com/iframe_api";
 
+
     document
     .head
-    .appendChild(script);
+    .appendChild(
+      script
+    );
 
   }
 );
 
+
 </script>
 
+
 </body>
+
 </html>
