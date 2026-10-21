@@ -1,1 +1,975 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fenomenología y educación — video interactivo</title>
 
+<style>
+:root{
+  --bg:#f5f2ed;
+  --paper:#fffdf9;
+  --ink:#26211d;
+  --muted:#756c64;
+  --accent:#4f463f;
+  --line:#d8d0c7;
+  --ok:#e7f2e8;
+  --okline:#7da282;
+  --bad:#f7e8e6;
+  --badline:#bd8b84;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+body{
+  line-height:1.5;
+}
+
+main{
+  max-width:1040px;
+  margin:0 auto;
+  padding:28px 18px 60px;
+}
+
+.eyebrow{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  font-weight:750;
+  color:var(--muted);
+}
+
+h1,h2{
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:600;
+}
+
+h1{
+  font-size:clamp(2rem,5vw,3.45rem);
+  line-height:1.04;
+  margin:.18em 0 .3em;
+}
+
+.lead{
+  max-width:780px;
+  color:var(--muted);
+  font-size:1.05rem;
+  margin-bottom:22px;
+}
+
+.player-shell{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#000;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 16px 40px rgba(0,0,0,.16);
+}
+
+#player{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(19,17,15,.77);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:5;
+}
+
+.overlay.show{
+  display:flex;
+}
+
+.qcard{
+  width:min(760px,96%);
+  max-height:92%;
+  overflow:auto;
+  background:var(--paper);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 20px 70px rgba(0,0,0,.35);
+}
+
+.qtop{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+}
+
+.qnum,
+.qtime{
+  font-size:.76rem;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:var(--muted);
+  font-weight:750;
+}
+
+.qcard h2{
+  font-size:1.65rem;
+  margin:.25rem 0 .65rem;
+}
+
+.question{
+  font-size:1.06rem;
+  margin-bottom:14px;
+}
+
+.option{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  margin:8px 0;
+  font:inherit;
+  cursor:pointer;
+}
+
+.option:hover:not(:disabled){
+  border-color:#8e8277;
+  transform:translateY(-1px);
+}
+
+.option.correct{
+  background:var(--ok);
+  border-color:var(--okline);
+}
+
+.option.wrong{
+  background:var(--bad);
+  border-color:var(--badline);
+}
+
+.feedback{
+  display:none;
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#f0ece7;
+}
+
+.feedback.show{
+  display:block;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.btn{
+  border:0;
+  background:var(--accent);
+  color:#fff;
+  border-radius:11px;
+  padding:10px 15px;
+  font-weight:750;
+  cursor:pointer;
+}
+
+.btn.secondary{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--line);
+}
+
+.btn[disabled]{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.timeline{
+  display:flex;
+  gap:7px;
+  margin:16px 0 8px;
+}
+
+.step{
+  height:8px;
+  flex:1;
+  border-radius:99px;
+  background:#d8d0c7;
+}
+
+.step.done{
+  background:#665c54;
+}
+
+.note{
+  background:var(--paper);
+  border-left:4px solid var(--accent);
+  padding:13px 15px;
+  border-radius:0 12px 12px 0;
+  margin:20px 0;
+}
+
+.final{
+  display:none;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:22px;
+  margin-top:22px;
+}
+
+.final.show{
+  display:block;
+}
+
+.final textarea{
+  width:100%;
+  min-height:150px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  font:inherit;
+  resize:vertical;
+}
+
+.small{
+  font-size:.91rem;
+  color:var(--muted);
+}
+
+footer{
+  font-size:.88rem;
+  color:var(--muted);
+  margin-top:26px;
+}
+
+@media(max-width:640px){
+  main{
+    padding:18px 12px 40px;
+  }
+
+  .qcard{
+    padding:17px;
+  }
+
+  .qcard h2{
+    font-size:1.4rem;
+  }
+
+  .question,
+  .option{
+    font-size:.96rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+  <div class="eyebrow">Husserl · fenomenología · educación</div>
+
+  <h1>¿Qué cambia cuando miramos la experiencia antes de explicarla?</h1>
+
+  <p class="lead">
+    Video interactivo basado en
+    <em>¿Qué es la fenomenología? Explicación fácil</em>,
+    de En Minutos • Educación.
+    En momentos clave, el video se detiene para trasladar
+    los conceptos fenomenológicos a situaciones educativas.
+  </p>
+
+  <div class="player-shell">
+
+    <div id="player"></div>
+
+    <div class="overlay" id="overlay">
+
+      <div class="qcard">
+
+        <div class="qtop">
+          <span class="qnum" id="qnum"></span>
+          <span class="qtime" id="qtime"></span>
+        </div>
+
+        <h2 id="qtitle"></h2>
+
+        <div class="question" id="qtext"></div>
+
+        <div id="options"></div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="actions">
+          <button class="btn" id="continueBtn" disabled>
+            Continuar el video
+          </button>
+
+          <button
+            class="btn secondary"
+            id="retryBtn"
+            style="display:none"
+          >
+            Intentar de nuevo
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="timeline" id="timeline"></div>
+
+  <div class="note">
+    <strong>Consigna general.</strong>
+    No alcanza con recordar definiciones.
+    En cada pausa intentá distinguir entre
+    <em>describir cómo aparece una experiencia</em>
+    y
+    <em>explicarla demasiado pronto desde categorías previas</em>.
+  </div>
+
+  <section class="final" id="final">
+
+    <div class="eyebrow">Cierre · aplicación</div>
+
+    <h2>Ahora hacé una pequeña descripción fenomenológica</h2>
+
+    <p>
+      Elegí una experiencia educativa concreta:
+      <em>
+        ser evaluado, no entender una consigna,
+        levantar la mano, ser llamado «buen alumno»,
+        entrar por primera vez a una clase
+      </em>.
+    </p>
+
+    <p>
+      <strong>1.</strong>
+      Describí qué aparece en la experiencia,
+      sin explicarlo todavía.
+      <br>
+
+      <strong>2.</strong>
+      Nombrá una interpretación o etiqueta
+      que convendría poner entre paréntesis.
+      <br>
+
+      <strong>3.</strong>
+      Preguntate qué sentido o estructura
+      de esa experiencia empieza a aparecer.
+    </p>
+
+    <textarea
+      placeholder="Ser evaluado aparece como… / La interpretación que suspendería es… / Al volver a mirar advierto que…"
+    ></textarea>
+
+    <p class="small">
+      <strong>No hay una única respuesta.</strong>
+      La condición es no confundir descripción
+      con explicación causal ni atribuir de entrada
+      una esencia psicológica al estudiante.
+    </p>
+
+  </section>
+
+  <footer>
+    Recurso didáctico de uso educativo.
+    El video se reproduce desde YouTube.
+  </footer>
+
+</main>
+
+
+<script>
+
+const VIDEO_ID = "afsiIRm8TsM";
+
+
+const questions = [
+
+  {
+    t:42,
+
+    title:"Experiencia",
+
+    text:
+    "Dos estudiantes reciben exactamente la misma devolución escrita. Uno la vive como una ayuda; el otro, como una humillación. ¿Qué pregunta se acerca más a una mirada fenomenológica?",
+
+    options:[
+      "¿Cuál de los dos interpretó objetivamente mejor la devolución?",
+
+      "¿Cómo se les dio esa devolución en la experiencia y qué sentido adquirió para cada uno?",
+
+      "¿Qué rasgo de personalidad explica la reacción de cada estudiante?",
+
+      "¿Qué estrategia docente produce, en promedio, mejores resultados?"
+    ],
+
+    correct:1,
+
+    feedback:
+    "La fenomenología pregunta por el modo en que algo aparece y cobra sentido en la experiencia. No niega otras explicaciones: simplemente no empieza por ellas."
+  },
+
+
+  {
+    t:104,
+
+    title:"Volver a las cosas mismas",
+
+    text:
+    "Una profesora piensa: «Tomás no participa porque es apático». Si intentara hacer una pequeña epojé, ¿cuál sería el mejor primer movimiento?",
+
+    options:[
+      "Confirmar si Tomás tiene un diagnóstico que explique su apatía.",
+
+      "Suspender provisoriamente la categoría «apático» y describir cómo se presenta su participación en distintas situaciones.",
+
+      "Preguntar a otros docentes si también lo consideran apático.",
+
+      "Buscar una técnica para aumentar la participación antes de observarlo."
+    ],
+
+    correct:1,
+
+    feedback:
+    "La suspensión no exige negar lo que sabemos, sino poner entre paréntesis, provisoriamente, aquello que damos por supuesto para poder volver a mirar el fenómeno."
+  },
+
+
+  {
+    t:220,
+
+    title:"Intencionalidad",
+
+    text:
+    "Durante un examen oral, una alumna mira reiteradamente la puerta. Desde la noción husserliana de intencionalidad, ¿qué podemos afirmar sin adelantarnos demasiado?",
+
+    options:[
+      "Que quiere irse del aula.",
+
+      "Que está evitando mirar al profesor.",
+
+      "Que su conciencia está dirigida hacia algo, aunque todavía no sepamos qué sentido tiene para ella.",
+
+      "Que la conducta revela necesariamente ansiedad."
+    ],
+
+    correct:2,
+
+    feedback:
+    "La intencionalidad no permite adivinar motivos. Señala una estructura: la conciencia no es un recipiente vacío, sino conciencia de algo."
+  },
+
+
+  {
+    t:254,
+
+    title:"Suspensión del juicio",
+
+    text:
+    "Un estudiante entrega tres trabajos tarde. ¿Qué formulación permanece más cerca de lo que efectivamente aparece?",
+
+    options:[
+      "Es irresponsable.",
+
+      "No le interesa la materia.",
+
+      "Entregó tres trabajos después de la fecha acordada; todavía no sé cómo vive él esa situación ni qué sentido tiene para él.",
+
+      "Seguramente tiene dificultades de organización."
+    ],
+
+    correct:2,
+
+    feedback:
+    "La tercera formulación distingue descripción e interpretación. La epojé no vuelve ingenuo al docente: evita que una inferencia se disfrace de dato."
+  },
+
+
+  {
+    t:300,
+
+    title:"Fenomenología y ciencia",
+
+    text:
+    "¿Cuál de estas conclusiones sería demasiado fuerte?",
+
+    options:[
+      "La fenomenología trabaja con preguntas distintas de las de muchos enfoques experimentales.",
+
+      "Describir la experiencia vivida y medir variables no son necesariamente operaciones equivalentes.",
+
+      "Si atendemos a la experiencia subjetiva, debemos rechazar todo conocimiento científico objetivo.",
+
+      "Una investigación educativa puede distinguir entre descripción de la vivencia y explicación causal."
+    ],
+
+    correct:2,
+
+    feedback:
+    "Fenomenología y explicación empírica no tienen por qué excluirse. Pueden responder a preguntas diferentes. El error sería convertir esa diferencia metodológica en una guerra de mundos."
+  }
+
+];
+
+
+let player = null;
+
+let ticker = null;
+
+let currentIndex = null;
+
+const fired = new Set();
+
+
+const overlay =
+document.getElementById("overlay");
+
+const timeline =
+document.getElementById("timeline");
+
+const continueBtn =
+document.getElementById("continueBtn");
+
+const retryBtn =
+document.getElementById("retryBtn");
+
+
+questions.forEach((q,i)=>{
+
+  const step =
+  document.createElement("div");
+
+  step.className =
+  "step";
+
+  step.id =
+  "step" + i;
+
+  timeline.appendChild(step);
+
+});
+
+
+function formatTime(sec){
+
+  const minutes =
+  Math.floor(sec / 60);
+
+  const seconds =
+  String(sec % 60).padStart(2,"0");
+
+  return `${minutes}:${seconds}`;
+
+}
+
+
+function showQuestion(i){
+
+  currentIndex = i;
+
+  const q =
+  questions[i];
+
+  if(player){
+    player.pauseVideo();
+  }
+
+
+  document
+  .getElementById("qnum")
+  .textContent =
+  `Pausa ${i+1} de ${questions.length}`;
+
+
+  document
+  .getElementById("qtime")
+  .textContent =
+  formatTime(q.t);
+
+
+  document
+  .getElementById("qtitle")
+  .textContent =
+  q.title;
+
+
+  document
+  .getElementById("qtext")
+  .textContent =
+  q.text;
+
+
+  const options =
+  document.getElementById("options");
+
+
+  options.innerHTML =
+  "";
+
+
+  const feedback =
+  document.getElementById("feedback");
+
+
+  feedback.className =
+  "feedback";
+
+  feedback.textContent =
+  "";
+
+
+  continueBtn.disabled =
+  true;
+
+  retryBtn.style.display =
+  "none";
+
+
+  q.options.forEach((text,j)=>{
+
+    const button =
+    document.createElement("button");
+
+    button.className =
+    "option";
+
+    button.textContent =
+    text;
+
+
+    button.addEventListener(
+      "click",
+      ()=>selectAnswer(j)
+    );
+
+
+    options.appendChild(button);
+
+  });
+
+
+  overlay.classList.add("show");
+
+}
+
+
+function selectAnswer(j){
+
+  const q =
+  questions[currentIndex];
+
+
+  const buttons =
+  [...document.querySelectorAll("#options .option")];
+
+
+  buttons.forEach(
+    button => button.disabled = true
+  );
+
+
+  const feedback =
+  document.getElementById("feedback");
+
+
+  if(j === q.correct){
+
+    buttons[j]
+    .classList
+    .add("correct");
+
+
+    feedback.innerHTML =
+    `<strong>Bien.</strong> ${q.feedback}`;
+
+
+    document
+    .getElementById("step" + currentIndex)
+    .classList
+    .add("done");
+
+
+    continueBtn.disabled =
+    false;
+
+
+    retryBtn.style.display =
+    "none";
+
+  }
+
+  else{
+
+    buttons[j]
+    .classList
+    .add("wrong");
+
+
+    buttons[q.correct]
+    .classList
+    .add("correct");
+
+
+    feedback.innerHTML =
+    `<strong>Revisemos.</strong> ${q.feedback}`;
+
+
+    continueBtn.disabled =
+    false;
+
+
+    retryBtn.style.display =
+    "inline-block";
+
+  }
+
+
+  feedback.classList.add("show");
+
+}
+
+
+retryBtn.addEventListener(
+  "click",
+  ()=>{
+
+    const options =
+    document.getElementById("options");
+
+
+    [...options.children]
+    .forEach(button=>{
+
+      button.disabled =
+      false;
+
+      button.classList.remove(
+        "correct",
+        "wrong"
+      );
+
+    });
+
+
+    document
+    .getElementById("feedback")
+    .className =
+    "feedback";
+
+
+    continueBtn.disabled =
+    true;
+
+
+    retryBtn.style.display =
+    "none";
+
+  }
+);
+
+
+continueBtn.addEventListener(
+  "click",
+  ()=>{
+
+    overlay.classList.remove("show");
+
+
+    if(player){
+
+      player.seekTo(
+        questions[currentIndex].t + 1,
+        true
+      );
+
+      player.playVideo();
+
+    }
+
+  }
+);
+
+
+function checkTime(){
+
+  if(
+    !player ||
+    typeof player.getCurrentTime !== "function"
+  ){
+    return;
+  }
+
+
+  const time =
+  player.getCurrentTime();
+
+
+  for(
+    let i=0;
+    i<questions.length;
+    i++
+  ){
+
+    const q =
+    questions[i];
+
+
+    if(
+      !fired.has(i) &&
+      time >= q.t &&
+      time < q.t + 1.8
+    ){
+
+      fired.add(i);
+
+      showQuestion(i);
+
+      return;
+
+    }
+
+  }
+
+}
+
+
+function onPlayerStateChange(event){
+
+  if(
+    event.data ===
+    YT.PlayerState.PLAYING
+  ){
+
+    clearInterval(ticker);
+
+    ticker =
+    setInterval(
+      checkTime,
+      200
+    );
+
+  }
+
+  else{
+
+    clearInterval(ticker);
+
+  }
+
+
+  if(
+    event.data ===
+    YT.PlayerState.ENDED
+  ){
+
+    const final =
+    document.getElementById("final");
+
+
+    final.classList.add("show");
+
+
+    final.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+  }
+
+}
+
+
+function onYouTubeIframeAPIReady(){
+
+  const playerVars = {
+
+    rel:0,
+
+    modestbranding:1,
+
+    playsinline:1,
+
+    enablejsapi:1
+
+  };
+
+
+  if(
+    location.protocol === "http:" ||
+    location.protocol === "https:"
+  ){
+
+    playerVars.origin =
+    location.origin;
+
+  }
+
+
+  player =
+  new YT.Player(
+    "player",
+    {
+
+      videoId:
+      VIDEO_ID,
+
+      playerVars:
+      playerVars,
+
+      events:{
+        onStateChange:
+        onPlayerStateChange
+      }
+
+    }
+  );
+
+}
+
+
+window.addEventListener(
+  "load",
+  ()=>{
+
+    const script =
+    document.createElement("script");
+
+
+    script.src =
+    "https://www.youtube.com/iframe_api";
+
+
+    document.head.appendChild(script);
+
+  }
+);
+
+</script>
+
+</body>
+</html>
