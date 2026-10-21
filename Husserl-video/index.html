@@ -1,1175 +1,2865 @@
 <!doctype html>
 <html lang="es">
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fenomenología y educación — Husserl</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta
+  name="description"
+  content="Video interactivo sobre fenomenología de Husserl y educación."
+>
+
+<title>
+Fenomenología y educación — Husserl
+</title>
+
 
 <style>
+
+/* =========================================================
+   PALETA Y CONFIGURACIÓN GENERAL
+   ========================================================= */
+
 :root{
+
   --bg:#f5f2ed;
+
   --paper:#fffdf9;
+
   --ink:#26211d;
+
   --muted:#756c64;
+
   --accent:#4f463f;
+
   --line:#d8d0c7;
+
   --ok:#e7f2e8;
+
   --okline:#7da282;
+
   --bad:#f7e8e6;
+
   --badline:#bd8b84;
+
   --soft:#efebe5;
+
 }
 
-*{box-sizing:border-box}
 
-html,body{
+*{
+  box-sizing:border-box;
+}
+
+
+html,
+body{
+
   margin:0;
+
   padding:0;
+
   background:var(--bg);
+
   color:var(--ink);
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
 }
 
-body{line-height:1.5}
+
+body{
+
+  line-height:1.5;
+
+}
+
+
+/* =========================================================
+   CONTENIDO GENERAL
+   ========================================================= */
 
 main{
+
   max-width:1080px;
-  margin:auto;
+
+  margin:0 auto;
+
   padding:30px 18px 70px;
+
 }
 
-h1,h2,h3{
-  font-family:Georgia,"Times New Roman",serif;
+
+h1,
+h2,
+h3{
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
   font-weight:600;
+
 }
+
 
 h1{
-  font-size:clamp(2.1rem,5vw,3.6rem);
+
+  font-size:
+    clamp(
+      2.1rem,
+      5vw,
+      3.6rem
+    );
+
   line-height:1.04;
+
   margin:.2em 0 .3em;
+
 }
+
 
 .eyebrow{
+
   font-size:.76rem;
+
   text-transform:uppercase;
+
   letter-spacing:.12em;
+
   font-weight:700;
+
   color:var(--muted);
+
 }
+
 
 .lead{
+
   max-width:850px;
+
   color:var(--muted);
+
   font-size:1.07rem;
+
+  margin-bottom:24px;
+
 }
+
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
 
 .player-shell{
+
   position:relative;
+
   width:100%;
+
   aspect-ratio:16/9;
+
   background:#000;
+
   border-radius:18px;
+
   overflow:hidden;
-  margin-top:24px;
-  box-shadow:0 15px 40px rgba(0,0,0,.16);
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.16);
+
 }
+
 
 #player{
+
   position:absolute;
+
   inset:0;
+
   width:100%;
+
   height:100%;
+
 }
+
+
+/* =========================================================
+   PROGRESO
+   ========================================================= */
 
 .timeline{
+
   display:flex;
-  gap:5px;
-  margin:16px 0 5px;
+
+  gap:6px;
+
+  margin:16px 0 6px;
+
 }
+
 
 .step{
+
   height:8px;
+
   flex:1;
-  border-radius:20px;
+
+  border-radius:30px;
+
   background:#d8d0c7;
+
+  transition:.25s ease;
+
 }
+
 
 .step.done{
+
   background:#665c54;
+
 }
+
 
 .progress{
+
   text-align:right;
+
   color:var(--muted);
+
   font-size:.82rem;
+
 }
+
+
+/* =========================================================
+   CONSIGNA
+   ========================================================= */
 
 .note{
+
   margin-top:20px;
+
   padding:14px 16px;
+
   background:var(--paper);
-  border-left:4px solid var(--accent);
-  border-radius:0 12px 12px 0;
+
+  border-left:
+    4px solid var(--accent);
+
+  border-radius:
+    0 12px 12px 0;
+
 }
+
+
+/* =========================================================
+   OVERLAY DE LAS INTERACCIONES
+
+   Se muestra casi a pantalla completa.
+   No tiene scroll interno en escritorio.
+   ========================================================= */
 
 .overlay{
+
   position:fixed;
+
   inset:0;
+
   z-index:9999;
+
   display:none;
+
   align-items:center;
+
   justify-content:center;
+
   padding:22px;
-  background:rgba(20,18,16,.84);
+
+  background:
+    rgba(20,18,16,.84);
+
 }
+
 
 .overlay.show{
+
   display:flex;
+
 }
+
 
 .card{
-  width:min(1080px,96vw);
-  min-height:min(650px,90vh);
-  padding:clamp(22px,3vw,38px);
+
+  width:
+    min(
+      1080px,
+      96vw
+    );
+
+  min-height:
+    min(
+      650px,
+      90vh
+    );
+
+  padding:
+    clamp(
+      22px,
+      3vw,
+      38px
+    );
+
   background:var(--paper);
+
   border-radius:22px;
-  box-shadow:0 25px 80px rgba(0,0,0,.42);
+
+  box-shadow:
+    0 25px 80px rgba(0,0,0,.42);
+
   display:flex;
+
   flex-direction:column;
+
   justify-content:center;
+
 }
+
 
 .card-head{
+
   display:flex;
+
   justify-content:space-between;
+
   gap:20px;
+
   color:var(--muted);
+
   font-size:.77rem;
+
   text-transform:uppercase;
+
   letter-spacing:.1em;
+
   font-weight:700;
+
 }
+
 
 .card h2{
-  font-size:clamp(1.55rem,3vw,2.2rem);
+
+  font-size:
+    clamp(
+      1.55rem,
+      3vw,
+      2.2rem
+    );
+
   margin:.3rem 0 .8rem;
+
 }
+
 
 .question{
-  font-size:clamp(1rem,1.8vw,1.2rem);
+
+  font-size:
+    clamp(
+      1rem,
+      1.8vw,
+      1.2rem
+    );
+
   max-width:930px;
+
   margin-bottom:14px;
+
 }
+
+
+/* =========================================================
+   OPCIONES
+   ========================================================= */
 
 .option{
+
   display:block;
+
   width:100%;
+
   text-align:left;
+
   margin:8px 0;
+
   padding:12px 15px;
+
   background:#fff;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:12px;
+
   color:var(--ink);
+
   font:inherit;
+
   cursor:pointer;
+
+  transition:.12s ease;
+
 }
+
 
 .option:hover:not(:disabled){
+
   border-color:#897d73;
+
+  transform:
+    translateY(-1px);
+
 }
+
 
 .option.correct{
+
   background:var(--ok);
+
   border-color:var(--okline);
+
 }
+
 
 .option.wrong{
+
   background:var(--bad);
+
   border-color:var(--badline);
+
 }
+
+
+/* =========================================================
+   RETROALIMENTACIÓN
+   ========================================================= */
 
 .feedback{
+
   display:none;
+
   margin-top:14px;
+
   padding:12px 14px;
+
   background:var(--soft);
+
   border-radius:12px;
+
 }
+
 
 .feedback.show{
+
   display:block;
+
 }
+
+
+/* =========================================================
+   BOTONES
+   ========================================================= */
 
 .actions{
+
   display:flex;
+
   gap:10px;
+
   flex-wrap:wrap;
+
   margin-top:16px;
+
 }
+
 
 button.action{
+
   border:0;
+
   padding:10px 16px;
+
   border-radius:10px;
+
   background:var(--accent);
+
   color:#fff;
+
   font-weight:700;
+
   cursor:pointer;
+
 }
+
 
 button.secondary{
+
   background:transparent;
+
   color:var(--ink);
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
 }
+
 
 button:disabled{
+
   opacity:.45;
+
   cursor:not-allowed;
+
 }
+
+
+/* =========================================================
+   ESCRITURA
+   ========================================================= */
 
 textarea{
+
   width:100%;
+
   min-height:135px;
+
   padding:13px;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:12px;
+
   background:white;
+
   color:var(--ink);
+
   font:inherit;
+
   resize:vertical;
+
 }
+
 
 .hint{
+
   margin-top:6px;
+
   color:var(--muted);
+
   font-size:.84rem;
+
 }
+
+
+/* =========================================================
+   CLASIFICACIÓN
+   ========================================================= */
 
 .classify{
+
   display:grid;
+
   gap:12px;
+
 }
+
 
 .classify-row{
+
   display:grid;
-  grid-template-columns:1fr auto;
+
+  grid-template-columns:
+    1fr auto;
+
   gap:15px;
+
   align-items:center;
+
   padding:14px;
+
   background:#fff;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:12px;
+
 }
+
 
 .classify-row.correct{
+
   background:var(--ok);
+
   border-color:var(--okline);
+
 }
+
 
 .classify-row.wrong{
+
   background:var(--bad);
+
   border-color:var(--badline);
+
 }
+
 
 .class-buttons{
+
   display:flex;
+
   gap:8px;
+
 }
+
 
 .class-btn{
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   background:white;
+
   color:var(--ink);
+
   padding:8px 11px;
+
   border-radius:9px;
+
   cursor:pointer;
+
 }
 
+
 .class-btn.selected{
+
   background:var(--accent);
+
   color:white;
+
   border-color:var(--accent);
+
 }
+
+
+/* =========================================================
+   CIERRE
+   ========================================================= */
 
 .final,
 .resources{
+
   margin-top:24px;
+
   padding:24px;
+
   background:var(--paper);
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:18px;
+
 }
+
 
 .final{
+
   display:none;
+
 }
+
 
 .final.show{
+
   display:block;
+
 }
+
 
 .score{
+
   display:inline-flex;
+
   align-items:baseline;
+
   gap:8px;
-  margin:5px 0 15px;
-  padding:10px 14px;
+
+  margin:
+    5px 0 15px;
+
+  padding:
+    10px 14px;
+
   background:var(--soft);
+
   border-radius:12px;
+
 }
+
 
 .score strong{
-  font:600 2rem Georgia,serif;
+
+  font:
+    600 2rem
+    Georgia,
+    serif;
+
 }
+
+
+/* =========================================================
+   BITÁCORA
+   ========================================================= */
 
 .bitacora{
+
   display:grid;
+
   gap:12px;
-  margin:18px 0 25px;
+
+  margin:
+    18px 0 25px;
+
 }
+
 
 .bitacora-item{
+
   padding:13px;
+
   background:#fff;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:12px;
+
 }
+
 
 .bitacora-item strong{
+
   display:block;
+
   margin-bottom:5px;
+
 }
+
+
+/* =========================================================
+   RECURSOS
+   ========================================================= */
 
 .resource-grid{
+
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+
+  grid-template-columns:
+    repeat(3,1fr);
+
   gap:12px;
+
 }
+
 
 .resource{
+
   display:block;
+
   padding:15px;
+
   background:#fff;
-  border:1px solid var(--line);
+
+  border:
+    1px solid var(--line);
+
   border-radius:13px;
+
   color:var(--ink);
+
   text-decoration:none;
+
 }
+
 
 .resource:hover{
+
   border-color:#897d73;
+
 }
+
 
 .resource strong{
+
   display:block;
+
   margin-bottom:5px;
+
 }
+
 
 .resource span{
+
   color:var(--muted);
+
   font-size:.9rem;
+
 }
+
+
+/* =========================================================
+   PIE
+   ========================================================= */
 
 footer{
+
   margin-top:28px;
+
   color:var(--muted);
+
   font-size:.88rem;
+
 }
+
+
+/* =========================================================
+   CELULARES
+   ========================================================= */
 
 @media(max-width:700px){
+
   main{
-    padding:18px 12px 45px;
+
+    padding:
+      18px 12px 45px;
+
   }
+
 
   .overlay{
+
     padding:8px;
+
   }
+
 
   .card{
+
     width:98vw;
+
     min-height:94vh;
+
     padding:16px;
+
     border-radius:15px;
+
   }
+
 
   .card h2{
+
     font-size:1.45rem;
+
   }
+
 
   .option{
+
     margin:5px 0;
+
     padding:9px 11px;
+
     font-size:.93rem;
+
   }
+
 
   .question{
+
     font-size:.95rem;
+
   }
+
 
   .feedback{
+
     font-size:.9rem;
+
   }
+
 
   .classify-row{
+
     grid-template-columns:1fr;
+
   }
 
-  .resource-grid{
-    grid-template-columns:1fr;
+
+  .class-buttons{
+
+    flex-wrap:wrap;
+
   }
+
+
+  .resource-grid{
+
+    grid-template-columns:1fr;
+
+  }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <main>
 
+
 <div class="eyebrow">
+
 Husserl · fenomenología · educación
+
 </div>
+
 
 <h1>
+
 ¿Qué cambia cuando miramos la experiencia antes de explicarla?
+
 </h1>
 
+
 <p class="lead">
-Video interactivo basado en <em>¿Qué es la fenomenología? Explicación fácil</em>,
-de En Minutos • Educación. El video se detiene en distintos momentos para
-relacionar algunos conceptos de la fenomenología de Husserl con situaciones educativas.
+
+Video interactivo basado en
+<em>¿Qué es la fenomenología? Explicación fácil</em>,
+de En Minutos • Educación.
+
+El video se detiene en momentos clave para relacionar
+algunas ideas de la fenomenología de Husserl
+con problemas y situaciones educativas.
+
 </p>
+
 
 <div class="player-shell">
+
   <div id="player"></div>
+
 </div>
 
-<div class="timeline" id="timeline"></div>
 
-<div class="progress" id="progress">
-0 de 10 pausas completadas
+<div
+  class="timeline"
+  id="timeline">
 </div>
+
+
+<div
+  class="progress"
+  id="progress">
+
+0 de 8 pausas completadas
+
+</div>
+
 
 <div class="note">
-<strong>Consigna general.</strong>
-No alcanza con recordar definiciones. En cada pausa intentá distinguir entre
-<em>describir cómo aparece una experiencia</em> y
-<em>explicarla demasiado pronto desde categorías previas</em>.
+
+<strong>
+Consigna general.
+</strong>
+
+No alcanza con recordar definiciones.
+
+En cada pausa intentá distinguir entre
+
+<em>
+describir cómo aparece una experiencia
+</em>
+
+y
+
+<em>
+explicarla demasiado pronto desde categorías previas.
+</em>
+
 </div>
 
 
-<section class="final" id="final">
+
+<!-- =====================================================
+     CIERRE
+     ===================================================== -->
+
+
+<section
+  class="final"
+  id="final">
+
 
 <div class="eyebrow">
+
 Cierre · volver sobre la experiencia
+
 </div>
 
-<h2>Tu recorrido fenomenológico</h2>
+
+<h2>
+
+Tu recorrido fenomenológico
+
+</h2>
+
 
 <div class="score">
-<strong id="score">0/0</strong>
-<span>respuestas correctas en el primer intento</span>
+
+<strong id="score">
+0/0
+</strong>
+
+<span>
+respuestas correctas en el primer intento
+</span>
+
 </div>
 
+
 <p>
-Las actividades de escritura no se califican. Las reunimos acá como una
-pequeña bitácora de tu recorrido.
+
+La actividad de escritura no se califica.
+
+La recuperamos acá como una pequeña bitácora
+de tu recorrido.
+
 </p>
 
-<div class="bitacora" id="bitacora"></div>
 
-<h3>Una última aplicación</h3>
+<div
+  class="bitacora"
+  id="bitacora">
+</div>
+
+
+<h3>
+
+Una última aplicación
+
+</h3>
+
 
 <p>
+
 Elegí una experiencia educativa concreta:
-<em>ser evaluado, no entender una consigna, levantar la mano,
-ser considerado un buen alumno o entrar por primera vez a una clase</em>.
+
+<em>
+
+ser evaluado,
+
+no entender una consigna,
+
+levantar la mano,
+
+ser considerado un buen alumno
+
+o entrar por primera vez a una clase.
+
+</em>
+
 </p>
+
 
 <p>
-<strong>1.</strong> Describí qué aparece en la experiencia, sin explicarlo todavía.<br>
-<strong>2.</strong> Nombrá una interpretación o etiqueta que convendría poner entre paréntesis.<br>
-<strong>3.</strong> Preguntate qué sentido o estructura de esa experiencia empieza a aparecer.
+
+<strong>1.</strong>
+
+Describí qué aparece en la experiencia,
+sin explicarlo todavía.
+
+<br>
+
+<strong>2.</strong>
+
+Nombrá una interpretación o etiqueta
+que convendría poner entre paréntesis.
+
+<br>
+
+<strong>3.</strong>
+
+Preguntate qué sentido o estructura
+de esa experiencia empieza a aparecer.
+
 </p>
 
-<textarea id="finalText"
-placeholder="Ser evaluado aparece como… / La interpretación que suspendería es… / Al volver a mirar advierto que…"></textarea>
+
+<textarea
+  id="finalText"
+  placeholder="Ser evaluado aparece como… / La interpretación que suspendería es… / Al volver a mirar advierto que…">
+</textarea>
+
 
 <div class="actions">
 
-<button class="action secondary" id="copy">
+
+<button
+  class="action secondary"
+  id="copy">
+
 Copiar mi bitácora
+
 </button>
 
-<button class="action secondary" id="restart">
+
+<button
+  class="action secondary"
+  id="restart">
+
 Volver a empezar
+
 </button>
+
 
 </div>
 
+
 </section>
+
+
+
+<!-- =====================================================
+     RECURSOS
+     ===================================================== -->
 
 
 <section class="resources">
 
+
 <div class="eyebrow">
+
 Para seguir pensando
+
 </div>
 
-<h2>Algunas puertas de entrada</h2>
+
+<h2>
+
+Algunas puertas de entrada
+
+</h2>
+
 
 <div class="resource-grid">
 
-<a
-class="resource"
-href="https://plato.stanford.edu/entries/husserl/"
-target="_blank"
-rel="noopener noreferrer">
-<strong>Edmund Husserl</strong>
-<span>
-Stanford Encyclopedia of Philosophy. Para profundizar en intencionalidad,
-experiencia y método fenomenológico.
-</span>
-</a>
 
 <a
-class="resource"
-href="https://iep.utm.edu/phenom/"
-target="_blank"
-rel="noopener noreferrer">
-<strong>Phenomenology</strong>
+  class="resource"
+  href="https://plato.stanford.edu/entries/husserl/"
+  target="_blank"
+  rel="noopener noreferrer">
+
+<strong>
+
+Edmund Husserl
+
+</strong>
+
 <span>
-Internet Encyclopedia of Philosophy. Una introducción general a la tradición fenomenológica.
+
+Stanford Encyclopedia of Philosophy.
+Para profundizar en intencionalidad,
+experiencia, conciencia
+y método fenomenológico.
+
 </span>
+
 </a>
 
+
+
 <a
-class="resource"
-href="https://www.youtube.com/results?search_query=Husserl+fenomenologia+educacion"
-target="_blank"
-rel="noopener noreferrer">
-<strong>Husserl, fenomenología y educación</strong>
+  class="resource"
+  href="https://iep.utm.edu/phenom/"
+  target="_blank"
+  rel="noopener noreferrer">
+
+<strong>
+
+Phenomenology
+
+</strong>
+
 <span>
-Otros materiales audiovisuales para seguir buscando relaciones entre experiencia,
+
+Internet Encyclopedia of Philosophy.
+Una introducción general
+a la tradición fenomenológica.
+
+</span>
+
+</a>
+
+
+
+<a
+  class="resource"
+  href="https://www.youtube.com/results?search_query=Husserl+fenomenologia+educacion"
+  target="_blank"
+  rel="noopener noreferrer">
+
+<strong>
+
+Fenomenología y educación
+
+</strong>
+
+<span>
+
+Otros materiales audiovisuales
+para seguir explorando las relaciones
+entre experiencia,
 fenomenología y educación.
+
 </span>
+
 </a>
+
 
 </div>
+
 
 </section>
 
 
+
 <footer>
-Las respuestas quedan solamente en este navegador. Esta página no envía
-respuestas ni calificaciones a Google Classroom.
+
+Las respuestas quedan solamente
+en este navegador.
+
+Esta página no envía respuestas
+ni calificaciones a Google Classroom.
+
 </footer>
+
 
 </main>
 
 
-<div class="overlay" id="overlay">
+
+<!-- =====================================================
+     CAPA DE INTERACCIONES
+     ===================================================== -->
+
+
+<div
+  class="overlay"
+  id="overlay">
+
 
 <div class="card">
 
+
 <div class="card-head">
-<span id="counter"></span>
-<span id="time"></span>
+
+
+<span id="counter">
+</span>
+
+
+<span id="time">
+</span>
+
+
 </div>
 
-<h2 id="title"></h2>
 
-<div class="question" id="question"></div>
+<h2 id="title">
+</h2>
 
-<div id="body"></div>
 
-<div class="feedback" id="feedback"></div>
+<div
+  class="question"
+  id="question">
+</div>
+
+
+<div id="body">
+</div>
+
+
+<div
+  class="feedback"
+  id="feedback">
+</div>
+
 
 <div class="actions">
 
+
 <button
-class="action"
-id="check"
-style="display:none">
+  class="action"
+  id="check"
+  style="display:none">
+
 Comprobar
+
 </button>
 
+
 <button
-class="action"
-id="continue"
-disabled>
+  class="action"
+  id="continue"
+  disabled>
+
 Continuar el video
+
 </button>
+
 
 <button
-class="action secondary"
-id="retry"
-style="display:none">
+  class="action secondary"
+  id="retry"
+  style="display:none">
+
 Intentar de nuevo
+
 </button>
 
+
+</div>
+
+
 </div>
 
 </div>
-</div>
+
 
 
 <script>
 
-const VIDEO_ID = "afsiIRm8TsM";
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+const VIDEO_ID =
+"afsiIRm8TsM";
+
+
+/* =========================================================
+   INTERACCIONES
+
+   Los tiempos están colocados después
+   de que el video presenta cada idea.
+   ========================================================= */
 
 const interactions = [
 
+
+/* ---------------------------------------------------------
+   1. EXPERIENCIA
+   --------------------------------------------------------- */
+
 {
-  t:25,
+
+  t:52,
+
   type:"choice",
-  title:"¿Dónde pone el foco la fenomenología?",
-  question:"Para empezar: ¿cuál de estas formulaciones se acerca más al gesto fenomenológico?",
+
+  title:
+  "La experiencia antes de la explicación",
+
+  question:
+  "El video acaba de presentar la fenomenología a partir de cómo experimentamos el mundo y de cómo los fenómenos se manifiestan en nuestra experiencia. ¿Cuál de estas preguntas se acerca más a esa mirada?",
+
   options:[
-    "Explicar la conducta mediante causas ocultas.",
-    "Describir cómo un fenómeno se da o aparece en la experiencia.",
-    "Reducir toda experiencia a procesos cerebrales.",
-    "Determinar cuál percepción coincide mejor con la opinión de la mayoría."
+
+    "¿Qué causa objetivamente una determinada conducta?",
+
+    "¿Cómo aparece una situación para quien la está viviendo?",
+
+    "¿Qué explicación científica permite predecir mejor esa conducta?",
+
+    "¿Qué interpretación coincide con la de la mayoría?"
+
   ],
+
   correct:1,
-  feedback:"La fenomenología pone en primer plano el aparecer del fenómeno: cómo algo se da a la conciencia y qué sentido adquiere en la experiencia."
+
+  feedback:
+  "La fenomenología desplaza inicialmente la pregunta por la causa para atender al modo en que algo aparece y adquiere sentido en la experiencia. No niega que puedan formularse explicaciones posteriores."
+
 },
 
+
+
+/* ---------------------------------------------------------
+   2. VOLVER A LAS COSAS MISMAS
+   --------------------------------------------------------- */
+
 {
-  t:58,
+
+  t:119,
+
   type:"choice",
-  title:"Misma situación, ¿misma experiencia?",
-  question:"Verdadero o falso: si dos estudiantes atraviesan exactamente la misma situación escolar, la experiencia vivida por ambos necesariamente es la misma.",
+
+  title:
+  "Volver a las cosas mismas",
+
+  question:
+  "Acabamos de escuchar la propuesta de Husserl de «volver a las cosas mismas»: aproximarnos a los fenómenos tal como se presentan, evitando imponer de entrada prejuicios e interpretaciones. ¿Cuál sería un movimiento semejante en una situación educativa?",
+
   options:[
-    "Verdadero",
-    "Falso"
+
+    "Tomás no participa porque es apático.",
+
+    "Tomás no participa porque seguramente no estudió.",
+
+    "Tomás no habló durante la actividad de hoy. Antes de explicar por qué, conviene observar cómo se presenta esa situación y qué significa para él.",
+
+    "Tomás tiene dificultades de participación y debemos corregirlas."
+
   ],
-  correct:1,
-  feedback:"Compartir una situación observable no implica que esa situación se dé del mismo modo para cada sujeto."
+
+  correct:2,
+
+  feedback:
+  "La tercera formulación intenta permanecer un poco más cerca del fenómeno antes de convertirlo en una explicación. No significa que las interpretaciones sean ilegítimas: procura no confundirlas con aquello que efectivamente observamos."
+
 },
 
+
+
+/* ---------------------------------------------------------
+   3. EXPERIENCIA Y SENTIDO
+   --------------------------------------------------------- */
+
 {
-  t:104,
+
+  t:199,
+
   type:"choice",
-  title:"Volver a las cosas mismas",
-  question:"Una profesora piensa: «Tomás no participa porque es apático». Si intentara hacer una pequeña epojé, ¿cuál sería el mejor primer movimiento?",
+
+  title:
+  "La experiencia y su sentido",
+
+  question:
+  "El video señaló que la fenomenología busca comprender cómo las personas experimentan el mundo y cómo dan sentido a aquello que viven. Pensando en educación: dos estudiantes reciben exactamente la misma devolución escrita. ¿Qué podemos afirmar?",
+
   options:[
-    "Confirmar si Tomás tiene un diagnóstico que explique su apatía.",
-    "Suspender provisoriamente la categoría «apático» y describir cómo se presenta su participación.",
-    "Preguntar a otros docentes si también lo consideran apático.",
-    "Buscar una técnica para aumentar la participación antes de observarlo."
+
+    "Como la devolución es la misma, la experiencia también lo es.",
+
+    "Uno de los dos necesariamente interpretó mal la devolución.",
+
+    "La misma situación puede adquirir sentidos diferentes para cada estudiante.",
+
+    "Sólo podemos estudiar la devolución objetivamente, no la experiencia."
+
   ],
-  correct:1,
-  feedback:"La suspensión no exige negar lo que sabemos. Consiste en poner provisoriamente entre paréntesis aquello que damos por supuesto para volver a mirar el fenómeno."
+
+  correct:2,
+
+  feedback:
+  "Que el acontecimiento observable sea el mismo no significa que sea vivido del mismo modo. Éste es precisamente uno de los motivos por los que la experiencia resulta filosófica y educativamente interesante."
+
 },
 
-{
-  t:145,
-  type:"reflection",
-  title:"Una etiqueta entre paréntesis",
-  question:"Pensá en una expresión escolar que parezca describir a un alumno pero que ya incluya una interpretación: «es vago», «no le interesa», «es brillante», «es conflictivo»… Escribí una y reformulala como descripción de algo observable.",
-  placeholder:"Ejemplo: «No le interesa» → «En las últimas tres clases no realizó las actividades propuestas; todavía no pregunté cómo vive esas tareas».",
-  min:12
-},
+
+
+/* ---------------------------------------------------------
+   4. INTENCIONALIDAD
+   --------------------------------------------------------- */
 
 {
-  t:180,
+
+  t:239,
+
   type:"choice",
-  title:"La actitud natural",
-  question:"¿Cuál de estas frases muestra mejor una situación en la que una interpretación ya aparece como si fuera simplemente «lo que hay»?",
-  options:[
-    "Lucía no entregó el trabajo en la fecha acordada.",
-    "Lucía es una alumna desinteresada.",
-    "Lucía pidió una prórroga de dos días.",
-    "Lucía permaneció en silencio durante la devolución."
-  ],
-  correct:1,
-  feedback:"«Desinteresada» ya organiza lo observado dentro de una interpretación. La mirada fenomenológica intenta advertir ese salto."
-},
 
-{
-  t:220,
-  type:"choice",
-  title:"Intencionalidad",
-  question:"Durante un examen oral, una alumna mira reiteradamente la puerta. Desde la noción de intencionalidad, ¿qué podemos afirmar sin adelantarnos demasiado?",
+  title:
+  "Intencionalidad",
+
+  question:
+  "Acabamos de escuchar una idea central: la conciencia siempre está dirigida hacia algo. Durante un examen oral, una alumna mira reiteradamente la puerta. ¿Qué permite afirmar la noción de intencionalidad sin adelantarnos demasiado?",
+
   options:[
-    "Que quiere irse.",
-    "Que evita mirar al profesor.",
+
+    "Que quiere abandonar el examen.",
+
+    "Que está evitando mirar al profesor.",
+
     "Que su conciencia está dirigida hacia algo, aunque todavía no sepamos qué sentido tiene para ella.",
-    "Que la conducta revela necesariamente ansiedad."
+
+    "Que está experimentando ansiedad."
+
   ],
+
   correct:2,
-  feedback:"La intencionalidad no permite adivinar motivos. Señala una estructura: la conciencia es siempre conciencia de algo."
+
+  feedback:
+  "La intencionalidad no es una técnica para descubrir motivos ocultos. Significa que la conciencia es siempre conciencia de algo: percibido, recordado, imaginado, esperado, temido o deseado."
+
 },
 
+
+
+/* ---------------------------------------------------------
+   5. EPOJÉ
+   --------------------------------------------------------- */
+
 {
-  t:252,
+
+  t:257,
+
   type:"classification",
-  title:"¿Descripción o interpretación?",
-  question:"Clasificá las dos frases. La distinción parece sencilla, pero metodológicamente importa.",
+
+  title:
+  "Suspender antes de concluir",
+
+  question:
+  "El video acaba de presentar la suspensión del juicio. Probemos ese gesto con dos formulaciones escolares. ¿Cuál describe y cuál ya interpreta?",
+
   items:[
+
     {
-      text:"«Durante la explicación miró el teléfono cuatro veces.»",
-      answer:"Descripción"
+
+      text:
+      "«Durante la explicación miró el teléfono cuatro veces.»",
+
+      answer:
+      "Descripción"
+
     },
+
     {
-      text:"«No respeta la clase.»",
-      answer:"Interpretación"
+
+      text:
+      "«No respeta la clase.»",
+
+      answer:
+      "Interpretación"
+
     }
+
   ],
-  feedback:"La primera formulación permanece más cerca de lo observable; la segunda atribuye un sentido. Esa interpretación puede ser razonable, pero no es idéntica al dato."
+
+  feedback:
+  "La primera formulación permanece más cerca de algo que podemos describir. La segunda atribuye un sentido a esa conducta. Esa interpretación puede llegar a ser razonable, pero requiere argumentos adicionales. La epojé evita que una inferencia se disfrace de dato."
+
 },
 
-{
-  t:280,
-  type:"choice",
-  title:"¿Fenomenología contra ciencia?",
-  question:"Verdadero o falso: atender a la experiencia vivida obliga a rechazar toda explicación científica.",
-  options:[
-    "Verdadero",
-    "Falso"
-  ],
-  correct:1,
-  feedback:"Descripción fenomenológica y explicación causal pueden responder preguntas diferentes. No hace falta convertir esa diferencia en una oposición absoluta."
-},
+
+
+/* ---------------------------------------------------------
+   6. ESENCIA
+   --------------------------------------------------------- */
 
 {
-  t:302,
+
+  t:270,
+
   type:"choice",
-  title:"Una pregunta educativa",
-  question:"¿Cuál de estas preguntas está formulada de un modo más propiamente fenomenológico?",
+
+  title:
+  "¿Qué significa buscar la esencia?",
+
+  question:
+  "El video señala ahora que la fenomenología busca estructuras esenciales más allá de los detalles particulares. ¿Cuál de estas opciones expresa mejor esa idea?",
+
   options:[
-    "¿Qué variable causa el miedo a rendir?",
-    "¿Qué porcentaje de alumnos siente ansiedad?",
-    "¿Cómo se vive la experiencia de ser evaluado y qué sentidos adquiere para quien la atraviesa?",
-    "¿Qué técnica reduce más rápido la ansiedad?"
+
+    "Encontrar la conducta que aparece con mayor frecuencia.",
+
+    "Determinar qué explicación causal se aplica a todos los casos.",
+
+    "Preguntarse qué estructura hace reconocible una experiencia como determinada clase de experiencia, pese a sus variaciones.",
+
+    "Eliminar las diferencias individuales para obtener un promedio."
+
   ],
+
   correct:2,
-  feedback:"La tercera pregunta se dirige al modo en que la experiencia es vivida y significada. Las demás pueden ser preguntas legítimas, pero corresponden a otros abordajes."
+
+  feedback:
+  "La búsqueda de la esencia no equivale a calcular un promedio ni a descubrir una causa común. Se pregunta por aquello que permanece estructuralmente reconocible a través de distintas variaciones de una experiencia."
+
 },
 
+
+
+/* ---------------------------------------------------------
+   7. CRÍTICAS Y CIENCIA
+   --------------------------------------------------------- */
+
 {
-  t:319,
+
+  t:303,
+
+  type:"choice",
+
+  title:
+  "Una crítica: ¿fenomenología contra ciencia?",
+
+  question:
+  "El video acaba de mencionar como críticas la subjetividad y la dificultad para producir conocimiento empírico y verificable. ¿Qué conclusión sería demasiado fuerte?",
+
+  options:[
+
+    "La fenomenología y una investigación experimental pueden formular preguntas diferentes.",
+
+    "La experiencia subjetiva presenta desafíos metodológicos.",
+
+    "Si estudiamos la experiencia vivida debemos rechazar todo conocimiento científico objetivo.",
+
+    "Conviene distinguir una descripción de la experiencia de una explicación causal."
+
+  ],
+
+  correct:2,
+
+  feedback:
+  "La oposición absoluta es innecesaria. Preguntar cómo se vive una situación y preguntar qué variables la explican causalmente no son la misma pregunta. Pueden requerir métodos distintos sin que uno deba abolir al otro."
+
+},
+
+
+
+/* ---------------------------------------------------------
+   8. APLICACIÓN EDUCATIVA
+   --------------------------------------------------------- */
+
+{
+
+  t:323,
+
   type:"reflection",
-  title:"Cambiar la pregunta",
-  question:"Elegí una pregunta educativa habitual y transformala para que interrogue la experiencia vivida. No hace falta responderla: sólo reformularla.",
-  placeholder:"Ejemplo: «¿Por qué abandona un estudiante?» → «¿Cómo se va configurando, para ese estudiante, la experiencia de dejar de asistir?»",
+
+  title:
+  "De la abstracción a la educación",
+
+  question:
+  "El video termina señalando que la fenomenología puede resultar abstracta y difícil de aplicar. Hagamos justamente la prueba contraria: elegí una pregunta educativa habitual y reformulala para que interrogue la experiencia vivida.",
+
+  placeholder:
+  "Ejemplo: «¿Por qué los alumnos abandonan?» → «¿Cómo se va configurando, para un estudiante, la experiencia de dejar de asistir a clases?»",
+
   min:12
+
 }
+
 
 ];
 
 
-let player = null;
-let timer = null;
-let current = null;
 
-const fired = new Set();
-const firstAttempts = {};
-const reflections = {};
-const classifications = {};
+/* =========================================================
+   ESTADO DE LA ACTIVIDAD
+   ========================================================= */
 
-let correctFirst = 0;
-let closedQuestions = 0;
+let player =
+null;
 
 
-const overlay = document.getElementById("overlay");
-const body = document.getElementById("body");
-const feedback = document.getElementById("feedback");
-const continueButton = document.getElementById("continue");
-const retryButton = document.getElementById("retry");
-const checkButton = document.getElementById("check");
+let timer =
+null;
 
 
-interactions.forEach((item,index)=>{
-  const step = document.createElement("div");
-  step.className = "step";
-  step.id = "step-" + index;
-  document.getElementById("timeline").appendChild(step);
-});
+let current =
+null;
 
 
-function formatTime(seconds){
-  const minutes = Math.floor(seconds/60);
-  const secs = String(seconds%60).padStart(2,"0");
-  return minutes + ":" + secs;
+const fired =
+new Set();
+
+
+const firstAttempts =
+{};
+
+
+const reflections =
+{};
+
+
+const classifications =
+{};
+
+
+let correctFirst =
+0;
+
+
+let closedQuestions =
+0;
+
+
+
+/* =========================================================
+   ELEMENTOS DEL DOM
+   ========================================================= */
+
+const overlay =
+document.getElementById(
+  "overlay"
+);
+
+
+const body =
+document.getElementById(
+  "body"
+);
+
+
+const feedback =
+document.getElementById(
+  "feedback"
+);
+
+
+const continueButton =
+document.getElementById(
+  "continue"
+);
+
+
+const retryButton =
+document.getElementById(
+  "retry"
+);
+
+
+const checkButton =
+document.getElementById(
+  "check"
+);
+
+
+
+/* =========================================================
+   CREAR BARRA DE PROGRESO
+   ========================================================= */
+
+interactions.forEach(
+  (item,index)=>{
+
+    const step =
+    document.createElement(
+      "div"
+    );
+
+
+    step.className =
+    "step";
+
+
+    step.id =
+    "step-" + index;
+
+
+    document
+    .getElementById(
+      "timeline"
+    )
+    .appendChild(
+      step
+    );
+
+  }
+);
+
+
+
+/* =========================================================
+   FUNCIONES AUXILIARES
+   ========================================================= */
+
+function formatTime(
+  seconds
+){
+
+  const minutes =
+  Math.floor(
+    seconds / 60
+  );
+
+
+  const secs =
+  String(
+    seconds % 60
+  )
+  .padStart(
+    2,
+    "0"
+  );
+
+
+  return(
+    minutes +
+    ":" +
+    secs
+  );
+
 }
+
 
 
 function updateProgress(){
-  const completed = document.querySelectorAll(".step.done").length;
-  document.getElementById("progress").textContent =
-    completed + " de " + interactions.length + " pausas completadas";
+
+  const completed =
+  document
+  .querySelectorAll(
+    ".step.done"
+  )
+  .length;
+
+
+  document
+  .getElementById(
+    "progress"
+  )
+  .textContent =
+
+  completed +
+  " de " +
+  interactions.length +
+  " pausas completadas";
+
 }
 
 
-function markDone(index){
-  document.getElementById("step-"+index).classList.add("done");
+
+function markDone(
+  index
+){
+
+  document
+  .getElementById(
+    "step-" + index
+  )
+  .classList
+  .add(
+    "done"
+  );
+
+
   updateProgress();
+
 }
+
 
 
 function resetControls(){
-  continueButton.disabled = true;
-  retryButton.style.display = "none";
-  checkButton.style.display = "none";
-  feedback.className = "feedback";
-  feedback.innerHTML = "";
-}
-
-
-function showInteraction(index){
-
-  current = index;
-
-  const item = interactions[index];
-
-  if(player){
-    player.pauseVideo();
-  }
-
-  document.getElementById("counter").textContent =
-    "Pausa " + (index+1) + " de " + interactions.length;
-
-  document.getElementById("time").textContent =
-    formatTime(item.t);
-
-  document.getElementById("title").textContent =
-    item.title;
-
-  document.getElementById("question").textContent =
-    item.question;
-
-  body.innerHTML = "";
-
-  resetControls();
-
-  if(item.type === "choice"){
-    renderChoice(item,index);
-  }
-
-  if(item.type === "reflection"){
-    renderReflection(item,index);
-  }
-
-  if(item.type === "classification"){
-    renderClassification(item,index);
-  }
-
-  overlay.classList.add("show");
-  document.body.style.overflow = "hidden";
-}
-
-
-function renderChoice(item,index){
-
-  item.options.forEach((text,optionIndex)=>{
-
-    const button = document.createElement("button");
-
-    button.className = "option";
-    button.textContent = text;
-
-    button.addEventListener("click",()=>{
-      answerChoice(index,optionIndex);
-    });
-
-    body.appendChild(button);
-
-  });
-
-}
-
-
-function answerChoice(index,chosen){
-
-  const item = interactions[index];
-
-  const buttons = [...body.querySelectorAll(".option")];
-
-  buttons.forEach(button=>{
-    button.disabled = true;
-  });
-
-  if(firstAttempts[index] === undefined){
-
-    firstAttempts[index] = chosen;
-
-    closedQuestions++;
-
-    if(chosen === item.correct){
-      correctFirst++;
-    }
-
-  }
-
-  if(chosen === item.correct){
-
-    buttons[chosen].classList.add("correct");
-
-    feedback.innerHTML =
-      "<strong>Bien.</strong> " + item.feedback;
-
-  } else {
-
-    buttons[chosen].classList.add("wrong");
-    buttons[item.correct].classList.add("correct");
-
-    feedback.innerHTML =
-      "<strong>Revisemos.</strong> " + item.feedback;
-
-    retryButton.style.display = "inline-block";
-
-  }
-
-  feedback.classList.add("show");
-  continueButton.disabled = false;
-
-  markDone(index);
-}
-
-
-retryButton.addEventListener("click",()=>{
-
-  const item = interactions[current];
-
-  if(item.type !== "choice"){
-    return;
-  }
-
-  [...body.querySelectorAll(".option")].forEach(button=>{
-    button.disabled = false;
-    button.classList.remove("correct","wrong");
-  });
-
-  feedback.className = "feedback";
-  feedback.innerHTML = "";
-
-  continueButton.disabled = true;
-  retryButton.style.display = "none";
-
-});
-
-
-function renderReflection(item,index){
-
-  const textarea = document.createElement("textarea");
-
-  textarea.placeholder = item.placeholder;
-  textarea.value = reflections[index] || "";
-
-  const hint = document.createElement("div");
-
-  hint.className = "hint";
-  hint.textContent =
-    "Escribí al menos " + item.min + " caracteres para continuar.";
-
-  textarea.addEventListener("input",()=>{
-
-    reflections[index] = textarea.value.trim();
-
-    continueButton.disabled =
-      reflections[index].length < item.min;
-
-    if(!continueButton.disabled){
-      markDone(index);
-    }
-
-  });
-
-  body.appendChild(textarea);
-  body.appendChild(hint);
 
   continueButton.disabled =
-    (reflections[index] || "").length < item.min;
-
-  if(!continueButton.disabled){
-    markDone(index);
-  }
-}
+  true;
 
 
-function renderClassification(item,index){
-
-  if(!classifications[index]){
-    classifications[index] = {};
-  }
-
-  const wrapper = document.createElement("div");
-
-  wrapper.className = "classify";
-
-  item.items.forEach((statement,rowIndex)=>{
-
-    const row = document.createElement("div");
-
-    row.className = "classify-row";
-    row.dataset.row = rowIndex;
-
-    const label = document.createElement("div");
-
-    label.textContent = statement.text;
-
-    const controls = document.createElement("div");
-
-    controls.className = "class-buttons";
-
-    ["Descripción","Interpretación"].forEach(value=>{
-
-      const button = document.createElement("button");
-
-      button.className = "class-btn";
-      button.textContent = value;
-
-      if(classifications[index][rowIndex] === value){
-        button.classList.add("selected");
-      }
-
-      button.addEventListener("click",()=>{
-
-        classifications[index][rowIndex] = value;
-
-        [...controls.children].forEach(button=>{
-          button.classList.remove("selected");
-        });
-
-        button.classList.add("selected");
-
-        const complete =
-          Object.keys(classifications[index]).length ===
-          item.items.length;
-
-        checkButton.style.display =
-          complete ? "inline-block" : "none";
-
-      });
-
-      controls.appendChild(button);
-
-    });
-
-    row.appendChild(label);
-    row.appendChild(controls);
-
-    wrapper.appendChild(row);
-
-  });
-
-  body.appendChild(wrapper);
-}
+  retryButton.style.display =
+  "none";
 
 
-checkButton.addEventListener("click",()=>{
-
-  const item = interactions[current];
-
-  if(item.type !== "classification"){
-    return;
-  }
-
-  let allCorrect = true;
-
-  const rows =
-    [...document.querySelectorAll(".classify-row")];
-
-  rows.forEach((row,index)=>{
-
-    const chosen =
-      classifications[current][index];
-
-    const correct =
-      item.items[index].answer;
-
-    row.classList.remove("correct","wrong");
-
-    if(chosen === correct){
-
-      row.classList.add("correct");
-
-    } else {
-
-      row.classList.add("wrong");
-      allCorrect = false;
-
-    }
-
-  });
+  checkButton.style.display =
+  "none";
 
 
-  if(firstAttempts[current] === undefined){
-
-    firstAttempts[current] = allCorrect;
-
-    closedQuestions++;
-
-    if(allCorrect){
-      correctFirst++;
-    }
-
-  }
+  feedback.className =
+  "feedback";
 
 
   feedback.innerHTML =
-    (allCorrect
-      ? "<strong>Bien.</strong> "
-      : "<strong>Revisemos.</strong> ")
-    + item.feedback;
+  "";
 
-  feedback.classList.add("show");
-
-  continueButton.disabled = false;
-
-  markDone(current);
-});
+}
 
 
-continueButton.addEventListener("click",()=>{
 
-  overlay.classList.remove("show");
+/* =========================================================
+   MOSTRAR UNA INTERACCIÓN
+   ========================================================= */
 
-  document.body.style.overflow = "";
+function showInteraction(
+  index
+){
 
-  if(player){
+  current =
+  index;
 
-    player.seekTo(
-      interactions[current].t + 1,
-      true
-    );
 
-    player.playVideo();
+  const item =
+  interactions[index];
+
+
+  if(
+    player
+  ){
+
+    player.pauseVideo();
 
   }
 
-});
 
+  document
+  .getElementById(
+    "counter"
+  )
+  .textContent =
+
+  "Pausa " +
+  (index + 1) +
+  " de " +
+  interactions.length;
+
+
+  document
+  .getElementById(
+    "time"
+  )
+  .textContent =
+
+  formatTime(
+    item.t
+  );
+
+
+  document
+  .getElementById(
+    "title"
+  )
+  .textContent =
+
+  item.title;
+
+
+  document
+  .getElementById(
+    "question"
+  )
+  .textContent =
+
+  item.question;
+
+
+  body.innerHTML =
+  "";
+
+
+  resetControls();
+
+
+  if(
+    item.type ===
+    "choice"
+  ){
+
+    renderChoice(
+      item,
+      index
+    );
+
+  }
+
+
+  if(
+    item.type ===
+    "reflection"
+  ){
+
+    renderReflection(
+      item,
+      index
+    );
+
+  }
+
+
+  if(
+    item.type ===
+    "classification"
+  ){
+
+    renderClassification(
+      item,
+      index
+    );
+
+  }
+
+
+  overlay
+  .classList
+  .add(
+    "show"
+  );
+
+
+  document
+  .body
+  .style
+  .overflow =
+  "hidden";
+
+}
+
+
+
+/* =========================================================
+   OPCIÓN MÚLTIPLE
+   ========================================================= */
+
+function renderChoice(
+  item,
+  index
+){
+
+  item
+  .options
+  .forEach(
+    (
+      text,
+      optionIndex
+    )=>{
+
+      const button =
+      document
+      .createElement(
+        "button"
+      );
+
+
+      button.className =
+      "option";
+
+
+      button.textContent =
+      text;
+
+
+      button
+      .addEventListener(
+        "click",
+        ()=>{
+
+          answerChoice(
+            index,
+            optionIndex
+          );
+
+        }
+      );
+
+
+      body
+      .appendChild(
+        button
+      );
+
+    }
+  );
+
+}
+
+
+
+/* =========================================================
+   RESPONDER OPCIÓN MÚLTIPLE
+   ========================================================= */
+
+function answerChoice(
+  index,
+  chosen
+){
+
+  const item =
+  interactions[index];
+
+
+  const buttons =
+  [
+    ...body
+    .querySelectorAll(
+      ".option"
+    )
+  ];
+
+
+  buttons
+  .forEach(
+    button=>{
+
+      button.disabled =
+      true;
+
+    }
+  );
+
+
+  if(
+    firstAttempts[index] ===
+    undefined
+  ){
+
+    firstAttempts[index] =
+    chosen;
+
+
+    closedQuestions++;
+
+
+    if(
+      chosen ===
+      item.correct
+    ){
+
+      correctFirst++;
+
+    }
+
+  }
+
+
+  if(
+    chosen ===
+    item.correct
+  ){
+
+    buttons[
+      chosen
+    ]
+    .classList
+    .add(
+      "correct"
+    );
+
+
+    feedback.innerHTML =
+
+    "<strong>Bien.</strong> " +
+    item.feedback;
+
+  }
+
+  else{
+
+    buttons[
+      chosen
+    ]
+    .classList
+    .add(
+      "wrong"
+    );
+
+
+    buttons[
+      item.correct
+    ]
+    .classList
+    .add(
+      "correct"
+    );
+
+
+    feedback.innerHTML =
+
+    "<strong>Revisemos.</strong> " +
+    item.feedback;
+
+
+    retryButton
+    .style
+    .display =
+    "inline-block";
+
+  }
+
+
+  feedback
+  .classList
+  .add(
+    "show"
+  );
+
+
+  continueButton.disabled =
+  false;
+
+
+  markDone(
+    index
+  );
+
+}
+
+
+
+/* =========================================================
+   REINTENTAR
+   ========================================================= */
+
+retryButton
+.addEventListener(
+  "click",
+  ()=>{
+
+    const item =
+    interactions[current];
+
+
+    if(
+      item.type !==
+      "choice"
+    ){
+
+      return;
+
+    }
+
+
+    [
+      ...body
+      .querySelectorAll(
+        ".option"
+      )
+    ]
+    .forEach(
+      button=>{
+
+        button.disabled =
+        false;
+
+
+        button
+        .classList
+        .remove(
+          "correct",
+          "wrong"
+        );
+
+      }
+    );
+
+
+    feedback.className =
+    "feedback";
+
+
+    feedback.innerHTML =
+    "";
+
+
+    continueButton.disabled =
+    true;
+
+
+    retryButton
+    .style
+    .display =
+    "none";
+
+  }
+);
+
+
+
+/* =========================================================
+   REFLEXIÓN ESCRITA
+   ========================================================= */
+
+function renderReflection(
+  item,
+  index
+){
+
+  const textarea =
+  document
+  .createElement(
+    "textarea"
+  );
+
+
+  textarea.placeholder =
+  item.placeholder;
+
+
+  textarea.value =
+  reflections[index] ||
+  "";
+
+
+  const hint =
+  document
+  .createElement(
+    "div"
+  );
+
+
+  hint.className =
+  "hint";
+
+
+  hint.textContent =
+
+  "Escribí al menos " +
+  item.min +
+  " caracteres para continuar.";
+
+
+  textarea
+  .addEventListener(
+    "input",
+    ()=>{
+
+      reflections[index] =
+
+      textarea
+      .value
+      .trim();
+
+
+      continueButton.disabled =
+
+      reflections[index]
+      .length <
+      item.min;
+
+
+      if(
+        !continueButton.disabled
+      ){
+
+        markDone(
+          index
+        );
+
+      }
+
+    }
+  );
+
+
+  body
+  .appendChild(
+    textarea
+  );
+
+
+  body
+  .appendChild(
+    hint
+  );
+
+
+  continueButton.disabled =
+
+  (
+    reflections[index] ||
+    ""
+  )
+  .length <
+  item.min;
+
+
+  if(
+    !continueButton.disabled
+  ){
+
+    markDone(
+      index
+    );
+
+  }
+
+}
+
+
+
+/* =========================================================
+   CLASIFICACIÓN
+   ========================================================= */
+
+function renderClassification(
+  item,
+  index
+){
+
+  if(
+    !classifications[index]
+  ){
+
+    classifications[index] =
+    {};
+
+  }
+
+
+  const wrapper =
+  document
+  .createElement(
+    "div"
+  );
+
+
+  wrapper.className =
+  "classify";
+
+
+  item
+  .items
+  .forEach(
+    (
+      statement,
+      rowIndex
+    )=>{
+
+      const row =
+      document
+      .createElement(
+        "div"
+      );
+
+
+      row.className =
+      "classify-row";
+
+
+      row.dataset.row =
+      rowIndex;
+
+
+      const label =
+      document
+      .createElement(
+        "div"
+      );
+
+
+      label.textContent =
+      statement.text;
+
+
+      const controls =
+      document
+      .createElement(
+        "div"
+      );
+
+
+      controls.className =
+      "class-buttons";
+
+
+      [
+        "Descripción",
+        "Interpretación"
+      ]
+      .forEach(
+        value=>{
+
+          const button =
+          document
+          .createElement(
+            "button"
+          );
+
+
+          button.className =
+          "class-btn";
+
+
+          button.textContent =
+          value;
+
+
+          if(
+            classifications[index][rowIndex] ===
+            value
+          ){
+
+            button
+            .classList
+            .add(
+              "selected"
+            );
+
+          }
+
+
+          button
+          .addEventListener(
+            "click",
+            ()=>{
+
+              classifications[index][rowIndex] =
+              value;
+
+
+              [
+                ...controls.children
+              ]
+              .forEach(
+                button=>{
+
+                  button
+                  .classList
+                  .remove(
+                    "selected"
+                  );
+
+                }
+              );
+
+
+              button
+              .classList
+              .add(
+                "selected"
+              );
+
+
+              const complete =
+
+              Object
+              .keys(
+                classifications[index]
+              )
+              .length ===
+              item.items.length;
+
+
+              checkButton
+              .style
+              .display =
+
+              complete
+              ?
+              "inline-block"
+              :
+              "none";
+
+            }
+          );
+
+
+          controls
+          .appendChild(
+            button
+          );
+
+        }
+      );
+
+
+      row
+      .appendChild(
+        label
+      );
+
+
+      row
+      .appendChild(
+        controls
+      );
+
+
+      wrapper
+      .appendChild(
+        row
+      );
+
+    }
+  );
+
+
+  body
+  .appendChild(
+    wrapper
+  );
+
+}
+
+
+
+/* =========================================================
+   COMPROBAR CLASIFICACIÓN
+   ========================================================= */
+
+checkButton
+.addEventListener(
+  "click",
+  ()=>{
+
+    const item =
+    interactions[current];
+
+
+    if(
+      item.type !==
+      "classification"
+    ){
+
+      return;
+
+    }
+
+
+    let allCorrect =
+    true;
+
+
+    const rows =
+    [
+      ...document
+      .querySelectorAll(
+        ".classify-row"
+      )
+    ];
+
+
+    rows
+    .forEach(
+      (
+        row,
+        index
+      )=>{
+
+        const chosen =
+
+        classifications[current][index];
+
+
+        const correct =
+
+        item.items[index].answer;
+
+
+        row
+        .classList
+        .remove(
+          "correct",
+          "wrong"
+        );
+
+
+        if(
+          chosen ===
+          correct
+        ){
+
+          row
+          .classList
+          .add(
+            "correct"
+          );
+
+        }
+
+        else{
+
+          row
+          .classList
+          .add(
+            "wrong"
+          );
+
+
+          allCorrect =
+          false;
+
+        }
+
+      }
+    );
+
+
+    if(
+      firstAttempts[current] ===
+      undefined
+    ){
+
+      firstAttempts[current] =
+      allCorrect;
+
+
+      closedQuestions++;
+
+
+      if(
+        allCorrect
+      ){
+
+        correctFirst++;
+
+      }
+
+    }
+
+
+    feedback.innerHTML =
+
+    (
+      allCorrect
+      ?
+      "<strong>Bien.</strong> "
+      :
+      "<strong>Revisemos.</strong> "
+    )
+
+    +
+
+    item.feedback;
+
+
+    feedback
+    .classList
+    .add(
+      "show"
+    );
+
+
+    continueButton.disabled =
+    false;
+
+
+    markDone(
+      current
+    );
+
+  }
+);
+
+
+
+/* =========================================================
+   CONTINUAR VIDEO
+   ========================================================= */
+
+continueButton
+.addEventListener(
+  "click",
+  ()=>{
+
+    overlay
+    .classList
+    .remove(
+      "show"
+    );
+
+
+    document
+    .body
+    .style
+    .overflow =
+    "";
+
+
+    if(
+      player
+    ){
+
+      player.seekTo(
+        interactions[current].t + 1,
+        true
+      );
+
+
+      player.playVideo();
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   CONTROLAR TIEMPO DEL VIDEO
+   ========================================================= */
 
 function checkVideoTime(){
 
   if(
-    !player ||
-    typeof player.getCurrentTime !== "function"
+    !player
+    ||
+    typeof player.getCurrentTime !==
+    "function"
   ){
+
     return;
+
   }
 
-  const now = player.getCurrentTime();
 
-  for(let i=0;i<interactions.length;i++){
+  const now =
+  player
+  .getCurrentTime();
 
-    const item = interactions[i];
+
+  for(
+    let i=0;
+    i<interactions.length;
+    i++
+  ){
+
+    const item =
+    interactions[i];
+
 
     if(
-      !fired.has(i) &&
-      now >= item.t &&
-      now < item.t + 1.8
+
+      !fired.has(i)
+
+      &&
+
+      now >=
+      item.t
+
+      &&
+
+      now <
+      item.t + 1.8
+
     ){
 
-      fired.add(i);
+      fired.add(
+        i
+      );
 
-      showInteraction(i);
+
+      showInteraction(
+        i
+      );
+
 
       break;
+
     }
 
   }
@@ -1177,238 +2867,558 @@ function checkVideoTime(){
 }
 
 
-function onPlayerStateChange(event){
 
-  if(event.data === YT.PlayerState.PLAYING){
+/* =========================================================
+   ESTADO DEL REPRODUCTOR
+   ========================================================= */
 
-    clearInterval(timer);
+function onPlayerStateChange(
+  event
+){
+
+  if(
+    event.data ===
+    YT.PlayerState.PLAYING
+  ){
+
+    clearInterval(
+      timer
+    );
+
 
     timer =
-      setInterval(
-        checkVideoTime,
-        180
-      );
-
-  } else {
-
-    clearInterval(timer);
+    setInterval(
+      checkVideoTime,
+      180
+    );
 
   }
 
-  if(event.data === YT.PlayerState.ENDED){
+  else{
+
+    clearInterval(
+      timer
+    );
+
+  }
+
+
+  if(
+    event.data ===
+    YT.PlayerState.ENDED
+  ){
+
     showFinal();
+
   }
 
 }
 
+
+
+/* =========================================================
+   MOSTRAR CIERRE
+   ========================================================= */
 
 function showFinal(){
 
-  document.getElementById("score").textContent =
-    correctFirst + "/" + closedQuestions;
+  document
+  .getElementById(
+    "score"
+  )
+  .textContent =
+
+  correctFirst +
+  "/" +
+  closedQuestions;
+
 
   const bitacora =
-    document.getElementById("bitacora");
+  document
+  .getElementById(
+    "bitacora"
+  );
 
-  bitacora.innerHTML = "";
 
-  interactions.forEach((item,index)=>{
+  bitacora.innerHTML =
+  "";
 
-    if(item.type !== "reflection"){
-      return;
-    }
 
-    const box =
-      document.createElement("div");
+  interactions
+  .forEach(
+    (
+      item,
+      index
+    )=>{
 
-    box.className =
+      if(
+        item.type !==
+        "reflection"
+      ){
+
+        return;
+
+      }
+
+
+      const box =
+      document
+      .createElement(
+        "div"
+      );
+
+
+      box.className =
       "bitacora-item";
 
-    const title =
-      document.createElement("strong");
 
-    title.textContent =
+      const title =
+      document
+      .createElement(
+        "strong"
+      );
+
+
+      title.textContent =
       item.title;
 
-    const answer =
-      document.createElement("div");
 
-    answer.textContent =
-      reflections[index] ||
+      const answer =
+      document
+      .createElement(
+        "div"
+      );
+
+
+      answer.textContent =
+
+      reflections[index]
+
+      ||
+
       "No escribiste una respuesta.";
 
-    box.appendChild(title);
-    box.appendChild(answer);
 
-    bitacora.appendChild(box);
+      box
+      .appendChild(
+        title
+      );
 
-  });
+
+      box
+      .appendChild(
+        answer
+      );
+
+
+      bitacora
+      .appendChild(
+        box
+      );
+
+    }
+  );
+
 
   const final =
-    document.getElementById("final");
+  document
+  .getElementById(
+    "final"
+  );
 
-  final.classList.add("show");
 
-  final.scrollIntoView({
-    behavior:"smooth",
-    block:"start"
+  final
+  .classList
+  .add(
+    "show"
+  );
+
+
+  final
+  .scrollIntoView({
+
+    behavior:
+    "smooth",
+
+    block:
+    "start"
+
   });
 
 }
 
 
-document.getElementById("copy").addEventListener("click",async()=>{
 
-  const parts = [];
+/* =========================================================
+   COPIAR BITÁCORA
+   ========================================================= */
 
-  interactions.forEach((item,index)=>{
+document
+.getElementById(
+  "copy"
+)
+.addEventListener(
+  "click",
+  async()=>{
 
-    if(item.type === "reflection"){
+    const parts =
+    [];
+
+
+    interactions
+    .forEach(
+      (
+        item,
+        index
+      )=>{
+
+        if(
+          item.type ===
+          "reflection"
+        ){
+
+          parts.push(
+
+            item.title
+
+            +
+
+            "\n"
+
+            +
+
+            (
+              reflections[index]
+
+              ||
+
+              "(sin respuesta)"
+            )
+
+          );
+
+        }
+
+      }
+    );
+
+
+    const finalText =
+
+    document
+    .getElementById(
+      "finalText"
+    )
+    .value
+    .trim();
+
+
+    if(
+      finalText
+    ){
 
       parts.push(
-        item.title +
-        "\n" +
-        (reflections[index] || "(sin respuesta)")
+
+        "Aplicación final"
+
+        +
+
+        "\n"
+
+        +
+
+        finalText
+
       );
 
     }
 
-  });
 
-  const finalText =
-    document
-    .getElementById("finalText")
-    .value
-    .trim();
+    const text =
 
-  if(finalText){
-
-    parts.push(
-      "Aplicación final\n" +
-      finalText
+    parts.join(
+      "\n\n"
     );
 
-  }
 
-  const text =
-    parts.join("\n\n");
+    try{
 
-  try{
+      await navigator
+      .clipboard
+      .writeText(
+        text
+      );
 
-    await navigator.clipboard.writeText(text);
 
-    const button =
-      document.getElementById("copy");
+      const button =
+      document
+      .getElementById(
+        "copy"
+      );
 
-    button.textContent =
+
+      button.textContent =
       "Copiado";
 
-    setTimeout(()=>{
-      button.textContent =
-        "Copiar mi bitácora";
-    },1500);
 
-  } catch(error){
+      setTimeout(
+        ()=>{
 
-    alert(
-      "No pude copiar automáticamente. Podés seleccionar y copiar el texto manualmente."
+          button.textContent =
+          "Copiar mi bitácora";
+
+        },
+        1500
+      );
+
+    }
+
+    catch(
+      error
+    ){
+
+      alert(
+        "No pude copiar automáticamente. Podés seleccionar y copiar el texto manualmente."
+      );
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   REINICIAR
+   ========================================================= */
+
+document
+.getElementById(
+  "restart"
+)
+.addEventListener(
+  "click",
+  ()=>{
+
+    fired.clear();
+
+
+    Object
+    .keys(
+      firstAttempts
+    )
+    .forEach(
+      key=>{
+
+        delete
+        firstAttempts[key];
+
+      }
     );
 
+
+    Object
+    .keys(
+      reflections
+    )
+    .forEach(
+      key=>{
+
+        delete
+        reflections[key];
+
+      }
+    );
+
+
+    Object
+    .keys(
+      classifications
+    )
+    .forEach(
+      key=>{
+
+        delete
+        classifications[key];
+
+      }
+    );
+
+
+    correctFirst =
+    0;
+
+
+    closedQuestions =
+    0;
+
+
+    document
+    .querySelectorAll(
+      ".step"
+    )
+    .forEach(
+      step=>{
+
+        step
+        .classList
+        .remove(
+          "done"
+        );
+
+      }
+    );
+
+
+    updateProgress();
+
+
+    document
+    .getElementById(
+      "final"
+    )
+    .classList
+    .remove(
+      "show"
+    );
+
+
+    document
+    .getElementById(
+      "finalText"
+    )
+    .value =
+    "";
+
+
+    if(
+      player
+    ){
+
+      player.seekTo(
+        0,
+        true
+      );
+
+
+      player.playVideo();
+
+    }
+
+
+    window.scrollTo({
+
+      top:0,
+
+      behavior:
+      "smooth"
+
+    });
+
   }
+);
 
-});
 
 
-document.getElementById("restart").addEventListener("click",()=>{
-
-  fired.clear();
-
-  Object.keys(firstAttempts).forEach(key=>{
-    delete firstAttempts[key];
-  });
-
-  Object.keys(reflections).forEach(key=>{
-    delete reflections[key];
-  });
-
-  Object.keys(classifications).forEach(key=>{
-    delete classifications[key];
-  });
-
-  correctFirst = 0;
-  closedQuestions = 0;
-
-  document.querySelectorAll(".step").forEach(step=>{
-    step.classList.remove("done");
-  });
-
-  updateProgress();
-
-  document.getElementById("final").classList.remove("show");
-
-  document.getElementById("finalText").value = "";
-
-  if(player){
-
-    player.seekTo(0,true);
-    player.playVideo();
-
-  }
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-});
-
+/* =========================================================
+   CREAR REPRODUCTOR DE YOUTUBE
+   ========================================================= */
 
 function onYouTubeIframeAPIReady(){
 
   const vars = {
+
     rel:0,
+
     modestbranding:1,
+
     playsinline:1,
+
     enablejsapi:1
+
   };
 
+
   if(
-    location.protocol === "https:" ||
-    location.protocol === "http:"
+
+    location.protocol ===
+    "https:"
+
+    ||
+
+    location.protocol ===
+    "http:"
+
   ){
-    vars.origin = location.origin;
+
+    vars.origin =
+    location.origin;
+
   }
 
+
   player =
-    new YT.Player(
-      "player",
-      {
-        videoId:VIDEO_ID,
+  new YT.Player(
 
-        playerVars:vars,
+    "player",
 
-        events:{
-          onStateChange:onPlayerStateChange
-        }
+    {
+
+      videoId:
+      VIDEO_ID,
+
+
+      playerVars:
+      vars,
+
+
+      events:{
+
+        onStateChange:
+        onPlayerStateChange
+
       }
-    );
+
+    }
+
+  );
 
 }
 
 
-window.addEventListener("load",()=>{
 
-  const script =
-    document.createElement("script");
+/* =========================================================
+   CARGAR API DE YOUTUBE
+   ========================================================= */
 
-  script.src =
+window
+.addEventListener(
+  "load",
+  ()=>{
+
+    const script =
+    document
+    .createElement(
+      "script"
+    );
+
+
+    script.src =
     "https://www.youtube.com/iframe_api";
 
-  document.head.appendChild(script);
 
-});
+    document
+    .head
+    .appendChild(
+      script
+    );
+
+  }
+);
 
 </script>
 
+
 </body>
+
 </html>
