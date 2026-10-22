@@ -96,9 +96,7 @@ h1{
 }
 
 
-/* ======================================================
-   VIDEO
-   ====================================================== */
+/* VIDEO */
 
 .player-shell{
   position:relative;
@@ -118,9 +116,7 @@ h1{
 }
 
 
-/* ======================================================
-   BARRA DE PROGRESO
-   ====================================================== */
+/* PROGRESO */
 
 .timeline{
   display:flex;
@@ -147,9 +143,7 @@ h1{
 }
 
 
-/* ======================================================
-   CONSIGNA
-   ====================================================== */
+/* CONSIGNA */
 
 .note{
   margin-top:20px;
@@ -160,18 +154,19 @@ h1{
 }
 
 
-/* ======================================================
-   CAPA DE INTERACCIONES
-   ====================================================== */
+/* INTERACCIONES */
 
 .overlay{
   position:fixed;
   inset:0;
   z-index:9999;
+
   display:none;
   align-items:center;
   justify-content:center;
+
   padding:24px;
+
   background:rgba(20,18,16,.84);
 }
 
@@ -181,10 +176,15 @@ h1{
 
 .card{
   width:min(1060px,96vw);
+
   min-height:min(610px,88vh);
+
   padding:clamp(24px,3vw,40px);
+
   background:var(--paper);
+
   border-radius:22px;
+
   box-shadow:0 25px 80px rgba(0,0,0,.42);
 
   display:flex;
@@ -198,9 +198,13 @@ h1{
   gap:20px;
 
   color:var(--muted);
+
   font-size:.77rem;
+
   text-transform:uppercase;
+
   letter-spacing:.1em;
+
   font-weight:700;
 }
 
@@ -216,14 +220,15 @@ h1{
 }
 
 
-/* ======================================================
-   TARJETAS EXPLICATIVAS
-   ====================================================== */
+/* TARJETAS EXPLICATIVAS */
 
 .explanation{
   padding:18px 20px;
+
   background:var(--soft);
+
   border-radius:14px;
+
   max-width:940px;
 }
 
@@ -237,9 +242,13 @@ h1{
 
 .think{
   margin-top:16px;
+
   padding:14px 16px;
+
   border-left:4px solid var(--accent2);
+
   background:#fff;
+
   border-radius:0 12px 12px 0;
 }
 
@@ -249,26 +258,27 @@ h1{
 }
 
 
-/* ======================================================
-   OPCIONES
-   ====================================================== */
+/* OPCIONES */
 
 .option{
   display:block;
+
   width:100%;
+
   text-align:left;
 
   margin:8px 0;
+
   padding:12px 15px;
 
   background:#fff;
 
-  border:
-    1px solid var(--line);
+  border:1px solid var(--line);
 
   border-radius:12px;
 
   color:var(--ink);
+
   font:inherit;
 
   cursor:pointer;
@@ -292,15 +302,17 @@ h1{
 }
 
 
-/* ======================================================
-   FEEDBACK
-   ====================================================== */
+/* FEEDBACK */
 
 .feedback{
   display:none;
+
   margin-top:14px;
+
   padding:12px 14px;
+
   background:var(--soft);
+
   border-radius:12px;
 }
 
@@ -309,14 +321,15 @@ h1{
 }
 
 
-/* ======================================================
-   BOTONES
-   ====================================================== */
+/* BOTONES */
 
 .actions{
   display:flex;
+
   gap:10px;
+
   flex-wrap:wrap;
+
   margin-top:18px;
 }
 
@@ -337,6 +350,7 @@ a.action{
   font-weight:700;
 
   font-family:inherit;
+
   font-size:.95rem;
 
   text-decoration:none;
@@ -347,7 +361,9 @@ a.action{
 button.secondary,
 a.secondary{
   background:transparent;
+
   color:var(--ink);
+
   border:1px solid var(--line);
 }
 
@@ -357,19 +373,17 @@ button:disabled{
 }
 
 
-/* ======================================================
-   CIERRE
-   ====================================================== */
+/* CIERRE */
 
 .final,
 .resources{
   margin-top:24px;
+
   padding:24px;
 
   background:var(--paper);
 
-  border:
-    1px solid var(--line);
+  border:1px solid var(--line);
 
   border-radius:18px;
 }
@@ -384,7 +398,9 @@ button:disabled{
 
 .score{
   display:inline-flex;
+
   align-items:baseline;
+
   gap:8px;
 
   margin:5px 0 15px;
@@ -397,22 +413,21 @@ button:disabled{
 }
 
 .score strong{
-  font:
-    600 2rem
-    Georgia,
-    serif;
+  font:600 2rem Georgia,serif;
 }
 
 
-/* ======================================================
-   PREGUNTAS FINALES
-   ====================================================== */
+/* PREGUNTAS FINALES */
 
 .final-question{
   margin:12px 0;
+
   padding:14px 16px;
+
   background:#fff;
+
   border:1px solid var(--line);
+
   border-radius:12px;
 }
 
@@ -421,13 +436,13 @@ button:disabled{
 }
 
 
-/* ======================================================
-   ENLACES
-   ====================================================== */
+/* RECURSOS */
 
 .resource-grid{
   display:grid;
+
   grid-template-columns:repeat(3,1fr);
+
   gap:12px;
 }
 
@@ -438,8 +453,7 @@ button:disabled{
 
   background:#fff;
 
-  border:
-    1px solid var(--line);
+  border:1px solid var(--line);
 
   border-radius:13px;
 
@@ -467,14 +481,14 @@ button:disabled{
 
 footer{
   margin-top:28px;
+
   color:var(--muted);
+
   font-size:.88rem;
 }
 
 
-/* ======================================================
-   CELULAR
-   ====================================================== */
+/* CELULAR */
 
 @media(max-width:700px){
 
@@ -488,8 +502,11 @@ footer{
 
   .card{
     width:98vw;
+
     min-height:94vh;
+
     padding:17px;
+
     border-radius:15px;
   }
 
@@ -499,7 +516,9 @@ footer{
 
   .option{
     margin:5px 0;
+
     padding:9px 11px;
+
     font-size:.93rem;
   }
 
@@ -534,16 +553,12 @@ footer{
 
 
 <div class="eyebrow">
-
 Husserl · fenomenología · educación
-
 </div>
 
 
 <h1>
-
 ¿Qué cambia cuando miramos la experiencia antes de explicarla?
-
 </h1>
 
 
@@ -553,9 +568,9 @@ Video interactivo basado en
 <em>¿Qué es la fenomenología? Explicación fácil</em>,
 de En Minutos • Educación.
 
-Las pausas aparecen al terminar algunos núcleos conceptuales del video.
-No todas son preguntas: algunas simplemente agregan una precisión,
-un vínculo con la educación o una pregunta para seguir pensando.
+Las pausas aparecen cuando termina una idea del video.
+Algunas proponen una pregunta breve; otras agregan una precisión
+o abren una relación con la educación.
 
 </p>
 
@@ -592,18 +607,19 @@ un vínculo con la educación o una pregunta para seguir pensando.
 Una indicación antes de empezar.
 </strong>
 
-La idea no es convertir cinco minutos de video en un examen.
+La idea no es convertir el video en un examen.
 
-Las interrupciones funcionan como pequeños márgenes escritos al costado del video:
-a veces preguntan, a veces aclaran y a veces simplemente abren otra pregunta.
+Las interrupciones funcionan como pequeños márgenes escritos
+al costado del video:
+a veces preguntan,
+a veces aclaran
+y a veces simplemente abren otra pregunta.
 
 </div>
 
 
 
-<!-- ====================================================
-     CIERRE
-     ==================================================== -->
+<!-- CIERRE -->
 
 
 <section
@@ -612,16 +628,12 @@ a veces preguntan, a veces aclaran y a veces simplemente abren otra pregunta.
 
 
 <div class="eyebrow">
-
 Después del video
-
 </div>
 
 
 <h2>
-
 Tres preguntas para llevar a la clase
-
 </h2>
 
 
@@ -639,10 +651,8 @@ respuestas correctas en el primer intento
 
 
 <p>
-
 El puntaje corresponde solamente a las tres preguntas cerradas.
-Las otras pausas no eran evaluativas.
-
+Las demás pausas no eran evaluativas.
 </p>
 
 
@@ -661,8 +671,8 @@ y lo que inferimos acerca de él?
 
 <strong>2.</strong>
 
-¿Puede una institución educativa conocer algo
-importante sobre sus estudiantes
+¿Puede una institución educativa conocer algo importante
+sobre sus estudiantes
 que no aparezca en una medición o en una estadística?
 
 </div>
@@ -698,25 +708,19 @@ Volver a mirar
 
 
 
-<!-- ====================================================
-     PARA SEGUIR
-     ==================================================== -->
+<!-- RECURSOS EN ESPAÑOL -->
 
 
 <section class="resources">
 
 
 <div class="eyebrow">
-
 Para seguir pensando
-
 </div>
 
 
 <h2>
-
 Fenomenología y educación
-
 </h2>
 
 
@@ -725,22 +729,18 @@ Fenomenología y educación
 
 <a
   class="resource"
-  href="https://revistas.um.es/rie/article/view/94001"
+  href="https://revistapsicologiaeducativa.unam.mx/index.php/psicologiaeducativa/revistapsicologiaeducativa.unam.mx/index.php/psicologiaeducativa/article/view/33"
   target="_blank"
   rel="noopener noreferrer">
 
 <strong>
-
-Fenomenología e investigación educativa
-
+Una reflexión fenomenológica en torno a la psicología educativa
 </strong>
 
 <span>
-
-Raquel Ayala Carabajo.
-Una entrada en español al enfoque fenomenológico-hermenéutico
-de la experiencia educativa.
-
+Pedro García Torres, UNAM.
+Un texto breve en español que lleva explícitamente
+el método fenomenológico al campo educativo.
 </span>
 
 </a>
@@ -749,22 +749,18 @@ de la experiencia educativa.
 
 <a
   class="resource"
-  href="https://plato.stanford.edu/entries/husserl/"
+  href="https://sedici.unlp.edu.ar/handle/10915/150191"
   target="_blank"
   rel="noopener noreferrer">
 
 <strong>
-
-Edmund Husserl
-
+Husserl y la fenomenología
 </strong>
 
 <span>
-
-Stanford Encyclopedia of Philosophy.
-Para profundizar en conciencia,
-intencionalidad y método fenomenológico.
-
+Alejandra Bertucci, Universidad Nacional de La Plata.
+Capítulo introductorio en español sobre Husserl
+y el método fenomenológico.
 </span>
 
 </a>
@@ -773,22 +769,18 @@ intencionalidad y método fenomenológico.
 
 <a
   class="resource"
-  href="https://iep.utm.edu/phenom/"
+  href="https://univates.br/revistas/index.php/signos/article/view/1850"
   target="_blank"
   rel="noopener noreferrer">
 
 <strong>
-
-Phenomenology
-
+¿Se aprende fenomenología o se aprende a fenomenologizar?
 </strong>
 
 <span>
-
-Internet Encyclopedia of Philosophy.
-Una introducción general
-a la tradición fenomenológica.
-
+Miguel Ángel Villamil Pineda y Clara Inés Jaramillo Gaviria.
+Un artículo dedicado específicamente
+a las implicaciones pedagógicas de Husserl.
 </span>
 
 </a>
@@ -815,9 +807,7 @@ La página no envía calificaciones ni datos a Google Classroom.
 
 
 
-<!-- ====================================================
-     OVERLAY DE INTERACCIONES
-     ==================================================== -->
+<!-- OVERLAY -->
 
 
 <div
@@ -921,16 +911,17 @@ const VIDEO_ID =
 
 
 /* ======================================================
-   SINCRONIZACIÓN
+   PAUSAS
 
-   Los tiempos son segundos reales del reproductor.
+   Se usan décimas de segundo para evitar cortar
+   la última palabra de cada frase.
 
-   68.6  = termina la presentación inicial
-   151.2 = termina el separador/promoción y empieza objetivos
-   200.4 = termina objetivos y empieza características
-   238.0 = termina la explicación de intencionalidad
-   270.0 = termina epojé + búsqueda de esencias
-   326.0 = terminan las críticas y empieza la despedida
+   1:09.0  presentación general
+   2:32.0  volver a las cosas mismas
+   3:21.0  objetivos de la fenomenología
+   3:59.2  intencionalidad
+   4:31.2  epojé + esencias
+   5:25.5  críticas, antes de la despedida
    ====================================================== */
 
 
@@ -938,43 +929,54 @@ const interactions = [
 
 
 
-/* ======================================================
-   PAUSA 1
-   1:08.6
-   FIN DE LA PRESENTACIÓN GENERAL
-   ====================================================== */
+/* PAUSA 1 */
 
 {
 
-  t:68.6,
+  t:69.0,
 
   type:"info",
 
   title:
-  "Una precisión antes de seguir",
+  "Antes de seguir: ¿qué significa fenómeno?",
 
   question:
-  "El video acaba de definir la fenomenología como estudio de los fenómenos tal como aparecen en la conciencia.",
+  "El video acaba de presentar la fenomenología como estudio de los fenómenos tal como aparecen en la conciencia.",
 
   html:`
 
     <div class="explanation">
 
       <p>
-        <strong>“Fenómeno” no significa aquí “ilusión”.</strong>
-        Es aquello que se nos da o aparece en la experiencia,
-        considerado precisamente en su modo de aparecer.
+        <strong>
+        “Fenómeno” no significa aquí “ilusión”.
+        </strong>
+      </p>
+
+      <p>
+        Es aquello que se nos da o aparece
+        en la experiencia,
+        considerado precisamente
+        en su modo de aparecer.
       </p>
 
       <div class="think">
 
-        <strong>Para seguir pensando</strong>
+        <strong>
+        Para seguir pensando
+        </strong>
 
         Cuando un alumno dice
         «esta evaluación fue injusta»,
-        podemos preguntar si la evaluación fue objetivamente injusta.
-        Pero también podemos formular otra pregunta:
-        <em>¿cómo fue vivida esa experiencia como experiencia de injusticia?</em>
+        podemos preguntar si la evaluación
+        fue objetivamente injusta.
+
+        Pero también podemos hacer otra pregunta:
+
+        <em>
+        ¿cómo fue vivida esa situación
+        como una experiencia de injusticia?
+        </em>
 
       </div>
 
@@ -986,16 +988,11 @@ const interactions = [
 
 
 
-/* ======================================================
-   PAUSA 2
-   2:31.2
-   DESPUÉS DE "VOLVER A LAS COSAS MISMAS"
-   Y DEL PEQUEÑO BLOQUE PROMOCIONAL DEL VIDEO
-   ====================================================== */
+/* PAUSA 2 */
 
 {
 
-  t:151.2,
+  t:152.0,
 
   type:"choice",
 
@@ -1003,7 +1000,7 @@ const interactions = [
   "Volver a las cosas mismas",
 
   question:
-  "Husserl propone atender a los fenómenos tal como se presentan, antes de imponerles interpretaciones. ¿Cuál de estas formulaciones se aproxima más a ese gesto en una situación educativa?",
+  "Acabamos de escuchar la propuesta de atender a los fenómenos antes de imponerles interpretaciones previas. ¿Cuál de estas formulaciones se aproxima más a ese gesto en educación?",
 
   options:[
 
@@ -1026,20 +1023,16 @@ const interactions = [
 
 
 
-/* ======================================================
-   PAUSA 3
-   3:20.4
-   FIN DEL BLOQUE SOBRE OBJETIVOS
-   ====================================================== */
+/* PAUSA 3 */
 
 {
 
-  t:200.4,
+  t:201.0,
 
   type:"info",
 
   title:
-  "Una pregunta educativa cambia bastante si cambiamos el verbo",
+  "Cambiar el verbo cambia la pregunta",
 
   question:
   "El video acaba de hablar de experiencia, estructuras y producción de sentido.",
@@ -1049,7 +1042,7 @@ const interactions = [
     <div class="explanation">
 
       <p>
-        Comparemos:
+        Compare estas dos preguntas:
       </p>
 
       <p>
@@ -1069,19 +1062,29 @@ const interactions = [
       </p>
 
       <p>
-        No son dos maneras de formular la misma pregunta.
+        No son dos maneras de formular
+        exactamente el mismo problema.
+      </p>
+
+      <p>
         La primera busca principalmente
-        <em>explicación</em>;
-        la segunda, la estructura y el sentido
+        una <em>explicación</em>.
+
+        La segunda pregunta por
+        la estructura y el sentido
         de una <em>experiencia vivida</em>.
       </p>
 
       <div class="think">
 
-        <strong>Para seguir pensando</strong>
+        <strong>
+        Para seguir pensando
+        </strong>
 
-        ¿Qué podríamos conocer con la segunda pregunta
-        que quizá se nos escape si formulamos solamente la primera?
+        ¿Qué podríamos llegar a conocer
+        con la segunda pregunta
+        que quizá se nos escape
+        si formulamos solamente la primera?
 
       </div>
 
@@ -1090,24 +1093,20 @@ const interactions = [
   `,
 
   link:
-  "https://revistas.um.es/rie/article/view/94001",
+  "https://revistapsicologiaeducativa.unam.mx/index.php/psicologiaeducativa/revistapsicologiaeducativa.unam.mx/index.php/psicologiaeducativa/article/view/33",
 
   linkText:
-  "Fenomenología e investigación educativa"
+  "Fenomenología y psicología educativa"
 
 },
 
 
 
-/* ======================================================
-   PAUSA 4
-   3:58 aprox.
-   JUSTO DESPUÉS DE INTENCIONALIDAD
-   ====================================================== */
+/* PAUSA 4 */
 
 {
 
-  t:238.0,
+  t:239.2,
 
   type:"choice",
 
@@ -1115,7 +1114,7 @@ const interactions = [
   "La conciencia es conciencia de algo",
 
   question:
-  "El video acaba de introducir la intencionalidad. Durante un examen oral, una alumna mira repetidamente la puerta. ¿Qué permite afirmar la noción de intencionalidad sin ir más allá de lo que sabemos?",
+  "El video acaba de introducir la intencionalidad. Durante un examen oral, una alumna mira repetidamente la puerta. ¿Qué permite afirmar esta noción sin ir más allá de lo que sabemos?",
 
   options:[
 
@@ -1132,43 +1131,45 @@ const interactions = [
   correct:2,
 
   feedback:
-  "Intencionalidad no significa descubrir una intención psicológica oculta. Significa que la conciencia es siempre conciencia de algo: percibido, recordado, imaginado, esperado, temido o deseado."
+  "Intencionalidad no significa descubrir una intención psicológica oculta. Significa que la conciencia es siempre conciencia de algo: algo percibido, recordado, imaginado, esperado, temido o deseado."
 
 },
 
 
 
-/* ======================================================
-   PAUSA 5
-   ~4:30
-   DESPUÉS DE EPOJÉ Y BÚSQUEDA DE ESENCIAS
-   ====================================================== */
+/* PAUSA 5 */
 
 {
 
-  t:270.0,
+  t:271.2,
 
   type:"info",
 
   title:
-  "Dos ideas que conviene no confundir",
+  "Dos movimientos diferentes",
 
   question:
-  "En pocos segundos el video acaba de introducir dos operaciones diferentes: suspensión del juicio y búsqueda de esencias.",
+  "El video acaba de presentar muy seguidos la suspensión del juicio y la búsqueda de esencias. Conviene separarlas un momento.",
 
   html:`
 
     <div class="explanation">
 
       <p>
-        <strong>Epojé o suspensión:</strong>
+        <strong>
+        Epojé o suspensión:
+        </strong>
+
         poner provisionalmente entre paréntesis
-        algunos supuestos y juicios previos
+        ciertos supuestos y juicios previos
         para atender a cómo se da la experiencia.
       </p>
 
       <p>
-        <strong>Búsqueda de esencias:</strong>
+        <strong>
+        Búsqueda de esencias:
+        </strong>
+
         explorar qué estructura permanece reconocible
         a través de las distintas variaciones
         de una experiencia.
@@ -1176,13 +1177,20 @@ const interactions = [
 
       <div class="think">
 
-        <strong>Un ejemplo educativo</strong>
+        <strong>
+        En educación
+        </strong>
 
-        No es lo mismo preguntar
-        «¿por qué este alumno tiene miedo de rendir?»
-        que preguntarse
-        «¿qué hace que una situación sea vivida como
-        una experiencia de examen?».
+        No es exactamente lo mismo preguntar:
+
+        «¿Por qué este alumno tiene miedo de rendir?»
+
+        que preguntar:
+
+        <em>
+        «¿Qué hace que una situación sea vivida
+        como una experiencia de examen?»
+        </em>
 
       </div>
 
@@ -1191,24 +1199,20 @@ const interactions = [
   `,
 
   link:
-  "https://plato.stanford.edu/entries/husserl/",
+  "https://sedici.unlp.edu.ar/handle/10915/150191",
 
   linkText:
-  "Profundizar en Husserl"
+  "Husserl y la fenomenología — UNLP"
 
 },
 
 
 
-/* ======================================================
-   PAUSA 6
-   ~5:26
-   DESPUÉS DEL BLOQUE DE CRÍTICAS
-   ====================================================== */
+/* PAUSA 6 */
 
 {
 
-  t:326.0,
+  t:325.5,
 
   type:"choice",
 
@@ -1216,24 +1220,24 @@ const interactions = [
   "Una crítica no es todavía una refutación",
 
   question:
-  "El video acaba de mencionar subjetividad, dificultades de verificación y abstracción como críticas a la fenomenología. ¿Cuál de estas conclusiones sería demasiado fuerte?",
+  "El video acaba de mencionar la subjetividad, la dificultad de verificación y el carácter abstracto de la fenomenología. ¿Cuál de estas conclusiones sería demasiado fuerte?",
 
   options:[
 
     "La experiencia subjetiva plantea problemas metodológicos específicos.",
 
-    "La fenomenología responde preguntas diferentes de muchas investigaciones experimentales.",
+    "La fenomenología puede formular preguntas diferentes de las de una investigación experimental.",
 
     "Como estudia la experiencia subjetiva, la fenomenología obliga a rechazar todo conocimiento científico objetivo.",
 
-    "Una investigación educativa puede necesitar distinguir entre explicar causalmente algo y comprender cómo se vive."
+    "Una investigación educativa puede distinguir entre explicar causalmente algo y comprender cómo se vive."
 
   ],
 
   correct:2,
 
   feedback:
-  "La tercera conclusión va demasiado lejos. Describir una experiencia y explicar causalmente un fenómeno son operaciones distintas; reconocer esa diferencia no obliga a elegir una y expulsar la otra."
+  "La tercera conclusión va demasiado lejos. Describir una experiencia y explicar causalmente un fenómeno son operaciones diferentes. Reconocer esa diferencia no obliga a elegir una y expulsar la otra."
 
 }
 
@@ -1318,7 +1322,7 @@ document.getElementById(
 
 
 /* ======================================================
-   CREAR BARRA DE PROGRESO
+   BARRA DE PROGRESO
    ====================================================== */
 
 
@@ -1356,7 +1360,7 @@ interactions.forEach(
 
 
 /* ======================================================
-   FORMATEAR TIEMPO
+   TIEMPO
    ====================================================== */
 
 
@@ -1447,7 +1451,7 @@ function markDone(
 
 
 /* ======================================================
-   RESETEAR CONTROLES
+   CONTROLES
    ====================================================== */
 
 
@@ -1594,7 +1598,7 @@ function showInteraction(
 
 
 /* ======================================================
-   TARJETA INFORMATIVA
+   PAUSA EXPLICATIVA
    ====================================================== */
 
 
@@ -1898,8 +1902,8 @@ retryButton
 /* ======================================================
    CONTINUAR
 
-   No hacemos seek.
-   El video sigue exactamente desde donde quedó pausado.
+   No se adelanta el video.
+   Retoma exactamente desde el punto donde quedó pausado.
    ====================================================== */
 
 
@@ -1936,10 +1940,10 @@ continueButton
 
 
 /* ======================================================
-   CONTROL DEL TIEMPO
+   DETECCIÓN DEL MOMENTO
 
-   50 ms permite que la pausa quede mucho más cerca
-   del segundo indicado.
+   Se comprueba cada 40 ms para que las pausas
+   sean lo más precisas posible.
    ====================================================== */
 
 
@@ -1984,7 +1988,7 @@ function checkVideoTime(){
       &&
 
       now <
-      item.t + .8
+      item.t + .7
 
     ){
 
@@ -2030,7 +2034,7 @@ function onPlayerStateChange(
     timer =
     setInterval(
       checkVideoTime,
-      50
+      40
     );
 
   }
@@ -2058,7 +2062,7 @@ function onPlayerStateChange(
 
 
 /* ======================================================
-   MOSTRAR CIERRE
+   CIERRE
    ====================================================== */
 
 
@@ -2270,7 +2274,7 @@ function onYouTubeIframeAPIReady(){
 
 
 /* ======================================================
-   CARGAR API
+   CARGAR API DE YOUTUBE
    ====================================================== */
 
 
@@ -2280,8 +2284,7 @@ window
   ()=>{
 
     const script =
-    document
-    .createElement(
+    document.createElement(
       "script"
     );
 
